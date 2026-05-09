@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aero Ring Tech — Prijava</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<style>
+  :root {
+    --bg-corner: #01060D;
+    --bg-center: #030C16;
+    --bg-deeper: #050F1C;
+    --cyan: #00D2FF;
+    --cyan-dim: #102E42;
+    --cyan-soft: #D9EFFF;
+    --copper: #C79F64;
+    --copper-bright: #E5C28A;
+    --white: #FFFFFF;
+    --muted: #6B8AA3;
+    --panel: rgba(8, 18, 32, 0.55);
+    --panel-edge: rgba(0, 210, 255, 0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100vh;
+    background: var(--bg-corner);
+    color: var(--white);
+    font-family: 'Rajdhani', sans-serif;
+    overflow-x: hidden;
+  }
+
+  body {
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 50%, var(--bg-center) 0%, var(--bg-deeper) 40%, var(--bg-corner) 100%);
+    min-height: 100vh;
+    position: relative;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0, 210, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 210, 255, 0.04) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 90% 70% at 50% 50%, #000 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 50%, #000 30%, transparent 80%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse 100% 80% at 50% 50%, transparent 40%, rgba(1, 6, 13, 0.7) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  #root { position: relative; z-index: 2; min-height: 100vh; }
+
+  ::selection { background: rgba(0, 210, 255, 0.35); color: #fff; }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(0, 210, 255, 0.2); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(0, 210, 255, 0.4); }
+
+  /* === styles.css === */
+  :root {
+    --brand-bg: #01060D;
+  }
+
+  body {
+    background: #FFFFFF !important;
+  }
+  body::before, body::after { display: none !important; }
+
+  .auth-page.minimal {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #FFFFFF;
+    color: #0F1620;
+  }
+
+  .auth-main {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  .auth-left {
+    background:
+      radial-gradient(ellipse 90% 70% at 50% 50%, #0F2438 0%, #0A1B2C 50%, #061320 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .branding-panel {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .brand-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 26px;
+  }
+
+  .logo-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .brand-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 0.22em;
+    color: #fff;
+    text-shadow:
+      0 0 18px rgba(0, 210, 255, 0.4),
+      0 0 40px rgba(0, 210, 255, 0.15);
+    white-space: nowrap;
+  }
+  .brand-word-aero, .brand-word-tech { color: #fff; }
+  .brand-word-ring { color: var(--cyan); text-shadow: 0 0 14px var(--cyan); }
+  .brand-divider {
+    width: 5px; height: 5px;
+    background: var(--copper);
+    transform: rotate(45deg);
+    box-shadow: 0 0 8px var(--copper);
+  }
+
+  .brand-tagline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.45em;
+    color: var(--copper);
+    text-shadow: 0 0 10px rgba(199, 159, 100, 0.3);
+    padding-top: 6px;
+  }
+
+  .auth-right {
+    background:
+      radial-gradient(ellipse 80% 60% at 30% 20%, #EAF4FA 0%, transparent 60%),
+      radial-gradient(ellipse 70% 50% at 80% 90%, #F2EBDD 0%, transparent 55%),
+      linear-gradient(180deg, #F4F8FB 0%, #ECF2F7 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 60px 40px 28px;
+    position: relative;
+  }
+
+  .form-panel-outer {
+    flex: 1;
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    padding-bottom: 40px;
+  }
+
+  .form-panel {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+
+  .mform-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    letter-spacing: 0.01em;
+    color: #1A2330;
+    margin: 0 0 4px 0;
+  }
+  .mform-sub {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    color: #64748B;
+    margin: 0 0 28px 0;
+    letter-spacing: 0.01em;
+  }
+
+  .mform {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .mfield-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .mfield-wrap {
+    position: relative;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1.5px solid #D6E0EA;
+    border-radius: 8px;
+    height: 52px;
+    display: flex;
+    align-items: stretch;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, transform 0.15s;
+  }
+  .mfield-wrap:hover { border-color: #B5C6D6; }
+  .mfield.is-focus .mfield-wrap {
+    border-color: var(--cyan);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(0, 210, 255, 0.12), 0 4px 14px rgba(0, 210, 255, 0.08);
+  }
+
+  .mfield-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    color: #94A3B8;
+    flex: 0 0 auto;
+    border-right: 1px solid #E2EAF2;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .mfield.is-focus .mfield-icon {
+    color: var(--cyan);
+    border-right-color: rgba(0, 210, 255, 0.25);
+  }
+
+  .mfield input, .mfield select {
+    flex: 1;
+    height: 100%;
+    border: none;
+    background: transparent;
+    outline: none;
+    padding: 0 14px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: #1A2330;
+    min-width: 0;
+  }
+  .mfield input::placeholder { color: #94A3B8; opacity: 1; }
+  .mfield select { appearance: none; cursor: pointer; padding-right: 36px; color: #1A2330; }
+  .mfield select:invalid, .mfield.is-filled select { color: #1A2330; }
+  .mfield select option { color: #1A2330; }
+  .mfield-chevron {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94A3B8;
+    font-size: 12px;
+    pointer-events: none;
+    transition: color 0.2s, transform 0.2s;
+  }
+  .mfield.is-focus .mfield-chevron { color: var(--cyan); transform: translateY(-50%) rotate(180deg); }
+
+  .mselect { position: relative; }
+  .mselect-trigger {
+    width: 100%;
+    cursor: pointer;
+    text-align: left;
+    font-family: 'Rajdhani', sans-serif;
+  }
+  .mselect-value {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: #1A2330;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .mselect-value.is-placeholder { color: #94A3B8; }
+
+  .mselect.is-open .mfield-wrap {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-color: rgba(0, 210, 255, 0.25);
+  }
+
+  .mselect-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+    background: #fff;
+    border: 1.5px solid var(--cyan);
+    border-top: none;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 210, 255, 0.12), 0 4px 12px rgba(15, 36, 56, 0.08);
+    z-index: 20;
+    max-height: 240px;
+    overflow-y: auto;
+    animation: mselectIn 0.18s ease;
+  }
+  @keyframes mselectIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .mselect-option {
+    padding: 10px 14px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14.5px;
+    font-weight: 500;
+    color: #1A2330;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.12s, color 0.12s;
+  }
+  .mselect-option:hover { background: rgba(0, 210, 255, 0.08); color: var(--cyan); }
+  .mselect-option.is-active {
+    background: rgba(0, 210, 255, 0.12);
+    color: var(--cyan);
+    font-weight: 600;
+  }
+  .mfield-eye {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #94A3B8;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+  }
+  .mfield-eye:hover { color: var(--cyan); }
+
+  .mform-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .mcheckbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 13.5px;
+    color: #475569;
+    font-family: 'Rajdhani', sans-serif;
+    white-space: nowrap;
+  }
+  .mcheckbox input { display: none; }
+  .mcheck-box {
+    width: 18px; height: 18px;
+    border: 1.5px solid #CBD5E0;
+    background: #fff;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .mcheck-mark {
+    color: #fff;
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.2s, transform 0.2s;
+    display: flex;
+    align-items: center;
+  }
+  .mcheckbox input:checked + .mcheck-box {
+    background: var(--cyan);
+    border-color: var(--cyan);
+    box-shadow: 0 2px 6px rgba(0, 210, 255, 0.35);
+  }
+  .mcheckbox input:checked + .mcheck-box .mcheck-mark { opacity: 1; transform: scale(1); }
+  .mcheckbox:hover .mcheck-box { border-color: var(--cyan); }
+
+  .mlink-cyan {
+    background: transparent;
+    border: none;
+    color: var(--cyan);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 0;
+    transition: opacity 0.2s, color 0.2s;
+    white-space: nowrap;
+  }
+  .mlink-cyan:hover { opacity: 0.85; text-decoration: underline; }
+
+  .mbtn {
+    position: relative;
+    margin-top: 10px;
+    width: 100%;
+    height: 52px;
+    background: linear-gradient(135deg, var(--cyan) 0%, #0099C8 100%);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s ease, box-shadow 0.25s ease;
+    box-shadow:
+      0 4px 14px rgba(0, 210, 255, 0.35),
+      0 1px 2px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .mbtn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #2EE0FF 0%, var(--cyan) 50%, #0099C8 100%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: -1;
+  }
+  .mbtn:hover::before { opacity: 1; }
+  .mbtn:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 8px 24px rgba(0, 210, 255, 0.5),
+      0 2px 6px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  }
+  .mbtn:active { transform: translateY(0); }
+  .mbtn:disabled { cursor: wait; opacity: 0.85; }
+
+  .mbtn-content {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 2;
+  }
+  .mbtn-arrow {
+    display: inline-flex;
+    align-items: center;
+    transition: transform 0.25s ease;
+  }
+  .mbtn:hover .mbtn-arrow { transform: translateX(4px); }
+
+  .mbtn-shine {
+    position: absolute;
+    top: 0;
+    left: -60%;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(115deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0) 30%,
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(255, 255, 255, 0) 70%,
+      transparent 100%);
+    transform: skewX(-20deg);
+    transition: left 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .mbtn:hover .mbtn-shine { left: 120%; }
+
+  .mbtn-spinner {
+    width: 18px; height: 18px;
+    border: 2.5px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: mspin 0.8s linear infinite;
+  }
+  @keyframes mspin { to { transform: rotate(360deg); } }
+
+  .mform-bottom {
+    margin-top: 18px;
+    text-align: center;
+    font-size: 13.5px;
+    color: #64748B;
+    font-family: 'Rajdhani', sans-serif;
+    white-space: nowrap;
+  }
+
+  .lang-bar {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 16px 0 4px;
+  }
+  .lang-selector {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .lang-flag {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 3px 5px;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.18s;
+    filter: saturate(0.85);
+    opacity: 0.75;
+  }
+  .lang-flag:hover {
+    opacity: 1;
+    filter: saturate(1.1);
+    transform: translateY(-1px);
+  }
+  .lang-flag.active {
+    opacity: 1;
+    filter: saturate(1.1);
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 2px rgba(0, 210, 255, 0.15);
+  }
+
+  @media (max-width: 900px) {
+    .auth-main { grid-template-columns: 1fr; }
+    .auth-left { padding: 40px 20px; min-height: 280px; }
+    .auth-right { padding: 30px 20px; }
+    .form-panel-outer { padding-bottom: 20px; }
+  }
+  @media (max-width: 480px) {
+    .mfield-grid-2 { grid-template-columns: 1fr; }
+    .mform-title { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+// ─── tweaks-panel.jsx ────────────────────────────────────────────────────────
+
+const __TWEAKS_STYLE = `
+  .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;
+    max-height:calc(100vh - 32px);display:flex;flex-direction:column;
+    background:rgba(250,249,247,.78);color:#29261b;
+    -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+    border:.5px solid rgba(255,255,255,.6);border-radius:14px;
+    box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);
+    font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
+  .twk-hd{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 8px 10px 14px;cursor:move;user-select:none}
+  .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
+  .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
+    width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
+  .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
+  .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
+    overflow-y:auto;overflow-x:hidden;min-height:0;
+    scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
+  .twk-body::-webkit-scrollbar{width:8px}
+  .twk-body::-webkit-scrollbar-track{background:transparent;margin:2px}
+  .twk-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px;
+    border:2px solid transparent;background-clip:content-box}
+  .twk-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.25);
+    border:2px solid transparent;background-clip:content-box}
+  .twk-row{display:flex;flex-direction:column;gap:5px}
+  .twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+  .twk-lbl{display:flex;justify-content:space-between;align-items:baseline;
+    color:rgba(41,38,27,.72)}
+  .twk-lbl>span:first-child{font-weight:500}
+  .twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}
+  .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:rgba(41,38,27,.45);padding:10px 0 0}
+  .twk-sect:first-child{padding-top:0}
+  .twk-field{appearance:none;width:100%;height:26px;padding:0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;
+    background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}
+  .twk-field:focus{border-color:rgba(0,0,0,.25);background:rgba(255,255,255,.85)}
+  select.twk-field{padding-right:22px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>");
+    background-repeat:no-repeat;background-position:right 8px center}
+  .twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;
+    border-radius:999px;background:rgba(0,0,0,.12);outline:none}
+  .twk-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+    width:14px;height:14px;border-radius:50%;background:#fff;
+    border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
+    background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;
+    background:rgba(0,0,0,.06);user-select:none}
+  .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;
+    background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);
+    transition:left .15s cubic-bezier(.3,.7,.4,1),width .15s}
+  .twk-seg.dragging .twk-seg-thumb{transition:none}
+  .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;
+    background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;
+    border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;overflow-wrap:anywhere}
+  .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;
+    background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
+  .twk-toggle[data-on="1"]{background:#34c759}
+  .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+  .twk-toggle[data-on="1"] i{transform:translateX(14px)}
+  .twk-num{display:flex;align-items:center;height:26px;padding:0 0 0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6)}
+  .twk-num-lbl{font-weight:500;color:rgba(41,38,27,.6);cursor:ew-resize;
+    user-select:none;padding-right:8px}
+  .twk-num input{flex:1;min-width:0;height:100%;border:0;background:transparent;
+    font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:0 8px 0 0;
+    outline:none;color:inherit;-moz-appearance:textfield}
+  .twk-num input::-webkit-inner-spin-button,.twk-num input::-webkit-outer-spin-button{
+    -webkit-appearance:none;margin:0}
+  .twk-num-unit{padding-right:8px;color:rgba(41,38,27,.45)}
+  .twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;
+    background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}
+  .twk-btn:hover{background:rgba(0,0,0,.88)}
+  .twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}
+  .twk-btn.secondary:hover{background:rgba(0,0,0,.1)}
+  .twk-swatch{appearance:none;-webkit-appearance:none;width:56px;height:22px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:6px;padding:0;cursor:default;
+    background:transparent;flex-shrink:0}
+  .twk-swatch::-webkit-color-swatch-wrapper{padding:0}
+  .twk-swatch::-webkit-color-swatch{border:0;border-radius:5.5px}
+  .twk-swatch::-moz-color-swatch{border:0;border-radius:5.5px}
+`;
+
+function useTweaks(defaults) {
+  const [values, setValues] = React.useState(defaults);
+  const setTweak = React.useCallback((keyOrEdits, val) => {
+    const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null
+      ? keyOrEdits : { [keyOrEdits]: val };
+    setValues((prev) => ({ ...prev, ...edits }));
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+  }, []);
+  return [values, setTweak];
+}
+
+function TweaksPanel({ title = 'Tweaks', children }) {
+  const [open, setOpen] = React.useState(false);
+  const dragRef = React.useRef(null);
+  const offsetRef = React.useRef({ x: 16, y: 16 });
+  const PAD = 16;
+
+  const clampToViewport = React.useCallback(() => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const w = panel.offsetWidth, h = panel.offsetHeight;
+    const maxRight = Math.max(PAD, window.innerWidth - w - PAD);
+    const maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
+    offsetRef.current = {
+      x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
+      y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y)),
+    };
+    panel.style.right = offsetRef.current.x + 'px';
+    panel.style.bottom = offsetRef.current.y + 'px';
+  }, []);
+
+  React.useEffect(() => {
+    if (!open) return;
+    clampToViewport();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', clampToViewport);
+      return () => window.removeEventListener('resize', clampToViewport);
+    }
+    const ro = new ResizeObserver(clampToViewport);
+    ro.observe(document.documentElement);
+    return () => ro.disconnect();
+  }, [open, clampToViewport]);
+
+  React.useEffect(() => {
+    const onMsg = (e) => {
+      const t = e?.data?.type;
+      if (t === '__activate_edit_mode') setOpen(true);
+      else if (t === '__deactivate_edit_mode') setOpen(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+
+  const dismiss = () => {
+    setOpen(false);
+    window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
+  };
+
+  const onDragStart = (e) => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const r = panel.getBoundingClientRect();
+    const sx = e.clientX, sy = e.clientY;
+    const startRight = window.innerWidth - r.right;
+    const startBottom = window.innerHeight - r.bottom;
+    const move = (ev) => {
+      offsetRef.current = {
+        x: startRight - (ev.clientX - sx),
+        y: startBottom - (ev.clientY - sy),
+      };
+      clampToViewport();
+    };
+    const up = () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+    };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+  };
+
+  if (!open) return null;
+  return (
+    <>
+      <style>{__TWEAKS_STYLE}</style>
+      <div ref={dragRef} className="twk-panel" data-noncommentable=""
+           style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
+        <div className="twk-hd" onMouseDown={onDragStart}>
+          <b>{title}</b>
+          <button className="twk-x" aria-label="Close tweaks"
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={dismiss}>✕</button>
+        </div>
+        <div className="twk-body">{children}</div>
+      </div>
+    </>
+  );
+}
+
+function TweakSection({ label, title, children }) {
+  return (
+    <>
+      <div className="twk-sect">{label || title}</div>
+      {children}
+    </>
+  );
+}
+
+function TweakRow({ label, value, children, inline = false }) {
+  return (
+    <div className={inline ? 'twk-row twk-row-h' : 'twk-row'}>
+      <div className="twk-lbl">
+        <span>{label}</span>
+        {value != null && <span className="twk-val">{value}</span>}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function TweakSlider({ label, value, min = 0, max = 100, step = 1, unit = '', onChange }) {
+  return (
+    <TweakRow label={label} value={`${value}${unit}`}>
+      <input type="range" className="twk-slider" min={min} max={max} step={step}
+             value={value} onChange={(e) => onChange(Number(e.target.value))} />
+    </TweakRow>
+  );
+}
+
+function TweakToggle({ label, value, onChange }) {
+  return (
+    <div className="twk-row twk-row-h">
+      <div className="twk-lbl"><span>{label}</span></div>
+      <button type="button" className="twk-toggle" data-on={value ? '1' : '0'}
+              role="switch" aria-checked={!!value}
+              onClick={() => onChange(!value)}><i /></button>
+    </div>
+  );
+}
+
+function TweakRadio({ label, value, options, onChange }) {
+  const trackRef = React.useRef(null);
+  const [dragging, setDragging] = React.useState(false);
+  const opts = options.map((o) => (typeof o === 'object' ? o : { value: o, label: o }));
+  const idx = Math.max(0, opts.findIndex((o) => o.value === value));
+  const n = opts.length;
+  const valueRef = React.useRef(value);
+  valueRef.current = value;
+
+  const segAt = (clientX) => {
+    const r = trackRef.current.getBoundingClientRect();
+    const inner = r.width - 4;
+    const i = Math.floor(((clientX - r.left - 2) / inner) * n);
+    return opts[Math.max(0, Math.min(n - 1, i))].value;
+  };
+
+  const onPointerDown = (e) => {
+    setDragging(true);
+    const v0 = segAt(e.clientX);
+    if (v0 !== valueRef.current) onChange(v0);
+    const move = (ev) => {
+      if (!trackRef.current) return;
+      const v = segAt(ev.clientX);
+      if (v !== valueRef.current) onChange(v);
+    };
+    const up = () => {
+      setDragging(false);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+
+  return (
+    <TweakRow label={label}>
+      <div ref={trackRef} role="radiogroup" onPointerDown={onPointerDown}
+           className={dragging ? 'twk-seg dragging' : 'twk-seg'}>
+        <div className="twk-seg-thumb"
+             style={{ left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
+                      width: `calc((100% - 4px) / ${n})` }} />
+        {opts.map((o) => (
+          <button key={o.value} type="button" role="radio" aria-checked={o.value === value}>
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakSelect({ label, value, options, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <select className="twk-field" value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map((o) => {
+          const v = typeof o === 'object' ? o.value : o;
+          const l = typeof o === 'object' ? o.label : o;
+          return <option key={v} value={v}>{l}</option>;
+        })}
+      </select>
+    </TweakRow>
+  );
+}
+
+function TweakText({ label, value, placeholder, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <input className="twk-field" type="text" value={value} placeholder={placeholder}
+             onChange={(e) => onChange(e.target.value)} />
+    </TweakRow>
+  );
+}
+
+function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange }) {
+  const clamp = (n) => {
+    if (min != null && n < min) return min;
+    if (max != null && n > max) return max;
+    return n;
+  };
+  const startRef = React.useRef({ x: 0, val: 0 });
+  const onScrubStart = (e) => {
+    e.preventDefault();
+    startRef.current = { x: e.clientX, val: value };
+    const decimals = (String(step).split('.')[1] || '').length;
+    const move = (ev) => {
+      const dx = ev.clientX - startRef.current.x;
+      const raw = startRef.current.val + dx * step;
+      const snapped = Math.round(raw / step) * step;
+      onChange(clamp(Number(snapped.toFixed(decimals))));
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return (
+    <div className="twk-num">
+      <span className="twk-num-lbl" onPointerDown={onScrubStart}>{label}</span>
+      <input type="number" value={value} min={min} max={max} step={step}
+             onChange={(e) => onChange(clamp(Number(e.target.value)))} />
+      {unit && <span className="twk-num-unit">{unit}</span>}
+    </div>
+  );
+}
+
+function TweakColor({ label, value, onChange }) {
+  return (
+    <div className="twk-row twk-row-h">
+      <div className="twk-lbl"><span>{label}</span></div>
+      <input type="color" className="twk-swatch" value={value}
+             onChange={(e) => onChange(e.target.value)} />
+    </div>
+  );
+}
+
+function TweakButton({ label, onClick, secondary = false, children }) {
+  return (
+    <button type="button" className={secondary ? 'twk-btn secondary' : 'twk-btn'}
+            onClick={onClick}>{label || children}</button>
+  );
+}
+
+// ─── logo.jsx ────────────────────────────────────────────────────────────────
+
+const ARTLogo = ({ size = 240, intensity = 1 }) => {
+  const glow = intensity;
+  return (
+    <div
+      style={{
+        width: size,
+        height: size,
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+      <img
+        src="assets/art-logo.png"
+        alt="Aero Ring Tech"
+        style={{
+          objectFit: 'contain',
+          filter: `drop-shadow(0 0 ${24 * glow}px rgba(0, 210, 255, ${0.55 * glow})) drop-shadow(0 0 ${60 * glow}px rgba(0, 210, 255, ${0.3 * glow})) drop-shadow(0 0 ${100 * glow}px rgba(0, 210, 255, ${0.15 * glow}))`,
+          width: "500px",
+          height: "500px"
+        }} />
+    </div>
+  );
+};
+
+// ─── branding-panel.jsx ──────────────────────────────────────────────────────
+
+const BrandingPanel = () => {
+  return (
+    <div className="branding-panel">
+      <div className="brand-center">
+        <div className="logo-wrap">
+          <ARTLogo size={260} />
+        </div>
+        <div className="brand-name">
+          <span className="brand-word brand-word-aero">AERO</span>
+          <span className="brand-divider" />
+          <span className="brand-word brand-word-ring">RING</span>
+          <span className="brand-divider" />
+          <span className="brand-word brand-word-tech">TECH</span>
+        </div>
+        <div className="brand-tagline">THE ART OF FLIGHT</div>
+      </div>
+    </div>
+  );
+};
+
+// ─── form-panel.jsx ──────────────────────────────────────────────────────────
+
+const Icon = ({ name, size = 18 }) => {
+  const stroke = "currentColor";
+  const sw = 1.6;
+  const common = { width: size, height: size, viewBox: "0 0 24 24", fill: "none", stroke, strokeWidth: sw, strokeLinecap: "round", strokeLinejoin: "round" };
+  switch (name) {
+    case 'club':
+      return (<svg {...common}><path d="M3 21V8l9-5 9 5v13" /><path d="M9 21v-7h6v7" /></svg>);
+    case 'mail':
+      return (<svg {...common}><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" /></svg>);
+    case 'lock':
+      return (<svg {...common}><rect x="4" y="11" width="16" height="10" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>);
+    case 'user':
+      return (<svg {...common}><circle cx="12" cy="8" r="4" /><path d="M4 21c1.5-4 5-6 8-6s6.5 2 8 6" /></svg>);
+    case 'id':
+      return (<svg {...common}><rect x="3" y="5" width="18" height="14" rx="2" /><circle cx="9" cy="11" r="2.2" /><path d="M5.5 17c.6-1.6 2-2.4 3.5-2.4s2.9.8 3.5 2.4" /><path d="M14 9h5M14 12h4M14 15h3" /></svg>);
+    case 'eye':
+      return (<svg {...common}><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" /></svg>);
+    case 'eye-off':
+      return (<svg {...common}><path d="M3 3l18 18" /><path d="M10.6 6.1A10 10 0 0 1 12 6c6.5 0 10 6 10 6a17 17 0 0 1-3.1 3.7" /><path d="M6.6 6.6A17 17 0 0 0 2 12s3.5 6 10 6c1.6 0 3-.3 4.2-.8" /><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" /></svg>);
+    case 'check':
+      return (<svg {...common}><path d="M5 12l4 4 10-10" /></svg>);
+    case 'arrow':
+      return (<svg {...common}><path d="M5 12h14M13 6l6 6-6 6" /></svg>);
+    default:
+      return null;
+  }
+};
+
+const TextField = ({ placeholder, name, type = 'text', icon, value, onChange, autoComplete, required }) => {
+  const [focused, setFocused] = React.useState(false);
+  const [show, setShow] = React.useState(false);
+  const isPass = type === 'password';
+  const realType = isPass && show ? 'text' : type;
+
+  return (
+    <div className={`mfield ${focused ? 'is-focus' : ''} ${value ? 'is-filled' : ''}`}>
+      <div className="mfield-wrap">
+        <span className="mfield-icon"><Icon name={icon} size={18} /></span>
+        <input
+          id={name}
+          name={name}
+          type={realType}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder + (required ? ' *' : '')}
+          autoComplete={autoComplete}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+        />
+        {isPass && (
+          <button type="button" className="mfield-eye" onClick={() => setShow(s => !s)} tabIndex={-1} aria-label="prikaži lozinku">
+            <Icon name={show ? 'eye-off' : 'eye'} size={16} />
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const SelectField = ({ placeholder, name, icon, value, onChange, options, required }) => {
+  const [open, setOpen] = React.useState(false);
+  const ref = React.useRef(null);
+
+  React.useEffect(() => {
+    if (!open) return;
+    const onDoc = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
+    const onKey = (e) => { if (e.key === 'Escape') setOpen(false); };
+    document.addEventListener('mousedown', onDoc);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDoc);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  const choose = (v) => {
+    onChange({ target: { value: v } });
+    setOpen(false);
+  };
+
+  return (
+    <div ref={ref} className={`mfield mselect ${open ? 'is-focus is-open' : ''} ${value ? 'is-filled' : ''}`}>
+      <button
+        type="button"
+        className="mfield-wrap mselect-trigger"
+        onClick={() => setOpen(o => !o)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        id={name}
+      >
+        <span className="mfield-icon"><Icon name={icon} size={18} /></span>
+        <span className={`mselect-value ${value ? '' : 'is-placeholder'}`}>
+          {value || (placeholder + (required ? ' *' : ''))}
+        </span>
+        <span className="mfield-chevron">▾</span>
+      </button>
+      {open && (
+        <ul className="mselect-menu" role="listbox">
+          {options.map(o => (
+            <li
+              key={o}
+              role="option"
+              aria-selected={value === o}
+              className={`mselect-option ${value === o ? 'is-active' : ''}`}
+              onClick={() => choose(o)}
+            >
+              {o}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+const Checkbox = ({ checked, onChange, children }) => (
+  <label className="mcheckbox">
+    <input type="checkbox" checked={checked} onChange={onChange} />
+    <span className="mcheck-box">
+      <span className="mcheck-mark"><Icon name="check" size={11} /></span>
+    </span>
+    <span className="mcheck-label">{children}</span>
+  </label>
+);
+
+const KLUBOVI = ['PRG Beograd', 'SK Novi Sad', 'Krila Niša', 'Aero Subotica', 'Visoko Krilo Kragujevac', 'Drugi klub…'];
+
+const T = {
+  sr: {
+    loginTitle: 'Prijava', registerTitle: 'Registracija',
+    loginSub: 'Pristup vašem nalogu', registerSub: 'Otvorite novi nalog',
+    klub: 'Klub', ime: 'Ime', prezime: 'Prezime',
+    email: 'Korisničko ime ili imejl', emailReg: 'Imejl adresa',
+    password: 'Lozinka',
+    remember: 'Zapamti me',
+    forgot: 'Zaboravljena lozinka?',
+    loginBtn: 'Prijavi se', registerBtn: 'Registruj se',
+    noAccount: 'Nemaš nalog?', haveAccount: 'Već imaš nalog?',
+    register: 'Registruj se', login: 'Prijavi se',
+  },
+  en: {
+    loginTitle: 'Sign in', registerTitle: 'Sign up',
+    loginSub: 'Access your account', registerSub: 'Create a new account',
+    klub: 'Club', ime: 'First name', prezime: 'Last name',
+    email: 'Username or email', emailReg: 'Email address',
+    password: 'Password',
+    remember: 'Remember me',
+    forgot: 'Forgot password?',
+    loginBtn: 'Sign in', registerBtn: 'Sign up',
+    noAccount: "Don't have an account?", haveAccount: 'Already have an account?',
+    register: 'Sign up', login: 'Sign in',
+  },
+  de: {
+    loginTitle: 'Anmelden', registerTitle: 'Registrieren',
+    loginSub: 'Zugang zu Ihrem Konto', registerSub: 'Neues Konto erstellen',
+    klub: 'Verein', ime: 'Vorname', prezime: 'Nachname',
+    email: 'Benutzername oder E-Mail', emailReg: 'E-Mail-Adresse',
+    password: 'Passwort',
+    remember: 'Angemeldet bleiben',
+    forgot: 'Passwort vergessen?',
+    loginBtn: 'Anmelden', registerBtn: 'Registrieren',
+    noAccount: 'Noch kein Konto?', haveAccount: 'Bereits ein Konto?',
+    register: 'Registrieren', login: 'Anmelden',
+  },
+};
+
+const LoginForm = ({ onSwitch, t }) => {
+  const [data, setData] = React.useState({ klub: '', email: '', password: '' });
+  const [remember, setRemember] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const set = (k) => (e) => setData(d => ({ ...d, [k]: e.target.value }));
+
+  const submit = (e) => {
+    e?.preventDefault?.();
+    setLoading(true);
+    setTimeout(() => setLoading(false), 1400);
+  };
+
+  return (
+    <form className="mform" onSubmit={submit}>
+      <SelectField placeholder={t.klub} icon="club" name="klub-login" value={data.klub} onChange={set('klub')} options={KLUBOVI} />
+      <TextField placeholder={t.email} icon="mail" name="email-login" type="text" value={data.email} onChange={set('email')} autoComplete="email" required />
+      <TextField placeholder={t.password} icon="lock" name="pass-login" type="password" value={data.password} onChange={set('password')} autoComplete="current-password" required />
+
+      <div className="mform-row">
+        <Checkbox checked={remember} onChange={(e) => setRemember(e.target.checked)}>{t.remember}</Checkbox>
+        <a href="#" className="mlink-cyan">{t.forgot}</a>
+      </div>
+
+      <button type="submit" className={`mbtn ${loading ? 'is-loading' : ''}`} disabled={loading}>
+        <span className="mbtn-shine" />
+        <span className="mbtn-content">
+          {loading ? <span className="mbtn-spinner" /> : (
+            <>
+              <span>{t.loginBtn}</span>
+              <span className="mbtn-arrow"><Icon name="arrow" size={16} /></span>
+            </>
+          )}
+        </span>
+      </button>
+
+      <div className="mform-bottom">
+        <span>{t.noAccount}</span>{' '}
+        <button type="button" className="mlink-cyan" onClick={onSwitch}>{t.register}</button>
+      </div>
+    </form>
+  );
+};
+
+const RegisterForm = ({ onSwitch, t }) => {
+  const [data, setData] = React.useState({ klub: '', ime: '', prezime: '', email: '', password: '' });
+  const [loading, setLoading] = React.useState(false);
+  const set = (k) => (e) => setData(d => ({ ...d, [k]: e.target.value }));
+
+  const submit = (e) => {
+    e?.preventDefault?.();
+    setLoading(true);
+    setTimeout(() => setLoading(false), 1400);
+  };
+
+  return (
+    <form className="mform" onSubmit={submit}>
+      <SelectField placeholder={t.klub} icon="club" name="klub-reg" value={data.klub} onChange={set('klub')} options={KLUBOVI} required />
+      <TextField placeholder={t.ime} icon="user" name="ime" value={data.ime} onChange={set('ime')} autoComplete="given-name" required />
+      <TextField placeholder={t.prezime} icon="id" name="prezime" value={data.prezime} onChange={set('prezime')} autoComplete="family-name" required />
+      <TextField placeholder={t.emailReg} icon="mail" name="email-reg" type="email" value={data.email} onChange={set('email')} autoComplete="email" required />
+      <TextField placeholder={t.password} icon="lock" name="pass-reg" type="password" value={data.password} onChange={set('password')} autoComplete="new-password" required />
+
+      <button type="submit" className={`mbtn ${loading ? 'is-loading' : ''}`} disabled={loading}>
+        <span className="mbtn-shine" />
+        <span className="mbtn-content">
+          {loading ? <span className="mbtn-spinner" /> : (
+            <>
+              <span>{t.registerBtn}</span>
+              <span className="mbtn-arrow"><Icon name="arrow" size={16} /></span>
+            </>
+          )}
+        </span>
+      </button>
+
+      <div className="mform-bottom">
+        <span>{t.haveAccount}</span>{' '}
+        <button type="button" className="mlink-cyan" onClick={onSwitch}>{t.login}</button>
+      </div>
+    </form>
+  );
+};
+
+const FormPanel = ({ mode, setMode, lang }) => {
+  const t = T[lang] || T.sr;
+  return (
+    <div className="form-panel-outer">
+      <div className="form-panel">
+        <h1 className="mform-title">{mode === 'login' ? t.loginTitle : t.registerTitle}</h1>
+        <p className="mform-sub">{mode === 'login' ? (t.loginSub || 'Pristup vašem nalogu') : (t.registerSub || 'Otvorite novi nalog')}</p>
+        <div className="form-body">
+          {mode === 'login'
+            ? <LoginForm onSwitch={() => setMode('register')} t={t} />
+            : <RegisterForm onSwitch={() => setMode('login')} t={t} />}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ─── app.jsx ─────────────────────────────────────────────────────────────────
+
+const TWEAK_DEFAULTS = {
+  "primaryGlow": "#00D2FF",
+  "copperAccent": "#C79F64",
+  "brandBg": "#01060D",
+  "formBg": "#FFFFFF"
+};
+
+const LANGS = [
+  { code: 'sr', label: 'Srpski', flag: '🇷🇸' },
+  { code: 'en', label: 'English', flag: '🇬🇧' },
+  { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
+];
+
+const LanguageSelector = ({ value, onChange }) => (
+  <div className="lang-selector">
+    {LANGS.map(l => (
+      <button
+        key={l.code}
+        type="button"
+        className={`lang-flag ${value === l.code ? 'active' : ''}`}
+        onClick={() => onChange(l.code)}
+        title={l.label}
+        aria-label={l.label}
+      >
+        <span className="lang-flag-emoji">{l.flag}</span>
+      </button>
+    ))}
+  </div>
+);
+
+const App = () => {
+  const [mode, setMode] = React.useState('login');
+  const [lang, setLang] = React.useState('sr');
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  React.useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty('--cyan', tweaks.primaryGlow);
+    root.style.setProperty('--copper', tweaks.copperAccent);
+    root.style.setProperty('--brand-bg', tweaks.brandBg);
+  }, [tweaks.primaryGlow, tweaks.copperAccent, tweaks.brandBg]);
+
+  return (
+    <div className="auth-page minimal">
+      <main className="auth-main">
+        <section className="auth-left">
+          <BrandingPanel />
+        </section>
+        <section className="auth-right">
+          <FormPanel mode={mode} setMode={setMode} lang={lang} />
+          <div className="lang-bar">
+            <LanguageSelector value={lang} onChange={setLang} />
+          </div>
+        </section>
+      </main>
+
+      <TweaksPanel title="Tweaks" subtitle="Aero Ring Tech">
+        <TweakSection title="Boje">
+          <TweakColor label="Primarni sjaj" value={tweaks.primaryGlow} onChange={v => setTweak('primaryGlow', v)} />
+          <TweakColor label="Bakarni akcent" value={tweaks.copperAccent} onChange={v => setTweak('copperAccent', v)} />
+          <TweakColor label="Pozadina brenda" value={tweaks.brandBg} onChange={v => setTweak('brandBg', v)} />
+        </TweakSection>
+        <TweakSection title="Mod">
+          <TweakButton onClick={() => setMode(m => m === 'login' ? 'register' : 'login')}>
+            {mode === 'login' ? 'Prikaži registraciju →' : 'Prikaži prijavu →'}
+          </TweakButton>
+        </TweakSection>
+      </TweaksPanel>
+    </div>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+</script>
+
+</body>
+</html>
