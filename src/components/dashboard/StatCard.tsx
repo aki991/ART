@@ -36,23 +36,25 @@ export function StatCard({ label, value, icon: Icon, accentColor, trend }: StatC
     : "text-gray-500";
 
   return (
-    <div className="card-redesign p-6">
-      <div className={cn("w-12 h-12 rounded-full flex items-center justify-center", iconBg)}>
-        <Icon size={22} aria-hidden="true" />
-      </div>
-      <p className={cn(
-        "text-3xl font-bold font-rajdhani mt-4",
-        accentColor === "cyan" ? "text-gradient-cyan" : "text-gray-900"
-      )}>
-        {displayValue}
-      </p>
-      <p className="text-sm text-gray-500 mt-1">{label}</p>
-      {trend && (
-        <p className={cn("flex items-center gap-1 text-xs mt-2", trendStyle)}>
-          <TrendIcon size={12} aria-hidden="true" />
-          {trend.value}
+    <div className="card-redesign p-4">
+      <div className="flex items-center gap-3">
+        <div className={cn("w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0", iconBg)}>
+          <Icon size={20} aria-hidden="true" />
+        </div>
+        <p className={cn(
+          "text-2xl font-bold font-rajdhani",
+          accentColor === "cyan" ? "text-gradient-cyan" : "text-gray-900"
+        )}>
+          {displayValue}
         </p>
-      )}
+        <p className="text-sm text-gray-500 truncate">{label}</p>
+        {trend && (
+          <p className={cn("flex items-center gap-1 text-xs ml-auto flex-shrink-0", trendStyle)}>
+            <TrendIcon size={12} aria-hidden="true" />
+            {trend.value}
+          </p>
+        )}
+      </div>
     </div>
   );
 }

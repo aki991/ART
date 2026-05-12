@@ -1,15 +1,10 @@
 import type { Metadata } from "next";
-import { PageContainer } from "@/components/app-shell/PageContainer";
-import { ComingSoon } from "@/components/app-shell/ComingSoon";
+import { RacesClient } from "@/components/races/RacesClient";
 
 export const metadata: Metadata = {
-  title: "Trke — Aero Ring Tech",
+  title: "Rezultati — Aero Ring Tech",
 };
 
 export default function RacesPage() {
-  return (
-    <PageContainer>
-      <ComingSoon feature="Trke" />
-    </PageContainer>
-  );
+  return <RacesClient />;
 }

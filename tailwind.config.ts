@@ -13,6 +13,10 @@ const config: Config = {
         "cyan-dark": "#0099C8",
         "cyan-bright": "#2EE0FF",
         "copper-brand": "#C79F64",
+        "card-dark": "#162B43",
+        "card-dark-hover": "#1B324E",
+        "modal-dark": "#0F2238",
+        "app-surface": "#092D41",
         sidebar: {
           DEFAULT: "#0A1B2C",
           deep: "#061320",

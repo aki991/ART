@@ -1,15 +1,10 @@
 import type { Metadata } from "next";
-import { PageContainer } from "@/components/app-shell/PageContainer";
-import { ConnectionHub } from "@/components/scanning/ConnectionHub";
+import { ScanningClient } from "@/components/scanning/ScanningClient";
 
 export const metadata: Metadata = {
   title: "Povezivanje uredjaja — Aero Ring Tech",
 };
 
 export default function ScanningPage() {
-  return (
-    <PageContainer>
-      <ConnectionHub />
-    </PageContainer>
-  );
+  return <ScanningClient />;
 }

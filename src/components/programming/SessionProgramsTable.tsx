@@ -23,10 +23,10 @@ export function SessionProgramsTable() {
     <div className="card-redesign">
       <div className="px-6 py-4 border-b border-cyan-brand/10 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <h2 className="text-base font-semibold font-rajdhani text-gray-900">
+          <h2 className="text-lg font-semibold font-rajdhani text-gray-900">
             Programirani prstenovi (sesija)
           </h2>
-          <span className="bg-gray-100 text-gray-600 rounded-full px-2 py-0.5 text-xs">
+          <span className="bg-gray-100 text-gray-600 rounded-full px-2 py-0.5 text-sm">
             {sessionPrograms.length}
           </span>
         </div>
@@ -35,30 +35,30 @@ export function SessionProgramsTable() {
           disabled={sessionPrograms.length === 0}
           onClick={handleClearSession}
           aria-label="Obriši sve programirane prstenove iz sesije"
-          className="text-sm text-gray-600 hover:text-red-600 inline-flex items-center gap-1 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="text-base text-gray-600 hover:text-red-600 inline-flex items-center gap-1 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          <Trash2 className="w-3 h-3" aria-hidden="true" />
+          <Trash2 className="w-4 h-4" aria-hidden="true" />
           Obriši sesiju
         </button>
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-base">
           <thead>
             <tr className="table-header-gradient">
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
                 ID Prstena
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
                 Golub
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
                 Boja goluba
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
                 Vreme
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
                 Akcije
               </th>
             </tr>
@@ -68,7 +68,7 @@ export function SessionProgramsTable() {
               <tr>
                 <td
                   colSpan={5}
-                  className="px-6 py-12 text-center text-sm text-gray-500"
+                  className="px-6 py-12 text-center text-base text-gray-500"
                 >
                   Još uvek niste programirali nijedan prsten u ovoj sesiji.
                 </td>
@@ -77,15 +77,21 @@ export function SessionProgramsTable() {
               sessionPrograms.map((ring: ProgrammedRing) => (
                 <tr key={ring.id} className="table-row-alt table-row-hover border-t border-gray-100">
                   <td className="px-6 py-3">
-                    <span className="bg-cyan-brand/10 text-cyan-brand font-mono font-semibold px-2 py-0.5 rounded text-sm">
-                      {ring.ringId}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="w-4 h-4 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: ring.ringColor }}
+                      />
+                      <span className="bg-cyan-brand/10 text-cyan-brand font-mono font-semibold px-2 py-0.5 rounded text-base">
+                        {ring.ringId}
+                      </span>
+                    </div>
                   </td>
                   <td className="px-6 py-3">
                     {ring.pigeonIdentifier === "Drugi golub" ? (
-                      <span className="text-gray-400 italic text-sm">Drugi golub</span>
+                      <span className="text-gray-400 italic text-base">Drugi golub</span>
                     ) : (
-                      <span className="font-mono text-xs text-gray-700">
+                      <span className="font-mono text-sm text-gray-700">
                         {ring.pigeonIdentifier}
                       </span>
                     )}

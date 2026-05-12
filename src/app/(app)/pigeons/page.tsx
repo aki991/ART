@@ -5,7 +5,7 @@ export const metadata = { title: "Moji golubovi — Aero Ring Tech" };
 
 export default function PigeonsPage() {
   return (
-    <PageContainer>
+    <PageContainer fluid>
       <PigeonsListView />
     </PageContainer>
   );

@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 export interface Pigeon {
   id: string;
   pigeonColor: string;
+  clubName: string;
   clubNumber: string;
   breederNumber: string;
   pigeonNumber: string;
@@ -21,6 +22,11 @@ interface PigeonsState {
   removePigeon: (id: string) => void;
   getPigeonById: (id: string) => Pigeon | undefined;
   formatIdentifier: (pigeon: Pigeon) => string;
+}
+
+export function formatIdentifier(pigeon: Pigeon): string {
+  const yearShort = String(pigeon.year).slice(-2).padStart(2, "0");
+  return `${pigeon.clubName}${pigeon.clubNumber}·${pigeon.breederNumber}·${pigeon.pigeonNumber}·${yearShort}`;
 }
 
 export const usePigeonsStore = create<PigeonsState>()(
@@ -56,17 +62,14 @@ export const usePigeonsStore = create<PigeonsState>()(
 
       getPigeonById: (id) => get().pigeons.find((p) => p.id === id),
 
-      formatIdentifier: (pigeon) => {
-        const yearShort = String(pigeon.year).slice(-2).padStart(2, "0");
-        return `${pigeon.clubNumber}-${pigeon.breederNumber}-${pigeon.pigeonNumber}-${yearShort}`;
-      },
+      formatIdentifier: (pigeon) => formatIdentifier(pigeon),
     }),
     {
       name: "art-pigeons",
       partialize: (state) => ({ pigeons: state.pigeons }),
-      version: 4,
+      version: 7,
       migrate: (persistedState: unknown, version: number) => {
-        if (version < 4) {
+        if (version < 7) {
           return { pigeons: [] };
         }
         return persistedState as { pigeons: Pigeon[] };

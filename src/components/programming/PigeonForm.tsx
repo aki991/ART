@@ -1,46 +1,75 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Loader2, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { useProgrammerStore } from "@/lib/store/programmer-store";
 import { usePigeonsStore } from "@/lib/store/pigeons-store";
+import { useEmulatorStore } from "@/lib/store/emulator-store";
 
 export function PigeonForm() {
   const [selectedPigeonId, setSelectedPigeonId] = useState("");
   const [pigeonColor, setPigeonColor] = useState("");
   const [federationBandNumber, setFederationBandNumber] = useState("");
 
-  const currentScannedRing = useProgrammerStore((s) => s.currentScannedRing);
-  const isScanning = useProgrammerStore((s) => s.isScanning);
   const isProgramming = useProgrammerStore((s) => s.isProgramming);
   const programRing = useProgrammerStore((s) => s.programRing);
+  const selectedRingId = useProgrammerStore((s) => s.selectedRingId);
+  const clearSelectedRing = useProgrammerStore((s) => s.clearSelectedRing);
 
   const pigeons = usePigeonsStore((s) => s.pigeons);
   const formatIdentifier = usePigeonsStore((s) => s.formatIdentifier);
   const getPigeonById = usePigeonsStore((s) => s.getPigeonById);
+  const sessionPrograms = useProgrammerStore((s) => s.sessionPrograms);
+
+  const programmedIdentifiers = useMemo(
+    () => new Set(sessionPrograms.map((p) => p.pigeonIdentifier)),
+    [sessionPrograms]
+  );
+
+  const availablePigeons = useMemo(
+    () => pigeons.filter((p) => !programmedIdentifiers.has(formatIdentifier(p))),
+    [pigeons, programmedIdentifiers, formatIdentifier]
+  );
+
+  const emulatorSlots = useEmulatorStore((s) => s.slots);
+  const markProgrammed = useEmulatorStore((s) => s.markProgrammed);
+  const insertedSlots = useMemo(
+    () => emulatorSlots.filter((s) => s.status === "inserted"),
+    [emulatorSlots]
+  );
+
+  // Clear selection if the selected slot was ejected from the emulator
+  useEffect(() => {
+    if (!selectedRingId) return;
+    const stillPresent = insertedSlots.some((s) => s.ringId === selectedRingId);
+    if (!stillPresent) clearSelectedRing();
+  }, [insertedSlots, selectedRingId, clearSelectedRing]);
 
   useEffect(() => {
     setPigeonColor("");
     setFederationBandNumber("");
   }, [selectedPigeonId]);
 
-  const showManualFields = selectedPigeonId === "" || selectedPigeonId === "manual";
-  const isUuid = selectedPigeonId !== "" && selectedPigeonId !== "manual";
+  const showManualFields = selectedPigeonId === "";
+  const isUuid = selectedPigeonId !== "";
 
   const isDisabled =
-    !currentScannedRing ||
+    !selectedRingId ||
     isProgramming ||
-    isScanning ||
-    selectedPigeonId === "" ||
-    (selectedPigeonId === "manual" && (!pigeonColor.trim() || !federationBandNumber.trim())) ||
+    (selectedPigeonId === "" && (!pigeonColor.trim() || !federationBandNumber.trim())) ||
     (isUuid && !getPigeonById(selectedPigeonId));
 
   async function handleSubmit() {
+    if (!selectedRingId) {
+      toast.error("Izaberi prsten klikom na red u tabeli detektovanih prstenova");
+      return;
+    }
+
     let pigeonIdentifier: string;
     let finalPigeonColor: string;
 
-    if (selectedPigeonId === "manual") {
+    if (selectedPigeonId === "") {
       pigeonIdentifier = "Drugi golub";
       finalPigeonColor = pigeonColor.trim();
     } else {
@@ -53,12 +82,16 @@ export function PigeonForm() {
       finalPigeonColor = pigeon.pigeonColor;
     }
 
-    const ringId = currentScannedRing;
-    const result = await programRing({ pigeonIdentifier, pigeonColor: finalPigeonColor });
+    const result = await programRing({
+      ringId: selectedRingId,
+      pigeonIdentifier,
+      pigeonColor: finalPigeonColor,
+    });
 
     if (result.success) {
+      markProgrammed(selectedRingId);
       toast.success("Prsten programiran", {
-        description: `Ring ID ${ringId ?? ""} je uspešno povezan sa golubom.`,
+        description: `Ring ID ${selectedRingId} je uspešno povezan sa golubom.`,
       });
       setSelectedPigeonId("");
       setPigeonColor("");
@@ -71,21 +104,20 @@ export function PigeonForm() {
   }
 
   const inputClass =
-    "w-full px-3 py-2.5 border border-gray-300 rounded-md text-sm focus:border-cyan-brand focus:ring-2 focus:ring-cyan-brand/20 focus:outline-none";
+    "w-full px-3 py-2.5 border border-gray-300 rounded-md text-lg focus:border-cyan-brand focus:ring-2 focus:ring-cyan-brand/20 focus:outline-none";
 
   return (
     <div className="card-redesign p-6">
-      <p className="text-xs uppercase tracking-widest text-gray-500 font-medium mb-4">
+      <p className="text-sm uppercase tracking-widest text-gray-500 font-medium mb-4">
         Podaci goluba
       </p>
 
-      {/* Dropdown za izbor goluba */}
       <div className="mb-4">
         <label
           htmlFor="pigeon-select"
-          className="block text-sm font-medium text-gray-700 mb-1.5"
+          className="block text-base font-medium text-gray-700 mb-1.5"
         >
-          Golub <span className="text-red-500">*</span>
+          Golub
         </label>
         <select
           id="pigeon-select"
@@ -94,33 +126,38 @@ export function PigeonForm() {
           className={inputClass}
         >
           <option value="">Izaberi goluba...</option>
-          {pigeons.map((p) => (
+          {availablePigeons.map((p) => (
             <option key={p.id} value={p.id}>
               {formatIdentifier(p)} — {p.pigeonColor}
             </option>
           ))}
-          <option value="manual">Drugi golub (slobodan unos)</option>
         </select>
-        {pigeons.length === 0 && (
-          <p className="text-xs text-amber-600 mt-1.5">
-            Nema dodanih golubova. Dodaj golubove na stranici &apos;Golubovi&apos; ili izaberi
-            &apos;Drugi golub&apos; za jednokratan unos.
+        {pigeons.length === 0 ? (
+          <p className="text-sm text-gray-500 mt-1.5">
+            Nema dodatih golubova. Možeš popuniti polja ručno ili dodati goluba na stranici
+            &apos;Golubovi&apos;.
           </p>
-        )}
-        {isUuid && (
-          <p className="text-xs text-gray-500 mt-1.5">
+        ) : availablePigeons.length === 0 ? (
+          <p className="text-sm text-gray-500 mt-1.5">
+            Svi golubovi su već programirani u ovoj sesiji.
+          </p>
+        ) : isUuid ? (
+          <p className="text-sm text-gray-500 mt-1.5">
             Boja goluba i broj savezne alke se automatski preuzimaju iz odabranog goluba.
+          </p>
+        ) : (
+          <p className="text-sm text-gray-500 mt-1.5">
+            Ako golub nije u listi, popuni boju i broj alke ručno.
           </p>
         )}
       </div>
 
-      {/* Boja goluba i Broj savezne alke — vidljivi samo za manual unos */}
       {showManualFields && (
         <>
           <div className="mb-4">
             <label
               htmlFor="pigeon-color"
-              className="block text-sm font-medium text-gray-700 mb-1.5"
+              className="block text-base font-medium text-gray-700 mb-1.5"
             >
               Boja goluba <span className="text-red-500">*</span>
             </label>
@@ -137,7 +174,7 @@ export function PigeonForm() {
           <div className="mb-6">
             <label
               htmlFor="federation-band-number"
-              className="block text-sm font-medium text-gray-700 mb-1.5"
+              className="block text-base font-medium text-gray-700 mb-1.5"
             >
               Broj savezne alke <span className="text-red-500">*</span>
             </label>
@@ -159,16 +196,16 @@ export function PigeonForm() {
         disabled={isDisabled}
         onClick={() => void handleSubmit()}
         aria-label="Programiraj prsten sa unetim podacima"
-        className="btn-shine-redesign w-full px-4 py-3 rounded-md inline-flex items-center justify-center gap-2 font-medium text-sm transition-colors bg-cyan-brand hover:bg-cyan-dark text-white disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
+        className="btn-shine-redesign w-full px-4 py-3 rounded-md inline-flex items-center justify-center gap-2 font-medium text-base transition-colors bg-cyan-brand hover:bg-cyan-dark text-white disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
       >
         {isProgramming ? (
           <>
-            <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
+            <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />
             Programiranje...
           </>
         ) : (
           <>
-            <Zap className="w-4 h-4" aria-hidden="true" />
+            <Zap className="w-5 h-5" aria-hidden="true" />
             Programiraj prsten
           </>
         )}

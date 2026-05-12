@@ -5,7 +5,7 @@ export const metadata = { title: "Programiranje prstenova — Aero Ring Tech" };
 
 export default function ProgrammingPage() {
   return (
-    <PageContainer>
+    <PageContainer fluid>
       <RingProgrammerHub />
     </PageContainer>
   );

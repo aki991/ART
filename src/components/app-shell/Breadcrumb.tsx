@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 
 const ROUTE_LABELS: Record<string, string> = {
-  dashboard: "Dashboard",
+  dashboard: "Početna",
   pigeons: "Golubovi",
-  races: "Trke",
+  races: "Rezultati",
   scanning: "Povezivanje uređaja",
-  programming: "Programiranje",
+  programming: "Programiranje prstenova",
   settings: "Postavke",
 };
 
@@ -50,12 +50,12 @@ export function Breadcrumb({ segments }: BreadcrumbProps) {
           return (
             <li key={i} className="flex items-center gap-1.5">
               {i > 0 && (
-                <ChevronRight size={14} className="text-gray-400 flex-shrink-0" />
+                <ChevronRight size={14} className="text-white/30 flex-shrink-0" />
               )}
               {seg.href ? (
                 <Link
                   href={seg.href}
-                  className="text-sm text-gray-500 hover:text-gray-800 transition-colors"
+                  className="text-sm text-white/50 hover:text-white transition-colors"
                 >
                   {seg.label}
                 </Link>
@@ -63,8 +63,8 @@ export function Breadcrumb({ segments }: BreadcrumbProps) {
                 <span
                   className={
                     isLast && isOnlySegment
-                      ? "text-xl font-semibold text-gray-900 font-rajdhani"
-                      : "text-sm font-semibold text-gray-900 font-rajdhani"
+                      ? "text-3xl font-semibold text-white font-rajdhani"
+                      : "text-sm font-semibold text-white font-rajdhani"
                   }
                 >
                   {seg.label}

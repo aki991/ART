@@ -5,28 +5,29 @@ import {
   Bird,
   Trophy,
   Radio,
-  Zap,
+  Target,
   Settings,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSidebarStore } from "@/lib/store/sidebar-store";
 import { SidebarLogo } from "./SidebarLogo";
 import { SidebarNavLink } from "./SidebarNavLink";
-import { SidebarToggle } from "./SidebarToggle";
 import { SidebarFooter } from "./SidebarFooter";
 import type { NavItem } from "./SidebarNavGroup";
 
 const MAIN_NAV: NavItem[] = [
-  { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/scanning", icon: Radio, label: "Povezivanje uređaja" },
-  { href: "/programming", icon: Zap, label: "Programiranje prstenova" },
+  { href: "/dashboard", icon: LayoutDashboard, label: "Početna" },
+  { href: "/scanning", icon: Radio, label: "Trka uživo" },
+  { href: "/programming", icon: Target, label: "Programiranje prstenova" },
   { href: "/pigeons", icon: Bird, label: "Golubovi" },
-  { href: "/races", icon: Trophy, label: "Trke" },
+  { href: "/races", icon: Trophy, label: "Rezultati" },
 ];
 
-const BOTTOM_NAV: NavItem[] = [
-  { href: "/settings", icon: Settings, label: "Postavke" },
-];
+const SETTINGS_NAV: NavItem = {
+  href: "/settings",
+  icon: Settings,
+  label: "Postavke",
+};
 
 export function Sidebar() {
   const { expanded, toggle } = useSidebarStore();
@@ -38,19 +39,21 @@ export function Sidebar() {
         expanded ? "w-[340px]" : "w-[72px]"
       )}
     >
-      <SidebarLogo expanded={expanded} />
+      <SidebarLogo expanded={expanded} toggle={toggle} />
 
       <nav
-        className="flex-1 overflow-y-auto overflow-x-hidden py-3 flex flex-col"
+        className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden py-3"
         aria-label="Glavna navigacija"
       >
-        <ul role="list" className="flex-1">
+        <ul role="list">
           {MAIN_NAV.map((item) => (
             <li key={item.href}>
               <SidebarNavLink {...item} />
             </li>
           ))}
         </ul>
+
+        <div className="flex-1" />
 
         <div
           role="separator"
@@ -59,15 +62,12 @@ export function Sidebar() {
         />
 
         <ul role="list">
-          {BOTTOM_NAV.map((item) => (
-            <li key={item.href}>
-              <SidebarNavLink {...item} />
-            </li>
-          ))}
+          <li>
+            <SidebarNavLink {...SETTINGS_NAV} />
+          </li>
         </ul>
       </nav>
 
-      <SidebarToggle expanded={expanded} toggle={toggle} />
       <SidebarFooter expanded={expanded} />
     </aside>
   );

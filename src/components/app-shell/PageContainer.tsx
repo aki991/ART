@@ -1,10 +1,13 @@
+import { cn } from "@/lib/utils";
+
 interface PageContainerProps {
   children: React.ReactNode;
+  fluid?: boolean;
 }
 
-export function PageContainer({ children }: PageContainerProps) {
+export function PageContainer({ children, fluid = false }: PageContainerProps) {
   return (
-    <div className="p-6 max-w-7xl mx-auto w-full">
+    <div className={cn("p-6 w-full", !fluid && "max-w-7xl mx-auto")}>
       {children}
     </div>
   );

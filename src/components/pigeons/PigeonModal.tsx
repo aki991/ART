@@ -12,15 +12,14 @@ interface PigeonModalProps {
   editingPigeon?: Pigeon | null;
 }
 
-const CURRENT_YEAR = new Date().getFullYear();
-
 export function PigeonModal({ isOpen, onClose, editingPigeon }: PigeonModalProps) {
   const [mounted, setMounted] = useState(false);
   const [pigeonColor, setPigeonColor] = useState("");
+  const [clubName, setClubName] = useState("");
   const [clubNumber, setClubNumber] = useState("");
   const [breederNumber, setBreederNumber] = useState("");
   const [pigeonNumber, setPigeonNumber] = useState("");
-  const [year, setYear] = useState(String(CURRENT_YEAR));
+  const [year, setYear] = useState("");
 
   const colorInputRef = useRef<HTMLInputElement>(null);
   const addPigeon = usePigeonsStore((s) => s.addPigeon);
@@ -39,16 +38,18 @@ export function PigeonModal({ isOpen, onClose, editingPigeon }: PigeonModalProps
     if (!isOpen) return;
     if (editingPigeon) {
       setPigeonColor(editingPigeon.pigeonColor);
+      setClubName(editingPigeon.clubName);
       setClubNumber(editingPigeon.clubNumber);
       setBreederNumber(editingPigeon.breederNumber);
       setPigeonNumber(editingPigeon.pigeonNumber);
-      setYear(String(editingPigeon.year));
+      setYear(String(editingPigeon.year).slice(-2));
     } else {
       setPigeonColor("");
+      setClubName("");
       setClubNumber("");
       setBreederNumber("");
       setPigeonNumber("");
-      setYear(String(CURRENT_YEAR));
+      setYear("");
     }
   }, [isOpen, editingPigeon]);
 
@@ -71,26 +72,22 @@ export function PigeonModal({ isOpen, onClose, editingPigeon }: PigeonModalProps
   const yearNum = parseInt(year, 10);
   const isValid =
     pigeonColor.trim() !== "" &&
+    clubName.trim() !== "" &&
     clubNumber.trim() !== "" &&
-    /^\d+$/.test(clubNumber.trim()) &&
     breederNumber.trim() !== "" &&
-    /^\d+$/.test(breederNumber.trim()) &&
     pigeonNumber.trim() !== "" &&
-    /^\d+$/.test(pigeonNumber.trim()) &&
-    !isNaN(yearNum) &&
-    yearNum >= 1900 &&
-    yearNum <= CURRENT_YEAR + 1;
+    !isNaN(yearNum);
 
-  const yearShort = year.slice(-2).padStart(2, "0");
-  const preview =
-    clubNumber.trim() && breederNumber.trim() && pigeonNumber.trim() && year && !isNaN(parseInt(year))
-      ? `${clubNumber.trim()}-${breederNumber.trim()}-${pigeonNumber.trim()}-${yearShort}`
+  const previewId =
+    clubName.trim() && clubNumber.trim() && breederNumber.trim() && pigeonNumber.trim() && !isNaN(yearNum)
+      ? `${clubName.trim()}${clubNumber.trim()}·${breederNumber.trim()}·${pigeonNumber.trim()}·${year.trim()}`
       : "—";
 
   function handleSubmit() {
     if (!isValid) return;
     const input: PigeonInput = {
       pigeonColor: pigeonColor.trim(),
+      clubName: clubName.trim().toUpperCase(),
       clubNumber: clubNumber.trim(),
       breederNumber: breederNumber.trim(),
       pigeonNumber: pigeonNumber.trim(),
@@ -107,7 +104,8 @@ export function PigeonModal({ isOpen, onClose, editingPigeon }: PigeonModalProps
   }
 
   const inputClass =
-    "w-full px-3 py-2.5 border border-gray-300 rounded-md text-sm focus:border-cyan-brand focus:ring-2 focus:ring-cyan-brand/20 focus:outline-none";
+    "w-full px-5 py-3 border border-gray-300 rounded-md text-lg focus:border-cyan-brand focus:ring-2 focus:ring-cyan-brand/20 focus:outline-none";
+  const labelClass = "block text-base font-medium text-gray-700 mb-1.5";
 
   return (
     <div
@@ -122,12 +120,12 @@ export function PigeonModal({ isOpen, onClose, editingPigeon }: PigeonModalProps
       />
 
       <div
-        className={`relative bg-white rounded-xl shadow-2xl border border-cyan-brand/15 max-w-md w-full mx-4 transition-all duration-200 ${mounted ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
+        className={`relative bg-white rounded-xl shadow-2xl border border-cyan-brand/15 max-w-2xl w-full mx-4 transition-all duration-200 ${mounted ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
       >
-        <div className="px-6 py-4 border-b border-cyan-brand/10 flex items-center justify-between">
+        <div className="px-8 py-5 border-b border-cyan-brand/10 flex items-center justify-between">
           <h2
             id="pigeon-modal-title"
-            className="text-lg font-semibold font-rajdhani text-gray-900"
+            className="text-2xl font-semibold font-rajdhani text-gray-900"
           >
             {editingPigeon ? "Izmeni goluba" : "Dodaj goluba"}
           </h2>
@@ -137,17 +135,14 @@ export function PigeonModal({ isOpen, onClose, editingPigeon }: PigeonModalProps
             aria-label="Zatvori"
             className="text-gray-400 hover:text-gray-600 transition-colors"
           >
-            <X className="w-5 h-5" aria-hidden="true" />
+            <X className="w-6 h-6" aria-hidden="true" />
           </button>
         </div>
 
-        <div className="p-6 space-y-4">
+        <div className="p-8 space-y-5">
           {/* Boja goluba */}
           <div>
-            <label
-              htmlFor="modal-pigeon-color"
-              className="block text-sm font-medium text-gray-700 mb-1.5"
-            >
+            <label htmlFor="modal-pigeon-color" className={labelClass}>
               Boja goluba <span className="text-red-500">*</span>
             </label>
             <input
@@ -156,102 +151,105 @@ export function PigeonModal({ isOpen, onClose, editingPigeon }: PigeonModalProps
               type="text"
               value={pigeonColor}
               onChange={(e) => setPigeonColor(e.target.value)}
-              placeholder="npr. Sivi, Beli, Šaren..."
+              placeholder="npr. Arap, Mavijan, Tekir, Darčin"
               maxLength={50}
               className={inputClass}
             />
           </div>
 
-          {/* Grid: Broj kluba, Broj golubara, Broj goluba, Godina */}
-          <div className="grid grid-cols-4 gap-3">
+          {/* Naziv kluba + Br. kluba */}
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label
-                htmlFor="modal-club-number"
-                className="block text-sm font-medium text-gray-700 mb-1.5"
-              >
+              <label htmlFor="modal-club-name" className={labelClass}>
+                Naziv kluba <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="modal-club-name"
+                type="text"
+                value={clubName}
+                onChange={(e) => setClubName(e.target.value.toUpperCase())}
+                placeholder="npr. SRB"
+                maxLength={10}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label htmlFor="modal-club-number" className={labelClass}>
                 Br. kluba <span className="text-red-500">*</span>
               </label>
               <input
                 id="modal-club-number"
                 type="text"
                 inputMode="numeric"
-                pattern="[0-9]+"
                 value={clubNumber}
                 onChange={(e) => setClubNumber(e.target.value)}
-                placeholder="12"
+                placeholder="npr. 444"
                 maxLength={4}
                 className={inputClass}
               />
             </div>
+          </div>
+
+          {/* Br. golubara + Br. goluba + Godina */}
+          <div className="grid grid-cols-3 gap-4">
             <div>
-              <label
-                htmlFor="modal-breeder-number"
-                className="block text-sm font-medium text-gray-700 mb-1.5"
-              >
+              <label htmlFor="modal-breeder-number" className={labelClass}>
                 Br. golubara <span className="text-red-500">*</span>
               </label>
               <input
                 id="modal-breeder-number"
                 type="text"
                 inputMode="numeric"
-                pattern="[0-9]+"
                 value={breederNumber}
                 onChange={(e) => setBreederNumber(e.target.value)}
-                placeholder="12345"
+                placeholder="npr. 11"
                 maxLength={10}
                 className={inputClass}
               />
             </div>
             <div>
-              <label
-                htmlFor="modal-pigeon-number"
-                className="block text-sm font-medium text-gray-700 mb-1.5"
-              >
+              <label htmlFor="modal-pigeon-number" className={labelClass}>
                 Br. goluba <span className="text-red-500">*</span>
               </label>
               <input
                 id="modal-pigeon-number"
                 type="text"
                 inputMode="numeric"
-                pattern="[0-9]+"
                 value={pigeonNumber}
                 onChange={(e) => setPigeonNumber(e.target.value)}
-                placeholder="67"
+                placeholder="npr. 23"
                 maxLength={10}
                 className={inputClass}
               />
             </div>
             <div>
-              <label
-                htmlFor="modal-year"
-                className="block text-sm font-medium text-gray-700 mb-1.5"
-              >
+              <label htmlFor="modal-year" className={labelClass}>
                 Godina <span className="text-red-500">*</span>
               </label>
               <input
                 id="modal-year"
-                type="number"
+                type="text"
+                inputMode="numeric"
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
-                min={1900}
-                max={CURRENT_YEAR + 1}
-                placeholder="2026"
+                placeholder="npr. 26"
+                maxLength={2}
                 className={inputClass}
               />
             </div>
           </div>
 
-          <p className="text-xs text-gray-500 mt-2">
+          <p className="text-base text-gray-500">
             Identifikator goluba će biti:{" "}
-            <span className="font-mono font-medium text-gray-700">{preview}</span>
+            <span className="font-mono font-semibold text-gray-800">{previewId}</span>
           </p>
         </div>
 
-        <div className="px-6 py-4 border-t border-cyan-brand/10 flex justify-end gap-3">
+        <div className="px-8 py-5 border-t border-cyan-brand/10 flex justify-end gap-3">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2.5 rounded-md text-sm font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+            className="px-5 py-3 rounded-md text-base font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
           >
             Otkaži
           </button>
@@ -259,7 +257,7 @@ export function PigeonModal({ isOpen, onClose, editingPigeon }: PigeonModalProps
             type="button"
             disabled={!isValid}
             onClick={handleSubmit}
-            className="btn-shine-redesign px-4 py-2.5 rounded-md text-sm font-medium bg-cyan-brand text-white hover:bg-cyan-dark transition-colors disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
+            className="btn-shine-redesign px-5 py-3 rounded-md text-base font-medium bg-cyan-brand text-white hover:bg-cyan-dark transition-colors disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
           >
             Sačuvaj
           </button>

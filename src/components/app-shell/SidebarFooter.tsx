@@ -26,7 +26,7 @@ export function SidebarFooter({ expanded }: SidebarFooterProps) {
   );
 
   return (
-    <div className="border-t border-white/10 p-4 flex items-center justify-between gap-3 flex-shrink-0">
+    <div className="border-t border-white/10 px-4 h-[72px] flex items-center justify-between gap-3 flex-shrink-0">
       {/* Levi deo: avatar + ime/uloga */}
       <div className="flex items-center gap-3 min-w-0">
         <div className="relative flex-shrink-0">

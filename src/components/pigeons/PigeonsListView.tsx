@@ -50,9 +50,9 @@ export function PigeonsListView() {
         <button
           type="button"
           onClick={openModal}
-          className="btn-shine-redesign inline-flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-medium bg-cyan-brand text-white hover:bg-cyan-dark transition-colors"
+          className="btn-shine-redesign inline-flex items-center gap-3 px-6 py-3 rounded-md text-lg font-semibold bg-cyan-brand text-white hover:bg-cyan-dark transition-colors"
         >
-          <Plus className="w-4 h-4" aria-hidden="true" />
+          <Plus className="w-6 h-6" aria-hidden="true" />
           Dodaj goluba
         </button>
       </div>
@@ -68,7 +68,7 @@ export function PigeonsListView() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {pigeons.map((pigeon) => (
             <PigeonCard
               key={pigeon.id}
