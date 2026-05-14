@@ -1,85 +1,10 @@
 "use client";
 
 import { useMemo } from "react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ReferenceLine,
-  ResponsiveContainer,
-} from "recharts";
 import { useTelemetryStore } from "@/lib/store/telemetry-store";
 import { useConnectionStore } from "@/lib/store/connection-store";
-import { computeYAxisConfig } from "@/lib/utils/y-axis";
-
-const TICK_STYLE = { fill: "rgba(255,255,255,0.7)", fontSize: 14, fontWeight: 600 };
-const AXIS_LINE = { stroke: "rgba(255,255,255,0.12)" };
-
-function formatTooltipTime(elapsedMinutes: number): string {
-  const totalSeconds = Math.round(elapsedMinutes * 60);
-  if (totalSeconds < 60) return `${totalSeconds}s`;
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${minutes}m ${seconds}s`;
-}
-
-interface TooltipEntry {
-  dataKey: string;
-  name: string;
-  value: number;
-  color: string;
-}
-
-function ChartTooltip({
-  active,
-  payload,
-  label,
-}: {
-  active?: boolean;
-  payload?: TooltipEntry[];
-  label?: number;
-}) {
-  if (!active || !payload || payload.length === 0) return null;
-  return (
-    <div
-      style={{
-        background: "#0F1C2E",
-        border: "1px solid rgba(0,210,255,0.2)",
-        borderRadius: 8,
-        padding: "8px 12px",
-        fontSize: 14,
-      }}
-    >
-      <div style={{ color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>
-        {typeof label === "number" ? formatTooltipTime(label) : ""}
-      </div>
-      {payload.map((entry) => (
-        <div
-          key={entry.dataKey}
-          style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}
-        >
-          <div
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: "50%",
-              backgroundColor: entry.color,
-              flexShrink: 0,
-            }}
-          />
-          <span style={{ color: entry.color }}>{entry.name}</span>
-          <span style={{ color: "rgba(255,255,255,0.8)", fontFamily: "monospace", marginLeft: 2 }}>
-            : {Math.round(entry.value)}m
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-}
+import { computeYAxisConfig, buildXTicks } from "@/lib/utils/y-axis";
+import { RaceAltitudeChart } from "@/components/shared/RaceAltitudeChart";
 
 export function AltitudeChart() {
   const readings = useTelemetryStore((s) => s.readings);
@@ -94,15 +19,15 @@ export function AltitudeChart() {
     const firstTs = baseArr[0].timestamp.getTime();
 
     return baseArr.map((baseReading, i) => {
-      const elapsedMinutes =
-        parseFloat(((baseReading.timestamp.getTime() - firstTs) / 60000).toFixed(4));
-
+      const elapsedMinutes = parseFloat(
+        ((baseReading.timestamp.getTime() - firstTs) / 60000).toFixed(4)
+      );
       const point: Record<string, number> = { elapsedMinutes };
       for (const pigeon of activeRacePigeons) {
         const arr = readings.get(pigeon.id) ?? [];
         const r = arr[i];
         if (r !== undefined) {
-          point[pigeon.name] = parseFloat(r.altitudeMeters.toFixed(1));
+          point[pigeon.id] = parseFloat(r.altitudeMeters.toFixed(1));
         }
       }
       return point;
@@ -119,6 +44,14 @@ export function AltitudeChart() {
     return computeYAxisConfig(maxAlt);
   }, [readings]);
 
+  const xMaxMinutes = useMemo(() => {
+    if (chartData.length === 0) return 1;
+    const maxElapsed = chartData[chartData.length - 1].elapsedMinutes;
+    return Math.max(1, Math.ceil(maxElapsed));
+  }, [chartData]);
+
+  const xTicks = useMemo(() => buildXTicks(xMaxMinutes), [xMaxMinutes]);
+
   const hasData = chartData.length > 0;
 
   return (
@@ -127,7 +60,7 @@ export function AltitudeChart() {
         <h2 className="text-3xl font-bold font-rajdhani text-white">
           Visina kroz vreme
         </h2>
-        <p className="text-lg text-white/70">Poslednjih 2 minuta</p>
+        <p className="text-lg text-white/70">Real-time praćenje visine</p>
       </div>
 
       {!raceActive ? (
@@ -152,71 +85,14 @@ export function AltitudeChart() {
         </div>
       ) : (
         <div className="relative flex-1 min-h-0">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              data={chartData}
-              aria-label="Graf visine golubova u poslednjih 2 minuta"
-              margin={{ top: 4, right: 16, bottom: 4, left: 8 }}
-            >
-              <CartesianGrid stroke="rgba(255,255,255,0.07)" strokeDasharray="3 3" />
-              <XAxis
-                dataKey="elapsedMinutes"
-                type="number"
-                domain={[0, 2]}
-                ticks={[0, 0.5, 1, 1.5, 2]}
-                tickFormatter={(v: number) =>
-                  v === 0 ? "0min" : v === 2 ? "2min" : `${v}min`
-                }
-                tick={TICK_STYLE}
-                axisLine={AXIS_LINE}
-                tickLine={AXIS_LINE}
-              />
-              <YAxis
-                domain={yAxisConfig.domain}
-                ticks={yAxisConfig.ticks}
-                tickFormatter={(v: number) => `${v}m`}
-                tick={TICK_STYLE}
-                axisLine={AXIS_LINE}
-                tickLine={AXIS_LINE}
-                width={52}
-              />
-              <Tooltip content={<ChartTooltip />} />
-              <Legend
-                wrapperStyle={{
-                  fontSize: "14px",
-                  fontWeight: 500,
-                  paddingTop: "12px",
-                  color: "rgba(255,255,255,0.8)",
-                }}
-              />
-              <ReferenceLine
-                y={800}
-                stroke="#FBBF24"
-                strokeWidth={2}
-                strokeDasharray="6 4"
-                label={{
-                  value: "Cilj: 800m",
-                  position: "right",
-                  fill: "#FBBF24",
-                  fontSize: 13,
-                  fontWeight: 600,
-                }}
-              />
-              {activeRacePigeons.map((pigeon) => (
-                <Line
-                  key={pigeon.id}
-                  type="monotone"
-                  dataKey={pigeon.name}
-                  stroke={pigeon.color}
-                  strokeWidth={3}
-                  dot={false}
-                  activeDot={{ r: 7, fill: pigeon.color }}
-                  isAnimationActive={false}
-                  connectNulls={false}
-                />
-              ))}
-            </LineChart>
-          </ResponsiveContainer>
+          <RaceAltitudeChart
+            chartData={chartData}
+            pigeons={activeRacePigeons}
+            xMaxMinutes={xMaxMinutes}
+            xTicks={xTicks}
+            yAxisConfig={yAxisConfig}
+            height="100%"
+          />
         </div>
       )}
     </div>

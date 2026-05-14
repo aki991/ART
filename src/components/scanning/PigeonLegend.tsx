@@ -9,7 +9,7 @@ export function PigeonLegend() {
 
   return (
     <div className="card-redesign p-6">
-      <p className="text-sm uppercase tracking-widest text-gray-500 mb-3">
+      <p className="text-sm uppercase tracking-widest text-white/60 mb-3">
         Golubovi
       </p>
       <ul className="space-y-3">
@@ -27,10 +27,10 @@ export function PigeonLegend() {
                 style={{ backgroundColor: pigeon.color }}
                 aria-hidden="true"
               />
-              <span className="text-base font-medium text-gray-900 flex-1">
+              <span className="text-base font-medium text-white flex-1">
                 {pigeon.name}
               </span>
-              <span className="text-base font-medium font-mono text-gray-600">
+              <span className="text-base font-medium font-mono text-white/70">
                 {altDisplay}
               </span>
             </li>

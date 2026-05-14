@@ -1,0 +1,140 @@
+"use client";
+
+import { useState } from "react";
+import { toast } from "sonner";
+import { Calendar, LogOut, MapPin, ShieldCheck, Users } from "lucide-react";
+import { Avatar } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { useSettingsStore } from "@/lib/store/settings-store";
+import type { Club } from "@/lib/settings/types";
+
+interface ClubInfoCardProps {
+  club: Club;
+}
+
+// Stable reference — a fresh [] in the selector would loop zustand's snapshot check.
+const EMPTY: never[] = [];
+
+function formatDate(iso: string | null): string {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? "—" : d.toLocaleDateString("sr-RS");
+}
+
+function InfoRow({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="flex items-start gap-2.5">
+      <span className="text-cyan-brand/60 mt-0.5 flex-shrink-0">{icon}</span>
+      <div className="min-w-0">
+        <p className="text-xs uppercase tracking-wide text-white/40">{label}</p>
+        <p className="text-base text-white/90">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+export function ClubInfoCard({ club }: ClubInfoCardProps) {
+  const members = useSettingsStore((s) => s.members[club.id] ?? EMPTY);
+  const joinedAt = useSettingsStore((s) => s.membership.joinedAt);
+  const leaveClub = useSettingsStore((s) => s.leaveClub);
+  const [leaveOpen, setLeaveOpen] = useState(false);
+
+  const admin = members.find((m) => m.role === "admin") ?? null;
+
+  function handleLeave() {
+    leaveClub();
+    setLeaveOpen(false);
+    toast.success("Napustili ste klub");
+  }
+
+  return (
+    <div className="space-y-6 max-w-2xl">
+      <div className="card-redesign p-6">
+        <div className="flex items-center gap-4 mb-6">
+          <Avatar src={club.logo} name={club.name} size="lg" />
+          <div className="min-w-0">
+            <h2 className="text-lg font-semibold text-white font-rajdhani truncate">
+              {club.name}
+            </h2>
+            <p className="text-sm text-white/50">Vaš klub</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+          <InfoRow
+            icon={<MapPin className="w-4 h-4" aria-hidden="true" />}
+            label="Lokacija"
+            value={club.city}
+          />
+          <InfoRow
+            icon={<Users className="w-4 h-4" aria-hidden="true" />}
+            label="Broj članova"
+            value={String(members.length)}
+          />
+          <InfoRow
+            icon={<ShieldCheck className="w-4 h-4" aria-hidden="true" />}
+            label="Admin kluba"
+            value={
+              admin
+                ? `${admin.firstName} ${admin.lastName} · @${admin.username}`
+                : "—"
+            }
+          />
+          <InfoRow
+            icon={<Calendar className="w-4 h-4" aria-hidden="true" />}
+            label="Datum pridruživanja"
+            value={formatDate(joinedAt)}
+          />
+        </div>
+
+        {club.description && (
+          <p className="text-sm text-white/60 mt-6 pt-5 border-t border-white/5 leading-relaxed">
+            {club.description}
+          </p>
+        )}
+      </div>
+
+      <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-6 flex items-center justify-between gap-4">
+        <div>
+          <h3 className="text-base font-semibold text-red-400">Napusti klub</h3>
+          <p className="text-sm text-white/50 mt-0.5">
+            Vaše trke i golubovi ostaju, ali nećete više pripadati klubu.
+          </p>
+        </div>
+        <Button
+          variant="danger"
+          onClick={() => setLeaveOpen(true)}
+          className="flex-shrink-0"
+        >
+          <LogOut className="w-4 h-4" aria-hidden="true" />
+          Napusti klub
+        </Button>
+      </div>
+
+      <ConfirmModal
+        isOpen={leaveOpen}
+        onClose={() => setLeaveOpen(false)}
+        onConfirm={handleLeave}
+        title="Napusti klub"
+        message={
+          <>
+            Da li ste sigurni da želite da napustite klub? Vaše trke i golubovi
+            ostaju, ali nećete više pripadati klubu{" "}
+            <span className="text-white font-medium">{club.name}</span>.
+          </>
+        }
+        confirmLabel="Napusti klub"
+        variant="danger"
+      />
+    </div>
+  );
+}

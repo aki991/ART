@@ -2,88 +2,15 @@
 
 import { useMemo, type ReactNode } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Calendar, Trophy, MapPin, Clock, Check, X } from "lucide-react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ReferenceLine,
-  ResponsiveContainer,
-} from "recharts";
+import { Calendar, Trophy, MapPin, Clock, Check, X } from "lucide-react";
 import {
   useRacesStore,
   type Race,
   type PigeonStatistics,
   type RacePigeon,
 } from "@/lib/store/races-store";
-import { computeYAxisConfig } from "@/lib/utils/y-axis";
-
-const TICK_STYLE = { fill: "rgba(255,255,255,0.7)", fontSize: 14, fontWeight: 600 };
-const AXIS_LINE = { stroke: "rgba(255,255,255,0.12)" };
-
-interface TooltipEntry {
-  dataKey: string;
-  name: string;
-  value: number;
-  color: string;
-}
-
-function ReplayTooltip({
-  active,
-  payload,
-  label,
-}: {
-  active?: boolean;
-  payload?: TooltipEntry[];
-  label?: number;
-}) {
-  if (!active || !payload || payload.length === 0) return null;
-  const timeLabel = (() => {
-    if (typeof label !== "number") return "";
-    const totalSeconds = Math.round(label * 60);
-    if (totalSeconds < 60) return `${totalSeconds}s`;
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes}m ${seconds}s`;
-  })();
-  return (
-    <div
-      style={{
-        background: "rgba(9,45,65,0.95)",
-        border: "1px solid rgba(0,210,255,0.3)",
-        borderRadius: 8,
-        padding: "8px 12px",
-        fontSize: 14,
-      }}
-    >
-      <div style={{ color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>{timeLabel}</div>
-      {payload.map((entry) => (
-        <div
-          key={entry.dataKey}
-          style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}
-        >
-          <div
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: "50%",
-              backgroundColor: entry.color,
-              flexShrink: 0,
-            }}
-          />
-          <span style={{ color: entry.color }}>{entry.name}</span>
-          <span style={{ color: "rgba(255,255,255,0.8)", fontFamily: "monospace", marginLeft: 2 }}>
-            : {Math.round(entry.value)}m
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-}
+import { computeYAxisConfig, buildXTicks } from "@/lib/utils/y-axis";
+import { RaceAltitudeChart } from "@/components/shared/RaceAltitudeChart";
 
 export default function RaceDetailPage() {
   const params = useParams();
@@ -114,24 +41,16 @@ export default function RaceDetailPage() {
     );
   }
 
-  function handleBack() {
-    if (window.history.length > 1) {
-      router.back();
-    } else {
-      router.push("/races");
-    }
-  }
-
   return (
     <div className="px-6 py-6 space-y-6">
-      <RaceHeader race={race} onBack={handleBack} />
+      <RaceHeader race={race} />
       <RaceChartCard race={race} />
       <RaceStatisticsTable race={race} />
     </div>
   );
 }
 
-function RaceHeader({ race, onBack }: { race: Race; onBack: () => void }) {
+function RaceHeader({ race }: { race: Race }) {
   const dateStr = new Date(race.startedAt).toLocaleDateString("sr-RS", {
     day: "2-digit",
     month: "2-digit",
@@ -142,39 +61,28 @@ function RaceHeader({ race, onBack }: { race: Race; onBack: () => void }) {
   const durationSec = Math.floor((race.endedAt - race.startedAt) / 1000);
 
   return (
-    <div className="space-y-4">
-      <button
-        type="button"
-        onClick={onBack}
-        className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        Nazad
-      </button>
-
-      <div className="bg-card-dark border border-cyan-brand/15 rounded-xl p-6">
-        <h1 className="text-3xl font-bold text-white font-rajdhani mb-4">
-          {race.name}
-        </h1>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <InfoItem icon={<Trophy className="w-4 h-4" />} label="Golubar" value={race.owner} />
-          <InfoItem icon={<MapPin className="w-4 h-4" />} label="Klub" value={race.club} />
-          <InfoItem icon={<Clock className="w-4 h-4" />} label="Trajanje" value={formatDuration(durationSec)} />
-          <InfoItem icon={<Calendar className="w-4 h-4" />} label="Datum" value={dateStr} />
-        </div>
+    <div className="bg-card-dark border border-cyan-brand/15 rounded-xl p-6">
+      <h1 className="text-3xl font-bold text-white font-rajdhani mb-4">
+        {race.name}
+      </h1>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <InfoItem icon={<Trophy className="w-4 h-4" />} label="Golubar" value={race.owner} />
+        <InfoItem icon={<MapPin className="w-4 h-4" />} label="Klub" value={race.club} />
+        <InfoItem icon={<Clock className="w-4 h-4" />} label="Trajanje" value={formatDuration(durationSec)} mono />
+        <InfoItem icon={<Calendar className="w-4 h-4" />} label="Datum" value={dateStr} mono />
       </div>
     </div>
   );
 }
 
-function InfoItem({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
+function InfoItem({ icon, label, value, mono }: { icon: ReactNode; label: string; value: string; mono?: boolean }) {
   return (
     <div>
       <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-white/50 font-medium mb-1">
         {icon}
         {label}
       </div>
-      <div className="text-white font-medium">{value}</div>
+      <div className={`text-white font-medium${mono ? " font-mono" : ""}`}>{value}</div>
     </div>
   );
 }
@@ -191,21 +99,18 @@ function RaceChartCard({ race }: { race: Race }) {
     }));
   }, [race.readings]);
 
-  const maxMinutes = Math.max(
-    1,
-    chartData.length > 0
-      ? Math.ceil(chartData[chartData.length - 1].elapsedMinutes)
-      : 1
+  const xMaxMinutes = useMemo(
+    () =>
+      Math.max(
+        1,
+        chartData.length > 0
+          ? Math.ceil(chartData[chartData.length - 1].elapsedMinutes)
+          : 1
+      ),
+    [chartData]
   );
 
-  const xAxisTicks = useMemo(() => {
-    const tickCount = Math.min(Math.ceil(maxMinutes) + 1, 11);
-    if (tickCount <= 1) return [0];
-    const step = maxMinutes / (tickCount - 1);
-    return Array.from({ length: tickCount }, (_, i) =>
-      Math.round(i * step * 100) / 100
-    );
-  }, [maxMinutes]);
+  const xTicks = useMemo(() => buildXTicks(xMaxMinutes), [xMaxMinutes]);
 
   const yAxisConfig = useMemo(() => {
     let maxAlt = 0;
@@ -227,65 +132,14 @@ function RaceChartCard({ race }: { race: Race }) {
         <p className="text-base text-white/60">Replay celog leta</p>
       </div>
 
-      <div className="h-[500px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={chartData}
-            margin={{ top: 4, right: 80, bottom: 4, left: 8 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-            <XAxis
-              dataKey="elapsedMinutes"
-              type="number"
-              domain={[0, maxMinutes]}
-              ticks={xAxisTicks}
-              tickFormatter={(v: number) => `${v}min`}
-              tick={TICK_STYLE}
-              axisLine={AXIS_LINE}
-              tickLine={AXIS_LINE}
-            />
-            <YAxis
-              domain={yAxisConfig.domain}
-              ticks={yAxisConfig.ticks}
-              tickFormatter={(v: number) => `${v}m`}
-              tick={TICK_STYLE}
-              axisLine={AXIS_LINE}
-              tickLine={AXIS_LINE}
-              width={52}
-            />
-            <Tooltip content={<ReplayTooltip />} />
-            <ReferenceLine
-              y={800}
-              stroke="#FBBF24"
-              strokeWidth={2}
-              strokeDasharray="6 4"
-              label={{
-                value: "Cilj: 800m",
-                position: "right",
-                fill: "#FBBF24",
-                fontSize: 13,
-                fontWeight: 600,
-              }}
-            />
-            {race.pigeons.map((pigeon) => (
-              <Line
-                key={pigeon.id}
-                type="monotone"
-                dataKey={pigeon.id}
-                stroke={pigeon.color}
-                strokeWidth={3}
-                dot={false}
-                activeDot={{ r: 5, fill: pigeon.color }}
-                name={pigeon.name}
-                isAnimationActive={false}
-              />
-            ))}
-            <Legend
-              wrapperStyle={{ fontSize: 14, fontWeight: 500, color: "rgba(255,255,255,0.8)" }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+      <RaceAltitudeChart
+        chartData={chartData}
+        pigeons={race.pigeons}
+        xMaxMinutes={xMaxMinutes}
+        xTicks={xTicks}
+        yAxisConfig={yAxisConfig}
+        height={500}
+      />
     </div>
   );
 }
@@ -338,7 +192,7 @@ function PigeonStatRow({ pigeon, stat }: { pigeon: RacePigeon; stat: PigeonStati
       <td className="py-4 px-4 text-white/80 font-mono">
         {formatDuration(stat.timeAbove800Seconds)}
       </td>
-      <td className="py-4 px-4 text-cyan-brand font-semibold">{stat.maxAltitude}m</td>
+      <td className="py-4 px-4 text-cyan-brand font-mono font-semibold">{stat.maxAltitude}m</td>
       <td className="py-4 px-4">
         {stat.validFlight ? (
           <div className="flex items-center gap-2 text-green-400">

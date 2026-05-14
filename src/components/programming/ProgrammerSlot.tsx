@@ -9,7 +9,7 @@ export function ProgrammerSlot() {
 
   return (
     <div className="card-redesign p-6 text-center">
-      <p className="text-sm uppercase tracking-widest text-gray-500 font-medium mb-4">
+      <p className="text-sm uppercase tracking-widest text-white/60 font-medium mb-4">
         Očitavanje prstena
       </p>
 
@@ -29,10 +29,10 @@ export function ProgrammerSlot() {
           <div className="text-3xl font-mono font-bold text-cyan-brand mb-1">
             {selectedRingId}
           </div>
-          <div className="text-base text-gray-500">Slot {selectedSlotIndex}</div>
+          <div className="text-base text-white/60">Slot {selectedSlotIndex}</div>
         </div>
       ) : (
-        <div className="flex items-center justify-center gap-2 text-gray-500 text-base">
+        <div className="flex items-center justify-center gap-2 text-white/60 text-base">
           <Info className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
           <span>Nema selektovanog prstena</span>
         </div>

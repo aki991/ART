@@ -23,7 +23,7 @@ export function PigeonCard({ pigeon, onEdit, onDelete }: PigeonCardProps) {
         onClick={() => setShowHistory(true)}
       >
         <div className="flex items-start justify-between mb-2">
-          <div className="text-2xl font-bold font-mono text-cyan-brand">
+          <div className="text-2xl font-bold font-mono text-white">
             {formatIdentifier(pigeon)}
           </div>
           <div className="flex items-center gap-1 flex-shrink-0 ml-3">
@@ -31,7 +31,7 @@ export function PigeonCard({ pigeon, onEdit, onDelete }: PigeonCardProps) {
               type="button"
               onClick={(e) => { e.stopPropagation(); onEdit(pigeon); }}
               aria-label="Izmeni goluba"
-              className="p-2 rounded hover:bg-gray-100 text-gray-500 transition-colors"
+              className="p-2 rounded hover:bg-white/10 text-white/40 transition-colors"
             >
               <Pencil className="w-5 h-5" aria-hidden="true" />
             </button>
@@ -39,13 +39,13 @@ export function PigeonCard({ pigeon, onEdit, onDelete }: PigeonCardProps) {
               type="button"
               onClick={(e) => { e.stopPropagation(); onDelete(pigeon.id); }}
               aria-label="Obriši goluba"
-              className="p-2 rounded hover:bg-red-50 hover:text-red-600 text-gray-500 transition-colors"
+              className="p-2 rounded hover:bg-red-500/10 hover:text-red-400 text-white/40 transition-colors"
             >
               <Trash2 className="w-5 h-5" aria-hidden="true" />
             </button>
           </div>
         </div>
-        <p className="text-xl text-gray-500">
+        <p className="text-xl text-white/60">
           {pigeon.pigeonColor || "—"}
         </p>
       </div>

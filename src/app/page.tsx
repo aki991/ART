@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
+import AuthApp from "@/components/auth/AuthApp";
+
+export const metadata: Metadata = {
+  title: "Prijava — Aero Ring Tech",
+};
+
 export default function Home() {
-  return (
-    <main className="flex min-h-screen items-center justify-center">
-      <h1 className="text-2xl font-bold">Aero Ring Tech</h1>
-    </main>
-  );
+  return <AuthApp />;
 }

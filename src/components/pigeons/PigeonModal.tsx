@@ -104,8 +104,8 @@ export function PigeonModal({ isOpen, onClose, editingPigeon }: PigeonModalProps
   }
 
   const inputClass =
-    "w-full px-5 py-3 border border-gray-300 rounded-md text-lg focus:border-cyan-brand focus:ring-2 focus:ring-cyan-brand/20 focus:outline-none";
-  const labelClass = "block text-base font-medium text-gray-700 mb-1.5";
+    "w-full px-5 py-3 bg-white/5 border border-white/10 rounded-md text-lg text-white placeholder:text-white/30 focus:border-cyan-brand focus:ring-2 focus:ring-cyan-brand/20 focus:outline-none";
+  const labelClass = "block text-base font-medium text-white/80 mb-1.5";
 
   return (
     <div
@@ -115,17 +115,17 @@ export function PigeonModal({ isOpen, onClose, editingPigeon }: PigeonModalProps
       className="fixed inset-0 z-50 flex items-center justify-center"
     >
       <div
-        className={`absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-200 ${mounted ? "opacity-100" : "opacity-0"}`}
+        className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-200 ${mounted ? "opacity-100" : "opacity-0"}`}
         onClick={onClose}
       />
 
       <div
-        className={`relative bg-white rounded-xl shadow-2xl border border-cyan-brand/15 max-w-2xl w-full mx-4 transition-all duration-200 ${mounted ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
+        className={`relative bg-[#0D2438] rounded-xl shadow-2xl border border-white/10 max-w-2xl w-full mx-4 transition-all duration-200 ${mounted ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
       >
-        <div className="px-8 py-5 border-b border-cyan-brand/10 flex items-center justify-between">
+        <div className="px-8 py-5 border-b border-white/10 flex items-center justify-between">
           <h2
             id="pigeon-modal-title"
-            className="text-2xl font-semibold font-rajdhani text-gray-900"
+            className="text-2xl font-semibold font-rajdhani text-white"
           >
             {editingPigeon ? "Izmeni goluba" : "Dodaj goluba"}
           </h2>
@@ -133,17 +133,16 @@ export function PigeonModal({ isOpen, onClose, editingPigeon }: PigeonModalProps
             type="button"
             onClick={onClose}
             aria-label="Zatvori"
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-white/40 hover:text-white/80 transition-colors"
           >
             <X className="w-6 h-6" aria-hidden="true" />
           </button>
         </div>
 
         <div className="p-8 space-y-5">
-          {/* Boja goluba */}
           <div>
             <label htmlFor="modal-pigeon-color" className={labelClass}>
-              Boja goluba <span className="text-red-500">*</span>
+              Boja goluba <span className="text-red-400">*</span>
             </label>
             <input
               ref={colorInputRef}
@@ -157,11 +156,10 @@ export function PigeonModal({ isOpen, onClose, editingPigeon }: PigeonModalProps
             />
           </div>
 
-          {/* Naziv kluba + Br. kluba */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label htmlFor="modal-club-name" className={labelClass}>
-                Naziv kluba <span className="text-red-500">*</span>
+                Naziv kluba <span className="text-red-400">*</span>
               </label>
               <input
                 id="modal-club-name"
@@ -175,7 +173,7 @@ export function PigeonModal({ isOpen, onClose, editingPigeon }: PigeonModalProps
             </div>
             <div>
               <label htmlFor="modal-club-number" className={labelClass}>
-                Br. kluba <span className="text-red-500">*</span>
+                Br. kluba <span className="text-red-400">*</span>
               </label>
               <input
                 id="modal-club-number"
@@ -190,11 +188,10 @@ export function PigeonModal({ isOpen, onClose, editingPigeon }: PigeonModalProps
             </div>
           </div>
 
-          {/* Br. golubara + Br. goluba + Godina */}
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label htmlFor="modal-breeder-number" className={labelClass}>
-                Br. golubara <span className="text-red-500">*</span>
+                Br. golubara <span className="text-red-400">*</span>
               </label>
               <input
                 id="modal-breeder-number"
@@ -209,7 +206,7 @@ export function PigeonModal({ isOpen, onClose, editingPigeon }: PigeonModalProps
             </div>
             <div>
               <label htmlFor="modal-pigeon-number" className={labelClass}>
-                Br. goluba <span className="text-red-500">*</span>
+                Br. goluba <span className="text-red-400">*</span>
               </label>
               <input
                 id="modal-pigeon-number"
@@ -224,7 +221,7 @@ export function PigeonModal({ isOpen, onClose, editingPigeon }: PigeonModalProps
             </div>
             <div>
               <label htmlFor="modal-year" className={labelClass}>
-                Godina <span className="text-red-500">*</span>
+                Godina <span className="text-red-400">*</span>
               </label>
               <input
                 id="modal-year"
@@ -239,17 +236,17 @@ export function PigeonModal({ isOpen, onClose, editingPigeon }: PigeonModalProps
             </div>
           </div>
 
-          <p className="text-base text-gray-500">
+          <p className="text-base text-white/60">
             Identifikator goluba će biti:{" "}
-            <span className="font-mono font-semibold text-gray-800">{previewId}</span>
+            <span className="font-mono font-semibold text-white">{previewId}</span>
           </p>
         </div>
 
-        <div className="px-8 py-5 border-t border-cyan-brand/10 flex justify-end gap-3">
+        <div className="px-8 py-5 border-t border-white/10 flex justify-end gap-3">
           <button
             type="button"
             onClick={onClose}
-            className="px-5 py-3 rounded-md text-base font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+            className="px-5 py-3 rounded-md text-base font-medium bg-white/5 border border-white/10 text-white/80 hover:bg-white/10 transition-colors"
           >
             Otkaži
           </button>
@@ -257,7 +254,7 @@ export function PigeonModal({ isOpen, onClose, editingPigeon }: PigeonModalProps
             type="button"
             disabled={!isValid}
             onClick={handleSubmit}
-            className="btn-shine-redesign px-5 py-3 rounded-md text-base font-medium bg-cyan-brand text-white hover:bg-cyan-dark transition-colors disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
+            className="btn-shine-redesign px-5 py-3 rounded-md text-base font-bold bg-cyan-brand text-sidebar hover:bg-cyan-dark transition-colors disabled:bg-white/10 disabled:text-white/30 disabled:cursor-not-allowed"
           >
             Sačuvaj
           </button>

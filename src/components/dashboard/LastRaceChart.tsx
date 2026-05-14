@@ -4,18 +4,9 @@ import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Trophy, User, Calendar, Clock, ArrowRight } from "lucide-react";
-import {
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ReferenceLine,
-} from "recharts";
 import { useRacesStore } from "@/lib/store/races-store";
-import { computeYAxisConfig } from "@/lib/utils/y-axis";
+import { computeYAxisConfig, buildXTicks } from "@/lib/utils/y-axis";
+import { RaceAltitudeChart } from "@/components/shared/RaceAltitudeChart";
 
 export function LastRaceChart() {
   const router = useRouter();
@@ -36,7 +27,7 @@ export function LastRaceChart() {
   const chartData = useMemo(() => {
     if (!lastRace) return [];
     return lastRace.readings.map((reading) => ({
-      time: (reading.timestamp - lastRace.startedAt) / 1000 / 60,
+      elapsedMinutes: (reading.timestamp - lastRace.startedAt) / 1000 / 60,
       ...reading.altitudes,
     }));
   }, [lastRace]);
@@ -52,24 +43,23 @@ export function LastRaceChart() {
     return max;
   }, [lastRace]);
 
-  const yAxisConfig = computeYAxisConfig(maxAltitude);
+  const yAxisConfig = useMemo(() => computeYAxisConfig(maxAltitude), [maxAltitude]);
 
-  const xMaxMinutes = Math.max(0.5, durationSeconds / 60);
-  const xTicks = useMemo(() => {
-    const numTicks = Math.min(11, Math.ceil(xMaxMinutes * 2) + 1);
-    return Array.from({ length: numTicks }, (_, i) =>
-      (i * xMaxMinutes) / (numTicks - 1)
-    );
-  }, [xMaxMinutes]);
+  const xMaxMinutes = useMemo(() => {
+    if (chartData.length === 0) return 1;
+    return Math.max(1, Math.ceil(chartData[chartData.length - 1].elapsedMinutes));
+  }, [chartData]);
+
+  const xTicks = useMemo(() => buildXTicks(xMaxMinutes), [xMaxMinutes]);
 
   if (!lastRace) {
     return (
       <div className="card-redesign p-12 text-center">
-        <Trophy className="w-16 h-16 text-gray-300 mx-auto mb-4" aria-hidden="true" />
-        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+        <Trophy className="w-16 h-16 text-white/20 mx-auto mb-4" aria-hidden="true" />
+        <h3 className="text-lg font-semibold text-white/80 mb-2">
           Još nema snimljenih trka
         </h3>
-        <p className="text-gray-500 mb-4">
+        <p className="text-white/60 mb-4">
           Pokreni prvu trku da vidiš grafik ovde.
         </p>
         <Link
@@ -92,7 +82,7 @@ export function LastRaceChart() {
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <Trophy className="w-5 h-5 text-cyan-brand" aria-hidden="true" />
-            <span className="text-xs uppercase tracking-wide text-gray-500 font-medium">
+            <span className="text-xs uppercase tracking-wide text-white/60 font-medium">
               Poslednja trka
             </span>
           </div>
@@ -103,137 +93,32 @@ export function LastRaceChart() {
         </div>
 
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">{lastRace.name}</h2>
-          <div className="flex items-center gap-5 text-base text-gray-600">
+          <h2 className="text-2xl font-bold text-white">{lastRace.name}</h2>
+          <div className="flex items-center gap-5 text-base text-white/70">
             <div className="flex items-center gap-1.5">
-              <User className="w-4 h-4 text-gray-400" aria-hidden="true" />
+              <User className="w-4 h-4 text-white/40" aria-hidden="true" />
               {lastRace.owner}
             </div>
             <div className="flex items-center gap-1.5">
-              <Calendar className="w-4 h-4 text-gray-400" aria-hidden="true" />
+              <Calendar className="w-4 h-4 text-white/40" aria-hidden="true" />
               {formatDate(lastRace.startedAt)}
             </div>
             <div className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-gray-400" aria-hidden="true" />
+              <Clock className="w-4 h-4 text-white/40" aria-hidden="true" />
               {formatDuration(durationSeconds)}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="h-[400px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData} margin={{ top: 10, right: 80, left: 10, bottom: 10 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-            <XAxis
-              dataKey="time"
-              type="number"
-              domain={[0, xMaxMinutes]}
-              ticks={xTicks}
-              tickFormatter={(v: number) => {
-                if (v === 0) return "0min";
-                if (v < 1) return `${Math.round(v * 60)}s`;
-                return `${v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)}min`;
-              }}
-              tick={{ fontSize: 12, fill: "#6B7280" }}
-              stroke="#9CA3AF"
-            />
-            <YAxis
-              domain={yAxisConfig.domain}
-              ticks={yAxisConfig.ticks}
-              tickFormatter={(v: number) => `${v}m`}
-              tick={{ fontSize: 12, fill: "#6B7280" }}
-              stroke="#9CA3AF"
-              width={52}
-            />
-            <Tooltip content={<ChartTooltip />} />
-            <ReferenceLine
-              y={800}
-              stroke="#FBBF24"
-              strokeWidth={2}
-              strokeDasharray="5 5"
-              label={{
-                value: "Cilj: 800m",
-                position: "right",
-                fill: "#FBBF24",
-                fontSize: 11,
-                fontWeight: 600,
-              }}
-            />
-            {lastRace.pigeons.map((pigeon) => (
-              <Line
-                key={pigeon.id}
-                type="monotone"
-                dataKey={pigeon.id}
-                name={pigeon.name}
-                stroke={pigeon.color}
-                strokeWidth={2.5}
-                dot={false}
-                activeDot={{ r: 5, fill: pigeon.color }}
-                isAnimationActive={false}
-              />
-            ))}
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-  );
-}
-
-interface TooltipEntry {
-  dataKey: string;
-  name: string;
-  value: number;
-  color: string;
-}
-
-function ChartTooltip({
-  active,
-  payload,
-  label,
-}: {
-  active?: boolean;
-  payload?: TooltipEntry[];
-  label?: number;
-}) {
-  if (!active || !payload || payload.length === 0) return null;
-  const timeLabel = (() => {
-    if (typeof label !== "number") return "";
-    const s = Math.round(label * 60);
-    if (s < 60) return `${s}s`;
-    return `${Math.floor(s / 60)}m ${s % 60}s`;
-  })();
-  return (
-    <div
-      style={{
-        background: "#1F2937",
-        border: "1px solid rgba(255,255,255,0.15)",
-        borderRadius: 8,
-        padding: "8px 12px",
-        fontSize: 13,
-      }}
-    >
-      <div style={{ color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>{timeLabel}</div>
-      {payload.map((entry) => (
-        <div
-          key={entry.dataKey}
-          style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}
-        >
-          <div
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: "50%",
-              backgroundColor: entry.color,
-              flexShrink: 0,
-            }}
-          />
-          <span style={{ color: entry.color }}>{entry.name}</span>
-          <span style={{ color: "rgba(255,255,255,0.8)", fontFamily: "monospace", marginLeft: 2 }}>
-            : {Math.round(entry.value)}m
-          </span>
-        </div>
-      ))}
+      <RaceAltitudeChart
+        chartData={chartData}
+        pigeons={lastRace.pigeons}
+        xMaxMinutes={xMaxMinutes}
+        xTicks={xTicks}
+        yAxisConfig={yAxisConfig}
+        height={400}
+      />
     </div>
   );
 }

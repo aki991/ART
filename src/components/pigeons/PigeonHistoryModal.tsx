@@ -60,15 +60,15 @@ export function PigeonHistoryModal({ pigeon, isOpen, onClose }: PigeonHistoryMod
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-xl shadow-2xl border border-cyan-brand/15 max-w-5xl w-full max-h-[85vh] overflow-hidden flex flex-col"
+        className="bg-[#0D2438] rounded-xl shadow-2xl border border-white/10 max-w-5xl w-full max-h-[85vh] overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-start justify-between px-8 py-5 border-b border-cyan-brand/10">
+        <div className="flex items-start justify-between px-8 py-5 border-b border-white/10">
           <div>
-            <div className="text-2xl font-bold font-mono text-cyan-brand mb-1">
+            <div className="text-2xl font-bold font-mono text-white mb-1">
               {identifier}
             </div>
-            <div className="text-base text-gray-500">
+            <div className="text-base text-white/60">
               {pigeon.pigeonColor || "—"}
             </div>
           </div>
@@ -76,7 +76,7 @@ export function PigeonHistoryModal({ pigeon, isOpen, onClose }: PigeonHistoryMod
             type="button"
             onClick={onClose}
             aria-label="Zatvori"
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-white/40 hover:text-white/80 transition-colors"
           >
             <X className="w-6 h-6" aria-hidden="true" />
           </button>
@@ -84,8 +84,8 @@ export function PigeonHistoryModal({ pigeon, isOpen, onClose }: PigeonHistoryMod
 
         <div className="flex-1 overflow-y-auto p-8">
           <div className="mb-4">
-            <h3 className="text-lg font-semibold text-gray-700">Istorija trka</h3>
-            <p className="text-sm text-gray-500">
+            <h3 className="text-lg font-semibold text-white">Istorija trka</h3>
+            <p className="text-sm text-white/60">
               {pigeonRaces.length === 0
                 ? "Golub još nije učestvovao ni u jednoj trci."
                 : `Učestvovao u ${pigeonRaces.length} ${pigeonRaces.length === 1 ? "trci" : "trka"}.`}
@@ -94,15 +94,15 @@ export function PigeonHistoryModal({ pigeon, isOpen, onClose }: PigeonHistoryMod
 
           {pigeonRaces.length === 0 ? (
             <div className="text-center py-12">
-              <Trophy className="w-16 h-16 text-gray-300 mx-auto mb-4" aria-hidden="true" />
-              <p className="text-gray-500">
+              <Trophy className="w-16 h-16 text-white/20 mx-auto mb-4" aria-hidden="true" />
+              <p className="text-white/60">
                 Programiraj prsten ovom golubu i pokreni trku.
               </p>
             </div>
           ) : (
-            <div className="overflow-hidden rounded-xl border border-gray-200">
+            <div className="overflow-hidden rounded-xl border border-white/10">
               <table className="w-full">
-                <thead className="bg-gray-50 text-xs uppercase text-gray-500 font-medium">
+                <thead className="table-header-gradient text-xs uppercase text-white/50 font-medium">
                   <tr>
                     <th className="text-left py-3 px-4">Datum</th>
                     <th className="text-left py-3 px-4">Naziv trke</th>
@@ -120,31 +120,31 @@ export function PigeonHistoryModal({ pigeon, isOpen, onClose }: PigeonHistoryMod
                         onClose();
                         router.push(`/races/${entry.raceId}`);
                       }}
-                      className="border-t border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
+                      className="border-t border-white/5 hover:bg-white/5 cursor-pointer transition-colors"
                     >
-                      <td className="py-4 px-4 text-gray-700 text-sm">
+                      <td className="py-4 px-4 text-white/70 font-mono text-sm">
                         {formatDate(entry.startedAt)}
                       </td>
-                      <td className="py-4 px-4 text-gray-900 font-medium">
+                      <td className="py-4 px-4 text-white font-medium">
                         {entry.raceName}
                       </td>
-                      <td className="py-4 px-4 text-gray-700 font-mono">
+                      <td className="py-4 px-4 text-white/80 font-mono">
                         {formatDuration(entry.durationSeconds)}
                       </td>
-                      <td className="py-4 px-4 text-gray-700 font-mono">
+                      <td className="py-4 px-4 text-white/80 font-mono">
                         {formatDuration(entry.timeAbove800Seconds)}
                       </td>
-                      <td className="py-4 px-4 text-cyan-brand font-semibold">
+                      <td className="py-4 px-4 text-cyan-brand font-mono font-semibold">
                         {entry.maxAltitude}m
                       </td>
                       <td className="py-4 px-4">
                         {entry.validFlight ? (
-                          <div className="flex items-center gap-2 text-green-600">
+                          <div className="flex items-center gap-2 text-green-400">
                             <Check className="w-5 h-5" aria-hidden="true" />
                             <span className="text-sm font-medium">Validan</span>
                           </div>
                         ) : (
-                          <div className="flex items-center gap-2 text-red-500">
+                          <div className="flex items-center gap-2 text-red-400">
                             <X className="w-5 h-5" aria-hidden="true" />
                             <span className="text-sm font-medium">Nije validan</span>
                           </div>

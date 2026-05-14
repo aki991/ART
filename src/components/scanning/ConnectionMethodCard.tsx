@@ -22,7 +22,11 @@ export function ConnectionMethodCard({
   disabled = false,
 }: ConnectionMethodCardProps) {
   const connectWithMethod = useConnectionStore((s) => s.connectWithMethod);
+  const currentMethod = useConnectionStore((s) => s.method);
+  const status = useConnectionStore((s) => s.status);
   const Icon = METHOD_ICON[method];
+
+  const isActive = currentMethod === method && status === "connecting";
 
   async function handleActivate() {
     if (disabled) return;
@@ -55,14 +59,21 @@ export function ConnectionMethodCard({
       onKeyDown={handleKeyDown}
       className={cn(
         "w-[200px] h-[200px] rounded-full flex flex-col items-center justify-center gap-3",
-        "bg-white border border-cyan-brand/15 transition-all duration-200",
+        "bg-card-dark border shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition-all duration-200",
+        isActive
+          ? "border-cyan-brand shadow-[0_0_24px_rgba(0,210,255,0.25)]"
+          : "border-white/5",
         disabled
           ? "opacity-60 cursor-not-allowed"
-          : "cursor-pointer hover:border-cyan-brand/50 hover:shadow-lg hover:shadow-cyan-brand/10"
+          : "cursor-pointer hover:bg-card-dark-hover hover:border-cyan-brand/40 hover:shadow-[0_8px_24px_rgba(0,210,255,0.08)]"
       )}
     >
-      <Icon className="w-14 h-14 text-cyan-brand" strokeWidth={1.5} aria-hidden="true" />
-      <span className="text-xl font-semibold font-rajdhani text-gray-900">
+      <Icon
+        className={cn("w-14 h-14", isActive ? "text-cyan-brand" : "text-white/70")}
+        strokeWidth={1.5}
+        aria-hidden="true"
+      />
+      <span className={cn("text-xl font-semibold font-rajdhani", isActive ? "text-cyan-brand" : "text-white")}>
         {title}
       </span>
     </div>

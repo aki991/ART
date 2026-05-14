@@ -1,6 +1,19 @@
 const MIN_Y_AXIS_MAX = 1000;
 const Y_AXIS_STEP = 200;
 
+export function buildXTicks(xMaxMinutes: number): number[] {
+  const step =
+    xMaxMinutes <= 10 ? 1 :
+    xMaxMinutes <= 20 ? 2 :
+    xMaxMinutes <= 50 ? 5 : 10;
+  const ticks: number[] = [];
+  for (let t = 0; t <= xMaxMinutes; t += step) {
+    ticks.push(t);
+  }
+  if (ticks[ticks.length - 1] < xMaxMinutes) ticks.push(xMaxMinutes);
+  return ticks;
+}
+
 export interface YAxisConfig {
   domain: [number, number];
   ticks: number[];

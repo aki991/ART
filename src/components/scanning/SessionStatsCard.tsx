@@ -42,29 +42,29 @@ export function SessionStatsCard() {
 
   return (
     <div className="card-redesign p-6">
-      <p className="text-sm uppercase tracking-widest text-gray-500 mb-4">
+      <p className="text-sm uppercase tracking-widest text-white/60 mb-4">
         Statistike (sesija)
       </p>
 
       <div className="mb-4">
-        <p className="text-xs uppercase tracking-wide text-gray-400 mb-1">
+        <p className="text-xs uppercase tracking-wide text-white/40 mb-1">
           Trajanje sesije
         </p>
-        <p className="text-2xl font-semibold font-rajdhani text-cyan-brand">
+        <p className="text-2xl font-semibold font-mono text-cyan-brand">
           {elapsed}
         </p>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-gray-50 rounded p-3">
-          <p className="text-sm uppercase text-gray-500 mb-1">Maksimum</p>
-          <p className="text-2xl font-semibold font-rajdhani text-red-600">
+        <div className="bg-white/5 rounded p-3">
+          <p className="text-sm uppercase text-white/60 mb-1">Maksimum</p>
+          <p className="text-2xl font-semibold font-mono text-red-600">
             {maxDisplay}
           </p>
         </div>
-        <div className="bg-gray-50 rounded p-3">
-          <p className="text-sm uppercase text-gray-500 mb-1">Minimum</p>
-          <p className="text-2xl font-semibold font-rajdhani text-green-600">
+        <div className="bg-white/5 rounded p-3">
+          <p className="text-sm uppercase text-white/60 mb-1">Minimum</p>
+          <p className="text-2xl font-semibold font-mono text-green-600">
             {minDisplay}
           </p>
         </div>

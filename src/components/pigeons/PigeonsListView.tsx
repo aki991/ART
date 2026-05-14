@@ -50,7 +50,7 @@ export function PigeonsListView() {
         <button
           type="button"
           onClick={openModal}
-          className="btn-shine-redesign inline-flex items-center gap-3 px-6 py-3 rounded-md text-lg font-semibold bg-cyan-brand text-white hover:bg-cyan-dark transition-colors"
+          className="btn-shine-redesign inline-flex items-center gap-3 px-6 py-3 rounded-md text-lg font-bold bg-cyan-brand text-sidebar hover:bg-cyan-dark transition-colors"
         >
           <Plus className="w-6 h-6" aria-hidden="true" />
           Dodaj goluba

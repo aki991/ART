@@ -63,7 +63,7 @@ export function Breadcrumb({ segments }: BreadcrumbProps) {
                 <span
                   className={
                     isLast && isOnlySegment
-                      ? "text-3xl font-semibold text-white font-rajdhani"
+                      ? "text-3xl font-semibold font-rajdhani text-gradient-page-title"
                       : "text-sm font-semibold text-white font-rajdhani"
                   }
                 >

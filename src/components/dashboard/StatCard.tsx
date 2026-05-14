@@ -33,7 +33,7 @@ export function StatCard({ label, value, icon: Icon, accentColor, trend }: StatC
   const trendStyle =
     trend?.direction === "up" ? "text-green-600"
     : trend?.direction === "down" ? "text-red-600"
-    : "text-gray-500";
+    : "text-white/40";
 
   return (
     <div className="card-redesign p-4">
@@ -42,12 +42,12 @@ export function StatCard({ label, value, icon: Icon, accentColor, trend }: StatC
           <Icon size={20} aria-hidden="true" />
         </div>
         <p className={cn(
-          "text-2xl font-bold font-rajdhani",
-          accentColor === "cyan" ? "text-gradient-cyan" : "text-gray-900"
+          "text-2xl font-bold font-mono",
+          accentColor === "cyan" ? "text-gradient-cyan" : "text-white"
         )}>
           {displayValue}
         </p>
-        <p className="text-sm text-gray-500 truncate">{label}</p>
+        <p className="text-sm text-white/60 truncate">{label}</p>
         {trend && (
           <p className={cn("flex items-center gap-1 text-xs ml-auto flex-shrink-0", trendStyle)}>
             <TrendIcon size={12} aria-hidden="true" />

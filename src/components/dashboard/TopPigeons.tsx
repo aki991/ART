@@ -67,15 +67,15 @@ export function TopPigeons() {
   return (
     <>
       <div className="card-redesign p-6">
-        <h2 className="text-lg font-semibold text-gray-700 flex items-center gap-2 mb-4">
+        <h2 className="text-lg font-semibold text-white/80 flex items-center gap-2 mb-4">
           <Award className="w-5 h-5 text-cyan-brand" aria-hidden="true" />
           Top golubovi
         </h2>
 
         {rankings.length === 0 ? (
           <div className="text-center py-8">
-            <Award className="w-12 h-12 text-gray-300 mx-auto mb-3" aria-hidden="true" />
-            <p className="text-sm text-gray-500">
+            <Award className="w-12 h-12 text-white/20 mx-auto mb-3" aria-hidden="true" />
+            <p className="text-sm text-white/60">
               Pokreni trku da rangiraš golubove.
             </p>
           </div>
@@ -118,7 +118,7 @@ function PigeonRankCard({
   return (
     <div
       onClick={onClick}
-      className="bg-gray-50 hover:bg-gray-100 rounded-lg p-4 cursor-pointer transition-colors"
+      className="bg-white/5 hover:bg-white/10 rounded-lg p-4 cursor-pointer transition-colors"
     >
       <div className="flex items-center gap-3 mb-3">
         <div
@@ -131,7 +131,7 @@ function PigeonRankCard({
           <span className="font-mono font-bold text-cyan-brand truncate text-sm">
             {ranking.identifier}
           </span>
-          <span className="text-xs text-gray-500 flex-shrink-0">
+          <span className="text-xs text-white/60 flex-shrink-0">
             {ranking.pigeon.pigeonColor}
           </span>
         </div>
@@ -139,18 +139,18 @@ function PigeonRankCard({
 
       <div className="grid grid-cols-3 gap-2">
         <div>
-          <div className="text-gray-400 uppercase tracking-wide text-[10px]">Trka</div>
-          <div className="font-semibold text-gray-700 text-sm">{ranking.raceCount}</div>
+          <div className="text-white/40 uppercase tracking-wide text-[10px]">Trka</div>
+          <div className="font-mono font-semibold text-white/80 text-sm">{ranking.raceCount}</div>
         </div>
         <div>
-          <div className="text-gray-400 uppercase tracking-wide text-[10px]">Validnih</div>
-          <div className="font-semibold text-gray-700 text-sm">
+          <div className="text-white/40 uppercase tracking-wide text-[10px]">Validnih</div>
+          <div className="font-mono font-semibold text-white/80 text-sm">
             {Math.round(ranking.validPercentage)}%
           </div>
         </div>
         <div>
-          <div className="text-gray-400 uppercase tracking-wide text-[10px]">Max</div>
-          <div className="font-semibold text-gray-700 text-sm">{ranking.maxAltitude}m</div>
+          <div className="text-white/40 uppercase tracking-wide text-[10px]">Max</div>
+          <div className="font-mono font-semibold text-white/80 text-sm">{ranking.maxAltitude}m</div>
         </div>
       </div>
     </div>

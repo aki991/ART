@@ -1,24 +1,18 @@
 import type { Metadata } from "next";
-import { Orbitron, Rajdhani, JetBrains_Mono } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
-const orbitron = Orbitron({
-  weight: ["600"],
+const geist = Geist({
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
-  variable: "--font-orbitron",
+  variable: "--font-geist",
 });
 
-const rajdhani = Rajdhani({
-  weight: ["300", "400", "500", "600", "700"],
+const geistMono = Geist_Mono({
+  weight: ["400", "500", "600"],
   subsets: ["latin"],
-  variable: "--font-rajdhani",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  weight: ["300", "400", "500"],
-  subsets: ["latin"],
-  variable: "--font-jetbrains",
+  variable: "--font-geist-mono",
 });
 
 export const metadata: Metadata = {
@@ -34,9 +28,9 @@ export default function RootLayout({
   return (
     <html
       lang="sr"
-      className={`${orbitron.variable} ${rajdhani.variable} ${jetbrainsMono.variable}`}
+      className={`${geist.variable} ${geistMono.variable}`}
     >
-      <body style={{ fontFamily: "var(--font-rajdhani), sans-serif" }}>
+      <body className="font-sans">
         {children}
         <Toaster position="bottom-right" richColors closeButton duration={4000} />
       </body>

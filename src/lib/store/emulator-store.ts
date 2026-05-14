@@ -2,7 +2,9 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { PIGEON_COLOR_PALETTE } from "@/lib/utils/pigeon-palette";
 
-export type SlotStatus = "empty" | "inserted" | "programmed";
+// Physical state of a base-station slot only. Whether a ring is "programmed"
+// is NOT stored here — it is derived from useProgrammerStore.sessionPrograms.
+export type SlotStatus = "empty" | "inserted";
 
 export interface EmulatorSlot {
   index: number;
@@ -15,8 +17,6 @@ interface EmulatorState {
   slots: EmulatorSlot[];
   insertRing: (slotIndex: number) => void;
   ejectRing: (slotIndex: number) => void;
-  markProgrammed: (ringId: string) => void;
-  markInserted: (ringId: string) => void;
   getInsertedRings: () => EmulatorSlot[];
   setSlotColor: (slotIndex: number, color: string) => void;
 }
@@ -60,24 +60,6 @@ export const useEmulatorStore = create<EmulatorState>()(
           ),
         })),
 
-      markProgrammed: (ringId) =>
-        set((state) => ({
-          slots: state.slots.map((slot) =>
-            slot.ringId === ringId && slot.status === "inserted"
-              ? { ...slot, status: "programmed" }
-              : slot
-          ),
-        })),
-
-      markInserted: (ringId) =>
-        set((state) => ({
-          slots: state.slots.map((slot) =>
-            slot.ringId === ringId && slot.status === "programmed"
-              ? { ...slot, status: "inserted" }
-              : slot
-          ),
-        })),
-
       getInsertedRings: () => get().slots.filter((s) => s.status === "inserted"),
 
       setSlotColor: (slotIndex, color) =>
@@ -90,11 +72,8 @@ export const useEmulatorStore = create<EmulatorState>()(
     {
       name: "art-emulator-slots",
       storage: createJSONStorage(() => localStorage),
-      version: 2,
-      migrate: (_, version) => {
-        if (version < 2) return { slots: initSlots() };
-        return { slots: initSlots() };
-      },
+      version: 3,
+      migrate: () => ({ slots: initSlots() }),
     }
   )
 );
