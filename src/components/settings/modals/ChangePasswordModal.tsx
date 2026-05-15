@@ -6,6 +6,8 @@ import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/client";
+import { useCurrentUser } from "@/components/providers/CurrentUserProvider";
 
 interface ChangePasswordModalProps {
   isOpen: boolean;
@@ -41,10 +43,12 @@ export function ChangePasswordModal({
   isOpen,
   onClose,
 }: ChangePasswordModalProps) {
+  const user = useCurrentUser();
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const [confirm, setConfirm] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [currentError, setCurrentError] = useState<string | undefined>();
 
   useEffect(() => {
     if (!isOpen) {
@@ -52,6 +56,7 @@ export function ChangePasswordModal({
       setNext("");
       setConfirm("");
       setSubmitting(false);
+      setCurrentError(undefined);
     }
   }, [isOpen]);
 
@@ -69,9 +74,28 @@ export function ChangePasswordModal({
   async function handleSubmit() {
     if (!canSubmit) return;
     setSubmitting(true);
-    // Frontend-only prototype: no real credentials to verify against.
-    await new Promise((resolve) => setTimeout(resolve, 600));
+    setCurrentError(undefined);
+    const supabase = createClient();
+
+    // Re-authenticate to verify the current password before updating.
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: user.email,
+      password: current,
+    });
+    if (signInError) {
+      setSubmitting(false);
+      setCurrentError("Trenutna lozinka nije ispravna.");
+      return;
+    }
+
+    const { error: updateError } = await supabase.auth.updateUser({
+      password: next,
+    });
     setSubmitting(false);
+    if (updateError) {
+      toast.error("Promena lozinke nije uspela.");
+      return;
+    }
     onClose();
     toast.success("Lozinka promenjena ✓");
   }
@@ -104,6 +128,7 @@ export function ChangePasswordModal({
           value={current}
           onChange={(e) => setCurrent(e.target.value)}
           autoComplete="current-password"
+          error={currentError}
         />
 
         <div>

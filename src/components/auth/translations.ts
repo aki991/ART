@@ -8,9 +8,11 @@ export type TranslationKey =
   | "klub"
   | "ime"
   | "prezime"
+  | "username"
   | "email"
   | "emailReg"
   | "password"
+  | "confirmPassword"
   | "remember"
   | "forgot"
   | "loginBtn"
@@ -19,7 +21,17 @@ export type TranslationKey =
   | "haveAccount"
   | "register"
   | "login"
-  | "skipLogin";
+  | "skipLogin"
+  | "errorRequired"
+  | "errorEmailFormat"
+  | "errorPasswordMin"
+  | "errorPasswordMatch"
+  | "errorUsernameTaken"
+  | "errorInvalidLogin"
+  | "errorGeneric"
+  | "forgotModalTitle"
+  | "forgotModalBody"
+  | "forgotModalClose";
 
 export const translations: Record<Lang, Record<TranslationKey, string>> = {
   sr: {
@@ -30,9 +42,11 @@ export const translations: Record<Lang, Record<TranslationKey, string>> = {
     klub: "Klub",
     ime: "Ime",
     prezime: "Prezime",
+    username: "Korisničko ime",
     email: "Korisničko ime ili imejl",
     emailReg: "Imejl adresa",
     password: "Lozinka",
+    confirmPassword: "Potvrdi lozinku",
     remember: "Zapamti me",
     forgot: "Zaboravljena lozinka?",
     loginBtn: "Prijavi se",
@@ -42,6 +56,16 @@ export const translations: Record<Lang, Record<TranslationKey, string>> = {
     register: "Registruj se",
     login: "Prijavi se",
     skipLogin: "Preskoči login (DEV)",
+    errorRequired: "Obavezno polje.",
+    errorEmailFormat: "Unesite ispravnu email adresu.",
+    errorPasswordMin: "Lozinka mora imati najmanje 8 karaktera.",
+    errorPasswordMatch: "Lozinke se ne poklapaju.",
+    errorUsernameTaken: "Korisničko ime je već zauzeto.",
+    errorInvalidLogin: "Pogrešno korisničko ime/email ili lozinka.",
+    errorGeneric: "Došlo je do greške. Pokušajte ponovo.",
+    forgotModalTitle: "Zaboravljena lozinka",
+    forgotModalBody: "Funkcionalnost dolazi uskoro.",
+    forgotModalClose: "Zatvori",
   },
   en: {
     loginTitle: "Sign in",
@@ -51,9 +75,11 @@ export const translations: Record<Lang, Record<TranslationKey, string>> = {
     klub: "Club",
     ime: "First name",
     prezime: "Last name",
+    username: "Username",
     email: "Username or email",
     emailReg: "Email address",
     password: "Password",
+    confirmPassword: "Confirm password",
     remember: "Remember me",
     forgot: "Forgot password?",
     loginBtn: "Sign in",
@@ -63,6 +89,16 @@ export const translations: Record<Lang, Record<TranslationKey, string>> = {
     register: "Sign up",
     login: "Sign in",
     skipLogin: "Skip login (DEV)",
+    errorRequired: "This field is required.",
+    errorEmailFormat: "Enter a valid email address.",
+    errorPasswordMin: "Password must be at least 8 characters.",
+    errorPasswordMatch: "Passwords do not match.",
+    errorUsernameTaken: "Username is already taken.",
+    errorInvalidLogin: "Invalid username/email or password.",
+    errorGeneric: "Something went wrong. Please try again.",
+    forgotModalTitle: "Forgot password",
+    forgotModalBody: "This feature is coming soon.",
+    forgotModalClose: "Close",
   },
   de: {
     loginTitle: "Anmelden",
@@ -72,9 +108,11 @@ export const translations: Record<Lang, Record<TranslationKey, string>> = {
     klub: "Verein",
     ime: "Vorname",
     prezime: "Nachname",
+    username: "Benutzername",
     email: "Benutzername oder E-Mail",
     emailReg: "E-Mail-Adresse",
     password: "Passwort",
+    confirmPassword: "Passwort bestätigen",
     remember: "Angemeldet bleiben",
     forgot: "Passwort vergessen?",
     loginBtn: "Anmelden",
@@ -84,6 +122,16 @@ export const translations: Record<Lang, Record<TranslationKey, string>> = {
     register: "Registrieren",
     login: "Anmelden",
     skipLogin: "Login überspringen (DEV)",
+    errorRequired: "Pflichtfeld.",
+    errorEmailFormat: "Bitte eine gültige E-Mail-Adresse eingeben.",
+    errorPasswordMin: "Das Passwort muss mindestens 8 Zeichen lang sein.",
+    errorPasswordMatch: "Passwörter stimmen nicht überein.",
+    errorUsernameTaken: "Benutzername ist bereits vergeben.",
+    errorInvalidLogin: "Falscher Benutzername/E-Mail oder Passwort.",
+    errorGeneric: "Etwas ist schief gelaufen. Bitte erneut versuchen.",
+    forgotModalTitle: "Passwort vergessen",
+    forgotModalBody: "Diese Funktion kommt bald.",
+    forgotModalClose: "Schließen",
   },
 };
 

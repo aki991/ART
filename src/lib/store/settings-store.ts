@@ -9,7 +9,6 @@ import {
   seedCreatedClubMembers,
 } from "@/lib/data/mock-clubs";
 import type {
-  ProfileData,
   LoftData,
   ClubMembership,
   Club,
@@ -20,15 +19,6 @@ import type {
   NotificationPrefs,
   AppearancePrefs,
 } from "@/lib/settings/types";
-
-const DEFAULT_PROFILE: ProfileData = {
-  firstName: "Andreja",
-  lastName: "Milenković",
-  username: "andreja",
-  email: "andreja@aeroringtech.com",
-  phone: "",
-  avatar: null,
-};
 
 const DEFAULT_LOFT: LoftData = { address: "", city: "" };
 
@@ -54,8 +44,17 @@ const DEFAULT_MEMBERSHIP: ClubMembership = {
   requestedAt: null,
 };
 
+// Subset of profile data needed when promoting the current user into a club
+// roster. Profile is owned by Supabase now; club state is still mock — callers
+// pass the user's identity in.
+export interface ClubActorProfile {
+  firstName: string;
+  lastName: string;
+  username: string;
+  avatar: string | null;
+}
+
 interface SettingsState {
-  profile: ProfileData;
   loft: LoftData;
   notifications: NotificationPrefs;
   appearance: AppearancePrefs;
@@ -64,30 +63,27 @@ interface SettingsState {
   members: Record<string, ClubMember[]>;
   joinRequests: Record<string, JoinRequest[]>;
 
-  // Form saves — committed through the global "Sačuvaj promene" button.
-  saveProfile: (profile: ProfileData) => void;
   saveLoft: (loft: LoftData) => void;
   saveNotifications: (notifications: NotificationPrefs) => void;
   saveAppearance: (appearance: AppearancePrefs) => void;
   updateClub: (clubId: string, data: ClubEditableData) => void;
 
-  // Immediate club actions — each has its own button / confirm dialog.
-  sendJoinRequest: (clubId: string) => void;
+  sendJoinRequest: (clubId: string, actor: ClubActorProfile) => void;
   cancelJoinRequest: () => void;
   leaveClub: () => void;
-  createClub: (data: { name: string; city: string; logo: string | null }) => void;
+  createClub: (
+    data: { name: string; city: string; logo: string | null },
+    actor: ClubActorProfile
+  ) => void;
   deleteClub: (clubId: string) => void;
   approveJoinRequest: (clubId: string, requestId: string) => void;
   rejectJoinRequest: (clubId: string, requestId: string) => void;
   removeMember: (clubId: string, userId: string) => void;
   transferAdmin: (clubId: string, userId: string) => void;
-
-  deleteAccount: () => void;
 }
 
 type PersistedSettings = Pick<
   SettingsState,
-  | "profile"
   | "loft"
   | "notifications"
   | "appearance"
@@ -97,17 +93,17 @@ type PersistedSettings = Pick<
   | "joinRequests"
 >;
 
-function currentUserAsMember(
-  profile: ProfileData,
+function actorAsMember(
+  actor: ClubActorProfile,
   role: ClubMemberRole,
   joinedAt: string
 ): ClubMember {
   return {
     userId: CURRENT_USER_ID,
-    firstName: profile.firstName,
-    lastName: profile.lastName,
-    username: profile.username,
-    avatar: profile.avatar,
+    firstName: actor.firstName,
+    lastName: actor.lastName,
+    username: actor.username,
+    avatar: actor.avatar,
     joinedAt,
     role,
   };
@@ -116,7 +112,6 @@ function currentUserAsMember(
 export const useSettingsStore = create<SettingsState>()(
   persist(
     (set, get) => ({
-      profile: DEFAULT_PROFILE,
       loft: DEFAULT_LOFT,
       notifications: DEFAULT_NOTIFICATIONS,
       appearance: DEFAULT_APPEARANCE,
@@ -125,7 +120,6 @@ export const useSettingsStore = create<SettingsState>()(
       members: {},
       joinRequests: {},
 
-      saveProfile: (profile) => set({ profile }),
       saveLoft: (loft) => set({ loft }),
       saveNotifications: (notifications) => set({ notifications }),
       saveAppearance: (appearance) => set({ appearance }),
@@ -137,7 +131,7 @@ export const useSettingsStore = create<SettingsState>()(
           ),
         })),
 
-      sendJoinRequest: (clubId) => {
+      sendJoinRequest: (clubId, actor) => {
         set({
           membership: {
             status: "pending",
@@ -162,7 +156,7 @@ export const useSettingsStore = create<SettingsState>()(
                 ...state.members,
                 [clubId]: [
                   ...existing.filter((mm) => mm.userId !== CURRENT_USER_ID),
-                  currentUserAsMember(state.profile, "member", joinedAt),
+                  actorAsMember(actor, "member", joinedAt),
                 ],
               },
             };
@@ -193,7 +187,7 @@ export const useSettingsStore = create<SettingsState>()(
         });
       },
 
-      createClub: ({ name, city, logo }) => {
+      createClub: ({ name, city, logo }, actor) => {
         const id = crypto.randomUUID();
         const now = new Date().toISOString();
         const club: Club = {
@@ -216,7 +210,7 @@ export const useSettingsStore = create<SettingsState>()(
           members: {
             ...state.members,
             [id]: [
-              currentUserAsMember(state.profile, "admin", now),
+              actorAsMember(actor, "admin", now),
               ...seedCreatedClubMembers(),
             ],
           },
@@ -308,38 +302,25 @@ export const useSettingsStore = create<SettingsState>()(
               ? { ...state.membership, status: "member" }
               : state.membership,
         })),
-
-      deleteAccount: () =>
-        set({
-          profile: DEFAULT_PROFILE,
-          loft: DEFAULT_LOFT,
-          notifications: DEFAULT_NOTIFICATIONS,
-          appearance: DEFAULT_APPEARANCE,
-          membership: DEFAULT_MEMBERSHIP,
-          clubs: MOCK_CLUBS,
-          members: {},
-          joinRequests: {},
-        }),
     }),
     {
       name: "art-settings",
-      version: 2,
-      // v2 reshaped notifications ({ masterEnabled, events }) and appearance
-      // (language casing). Those slices had no UI in v1, so reset them to the
-      // new defaults; everything else carries over untouched.
+      version: 3,
+      // v3 dropped the mock `profile` slice — it now lives in Supabase. v2
+      // reshaped notifications and appearance.
       migrate: (persisted, version) => {
-        const state = persisted as PersistedSettings;
+        const state = persisted as PersistedSettings & { profile?: unknown };
+        const { profile: _profile, ...rest } = state;
         if (version < 2) {
           return {
-            ...state,
+            ...rest,
             notifications: DEFAULT_NOTIFICATIONS,
             appearance: DEFAULT_APPEARANCE,
           };
         }
-        return state;
+        return rest;
       },
       partialize: (state) => ({
-        profile: state.profile,
         loft: state.loft,
         notifications: state.notifications,
         appearance: state.appearance,

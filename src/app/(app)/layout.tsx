@@ -1,23 +1,52 @@
+import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/app-shell/Sidebar";
 import { TopBar } from "@/components/app-shell/TopBar";
-import { AuthGuard } from "@/components/auth/AuthGuard";
+import { CurrentUserProvider } from "@/components/providers/CurrentUserProvider";
+import { createClient } from "@/lib/supabase/server";
 
-export default function AppLayout({
+export default async function AppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/");
+  }
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("id, username, first_name, last_name, phone, avatar_url")
+    .eq("id", user.id)
+    .single();
+
   return (
-    <AuthGuard>
+    <CurrentUserProvider
+      user={{
+        id: user.id,
+        email: user.email ?? "",
+        profile: profile
+          ? {
+              username: profile.username,
+              firstName: profile.first_name,
+              lastName: profile.last_name,
+              phone: profile.phone ?? "",
+              avatarUrl: profile.avatar_url ?? null,
+            }
+          : null,
+      }}
+    >
       <div className="flex h-screen overflow-hidden bg-gray-50">
         <Sidebar />
         <div className="flex flex-col flex-1 min-w-0 overflow-hidden bg-app-surface">
           <TopBar />
-          <main className="flex-1 overflow-y-auto">
-            {children}
-          </main>
+          <main className="flex-1 overflow-y-auto">{children}</main>
         </div>
       </div>
-    </AuthGuard>
+    </CurrentUserProvider>
   );
 }

@@ -10,21 +10,36 @@ Web aplikacija za upravljanje elektronskim prstenovima golubova — live praćen
 npm install
 ```
 
-### 2. Kopiraj env i podesi konekciju
+### 2. Podesi Supabase
+
+Kopiraj `.env.example` u `.env.local` i popuni vrednosti iz svog Supabase projekta (Settings → API):
 
 ```bash
-cp .env.example .env
+cp .env.example .env.local
 ```
 
-### 3. Pokreni PostgreSQL
+```
+NEXT_PUBLIC_SUPABASE_URL=https://<project>.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable key>
+SUPABASE_SERVICE_ROLE_KEY=<secret key>  # potreban za brisanje naloga
+```
+
+### 3. Pokreni SQL migraciju
+
+Otvori Supabase Dashboard → SQL Editor i pokreni sadržaj fajla:
+
+```
+supabase/migrations/001_create_profiles.sql
+```
+
+Skripta kreira `profiles` tabelu, RLS pravila, trigger koji automatski popunjava profil pri registraciji, i RPC funkciju za login pomoću korisničkog imena.
+
+### 4. (Opciono) Pokreni lokalnu PostgreSQL bazu
+
+Aplikacija koristi Supabase za auth i profil. Lokalna Postgres baza ostaje za eventualne Prisma modele:
 
 ```bash
 docker compose up -d
-```
-
-### 4. Kreiraj tabele u bazi
-
-```bash
 npm run db:push
 ```
 

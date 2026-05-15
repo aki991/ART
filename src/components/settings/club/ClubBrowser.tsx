@@ -9,12 +9,14 @@ import {
 } from "@/components/ui/SearchableSelect";
 import { Button } from "@/components/ui/Button";
 import { useSettingsStore } from "@/lib/store/settings-store";
+import { useCurrentUser } from "@/components/providers/CurrentUserProvider";
 import { getMockMemberCount } from "@/lib/data/mock-clubs";
 import { CreateClubModal } from "../modals/CreateClubModal";
 
 export function ClubBrowser() {
   const clubs = useSettingsStore((s) => s.clubs);
   const sendJoinRequest = useSettingsStore((s) => s.sendJoinRequest);
+  const user = useCurrentUser();
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
@@ -28,7 +30,12 @@ export function ClubBrowser() {
 
   function handleSendRequest() {
     if (!selected) return;
-    sendJoinRequest(selected.id);
+    sendJoinRequest(selected.id, {
+      firstName: user.profile?.firstName ?? "",
+      lastName: user.profile?.lastName ?? "",
+      username: user.profile?.username ?? "",
+      avatar: user.profile?.avatarUrl ?? null,
+    });
     toast.success("Zahtev za članstvo poslat", {
       description: `Zahtev je poslat administratoru kluba ${selected.name}.`,
     });

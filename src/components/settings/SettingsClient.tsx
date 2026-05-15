@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useSettingsStore } from "@/lib/store/settings-store";
+import { useCurrentUser } from "@/components/providers/CurrentUserProvider";
+import { updateProfileAction } from "@/app/auth/profile-actions";
 import type {
   AppearancePrefs,
   Club,
@@ -90,14 +92,25 @@ function appearanceEqual(a: AppearancePrefs, b: AppearancePrefs): boolean {
 
 export function SettingsClient() {
   const router = useRouter();
+  const currentUser = useCurrentUser();
 
-  const profile = useSettingsStore((s) => s.profile);
+  const supabaseProfile: ProfileData = useMemo(
+    () => ({
+      firstName: currentUser.profile?.firstName ?? "",
+      lastName: currentUser.profile?.lastName ?? "",
+      username: currentUser.profile?.username ?? "",
+      email: currentUser.email,
+      phone: currentUser.profile?.phone ?? "",
+      avatar: currentUser.profile?.avatarUrl ?? null,
+    }),
+    [currentUser]
+  );
+
   const loft = useSettingsStore((s) => s.loft);
   const membership = useSettingsStore((s) => s.membership);
   const clubs = useSettingsStore((s) => s.clubs);
   const notifications = useSettingsStore((s) => s.notifications);
   const appearance = useSettingsStore((s) => s.appearance);
-  const saveProfile = useSettingsStore((s) => s.saveProfile);
   const saveLoft = useSettingsStore((s) => s.saveLoft);
   const saveNotifications = useSettingsStore((s) => s.saveNotifications);
   const saveAppearance = useSettingsStore((s) => s.saveAppearance);
@@ -109,7 +122,7 @@ export function SettingsClient() {
     : null;
 
   const [activeTab, setActiveTab] = useState("profil");
-  const [draftProfile, setDraftProfile] = useState(profile);
+  const [draftProfile, setDraftProfile] = useState<ProfileData>(supabaseProfile);
   const [draftLoft, setDraftLoft] = useState(loft);
   const [draftClub, setDraftClub] = useState<ClubEditableData | null>(
     isAdmin && myClub ? clubEditableOf(myClub) : null
@@ -126,10 +139,7 @@ export function SettingsClient() {
     if (TAB_IDS.includes(hash)) setActiveTab(hash);
   }, []);
 
-  // Re-sync drafts when the saved values change (after a save, or after an
-  // immediate club action). These store slices only change through explicit
-  // paths, so in-progress edits are never clobbered.
-  useEffect(() => setDraftProfile(profile), [profile]);
+  useEffect(() => setDraftProfile(supabaseProfile), [supabaseProfile]);
   useEffect(() => setDraftLoft(loft), [loft]);
   useEffect(() => setDraftNotifications(notifications), [notifications]);
   useEffect(() => setDraftAppearance(appearance), [appearance]);
@@ -138,7 +148,7 @@ export function SettingsClient() {
   }, [isAdmin, myClub]);
 
   const dirty =
-    !profileEqual(draftProfile, profile) ||
+    !profileEqual(draftProfile, supabaseProfile) ||
     !loftEqual(draftLoft, loft) ||
     !notificationsEqual(draftNotifications, notifications) ||
     !appearanceEqual(draftAppearance, appearance) ||
@@ -191,19 +201,37 @@ export function SettingsClient() {
 
   async function handleSave() {
     setSaving(true);
-    // Simulate a network round-trip (frontend-only prototype).
-    await new Promise((resolve) => setTimeout(resolve, 600));
-    saveProfile(draftProfile);
+
+    if (!profileEqual(draftProfile, supabaseProfile)) {
+      const result = await updateProfileAction({
+        username: draftProfile.username,
+        firstName: draftProfile.firstName,
+        lastName: draftProfile.lastName,
+        phone: draftProfile.phone,
+        avatarUrl: draftProfile.avatar,
+      });
+      if (!result.ok) {
+        setSaving(false);
+        toast.error(
+          result.code === "username_taken"
+            ? "Korisničko ime je već zauzeto."
+            : "Snimanje profila nije uspelo."
+        );
+        return;
+      }
+    }
+
     saveLoft(draftLoft);
     saveNotifications(draftNotifications);
     saveAppearance(draftAppearance);
     if (draftClub && myClub) updateClub(myClub.id, draftClub);
     setSaving(false);
     toast.success("Postavke sačuvane ✓");
+    router.refresh();
   }
 
   function handleDiscard() {
-    setDraftProfile(profile);
+    setDraftProfile(supabaseProfile);
     setDraftLoft(loft);
     setDraftNotifications(notifications);
     setDraftAppearance(appearance);

@@ -8,21 +8,12 @@ import { Avatar } from "@/components/ui/Avatar";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
-import { useSettingsStore } from "@/lib/store/settings-store";
-import { useAuthStore } from "@/lib/store/auth-store";
-import { MOCK_CLUB_MEMBERS } from "@/lib/data/mock-clubs";
+import { useCurrentUser } from "@/components/providers/CurrentUserProvider";
+import { createClient } from "@/lib/supabase/client";
+import { deleteAccountAction } from "@/app/auth/actions";
 import { readImageFile } from "@/lib/settings/image-upload";
 import type { ProfileData } from "@/lib/settings/types";
 import { ChangePasswordModal } from "../modals/ChangePasswordModal";
-
-// Frontend-only stand-in for a backend uniqueness check.
-const TAKEN_USERNAMES = new Set(
-  Object.values(MOCK_CLUB_MEMBERS)
-    .flat()
-    .map((m) => m.username.toLowerCase())
-);
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type UsernameStatus = "idle" | "checking" | "available" | "taken" | "invalid";
 
@@ -33,16 +24,16 @@ interface ProfileTabProps {
 
 export function ProfileTab({ value, onChange }: ProfileTabProps) {
   const router = useRouter();
-  const savedUsername = useSettingsStore((s) => s.profile.username);
-  const deleteAccount = useSettingsStore((s) => s.deleteAccount);
-  const logout = useAuthStore((s) => s.logout);
+  const currentUser = useCurrentUser();
+  const savedUsername = currentUser.profile?.username ?? "";
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [passwordOpen, setPasswordOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [usernameStatus, setUsernameStatus] = useState<UsernameStatus>("idle");
 
-  // Debounced (500ms) uniqueness check for the username.
+  // Debounced (500ms) uniqueness check for the username — hits Supabase.
   useEffect(() => {
     const uname = value.username.trim();
     if (uname === savedUsername) {
@@ -54,13 +45,23 @@ export function ProfileTab({ value, onChange }: ProfileTabProps) {
       return;
     }
     setUsernameStatus("checking");
-    const t = setTimeout(() => {
-      setUsernameStatus(
-        TAKEN_USERNAMES.has(uname.toLowerCase()) ? "taken" : "available"
-      );
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      const supabase = createClient();
+      const { data } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("username", uname)
+        .neq("id", currentUser.id)
+        .maybeSingle();
+      if (cancelled) return;
+      setUsernameStatus(data ? "taken" : "available");
     }, 500);
-    return () => clearTimeout(t);
-  }, [value.username, savedUsername]);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
+  }, [value.username, savedUsername, currentUser.id]);
 
   function patch<K extends keyof ProfileData>(key: K, v: ProfileData[K]) {
     onChange({ ...value, [key]: v });
@@ -72,16 +73,21 @@ export function ProfileTab({ value, onChange }: ProfileTabProps) {
     if (file) readImageFile(file, (dataUrl) => patch("avatar", dataUrl));
   }
 
-  function handleDeleteAccount() {
-    deleteAccount();
-    logout();
+  async function handleDeleteAccount() {
+    if (deleting) return;
+    setDeleting(true);
+    const result = await deleteAccountAction();
+    setDeleting(false);
+    if (!result.ok) {
+      toast.error("Brisanje naloga nije uspelo.");
+      return;
+    }
     setDeleteOpen(false);
     toast.success("Nalog obrisan");
-    router.push("/");
+    router.replace("/");
+    router.refresh();
   }
 
-  const emailInvalid =
-    value.email.trim().length > 0 && !EMAIL_RE.test(value.email.trim());
   const usernameError =
     usernameStatus === "taken"
       ? "Korisničko ime je već zauzeto."
@@ -174,20 +180,17 @@ export function ProfileTab({ value, onChange }: ProfileTabProps) {
           error={usernameError}
           hint={usernameHint}
         />
-        <Input
-          label="Email"
-          required
-          type="email"
-          value={value.email}
-          onChange={(e) => patch("email", e.target.value)}
-          error={
-            value.email.trim() === ""
-              ? "Obavezno polje."
-              : emailInvalid
-                ? "Unesite ispravnu email adresu."
-                : undefined
-          }
-        />
+        <div>
+          <label className="block text-sm font-medium text-white/70 mb-1.5">
+            Email
+          </label>
+          <div className="px-3 py-2 rounded-md bg-white/5 border border-white/10 text-white/60 text-sm">
+            {currentUser.email}
+          </div>
+          <p className="mt-1 text-xs text-white/40">
+            Email se ne može menjati iz ovog ekrana.
+          </p>
+        </div>
         <Input
           label="Telefon"
           type="tel"
@@ -257,7 +260,7 @@ export function ProfileTab({ value, onChange }: ProfileTabProps) {
             <span className="font-mono text-white">{savedUsername}</span> ispod.
           </>
         }
-        confirmLabel="Trajno obriši nalog"
+        confirmLabel={deleting ? "Brisanje…" : "Trajno obriši nalog"}
         variant="danger"
         confirmationText={savedUsername}
         confirmationLabel="Korisničko ime"

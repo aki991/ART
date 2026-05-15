@@ -3,19 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
-import { useAuthStore } from "@/lib/store/auth-store";
+import { createClient } from "@/lib/supabase/client";
 import TextField from "./TextField";
-import SelectField from "./SelectField";
 import type { TranslationKey } from "./translations";
 
-const KLUBOVI = [
-  "PRG Beograd",
-  "SK Novi Sad",
-  "Krila Niša",
-  "Aero Subotica",
-  "Visoko Krilo Kragujevac",
-  "Drugi klub…",
-];
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const USERNAME_RE = /^[a-zA-Z0-9_]+$/;
 
 interface RegisterFormProps {
   onSwitch: () => void;
@@ -24,42 +17,99 @@ interface RegisterFormProps {
 
 export default function RegisterForm({ onSwitch, t }: RegisterFormProps) {
   const router = useRouter();
-  const login = useAuthStore((s) => s.login);
   const [data, setData] = useState({
-    klub: "",
     ime: "",
     prezime: "",
+    username: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const set = (k: keyof typeof data) => (e: { target: { value: string } }) =>
     setData((d) => ({ ...d, [k]: e.target.value }));
 
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    login();
-    router.push("/dashboard");
-  };
+  function validate(): string | null {
+    if (
+      !data.ime.trim() ||
+      !data.prezime.trim() ||
+      !data.username.trim() ||
+      !data.email.trim() ||
+      !data.password ||
+      !data.confirmPassword
+    ) {
+      return t.errorRequired;
+    }
+    if (!USERNAME_RE.test(data.username.trim()) || data.username.trim().length < 3) {
+      return t.errorUsernameTaken; // reuses the "username invalid" surface
+    }
+    if (!EMAIL_RE.test(data.email.trim())) {
+      return t.errorEmailFormat;
+    }
+    if (data.password.length < 8) {
+      return t.errorPasswordMin;
+    }
+    if (data.password !== data.confirmPassword) {
+      return t.errorPasswordMatch;
+    }
+    return null;
+  }
 
-  // DEV shortcut — flips the auth flag without real credentials.
-  const skipLogin = () => {
-    login();
-    router.push("/dashboard");
-  };
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    const validationError = validate();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    setLoading(true);
+    const supabase = createClient();
+    const username = data.username.trim();
+
+    try {
+      const { data: existing } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("username", username)
+        .maybeSingle();
+      if (existing) {
+        setError(t.errorUsernameTaken);
+        setLoading(false);
+        return;
+      }
+
+      const { error: signUpError } = await supabase.auth.signUp({
+        email: data.email.trim(),
+        password: data.password,
+        options: {
+          data: {
+            username,
+            first_name: data.ime.trim(),
+            last_name: data.prezime.trim(),
+          },
+        },
+      });
+
+      if (signUpError) {
+        setError(signUpError.message);
+        setLoading(false);
+        return;
+      }
+
+      router.push("/dashboard");
+      router.refresh();
+    } catch {
+      setError(t.errorGeneric);
+      setLoading(false);
+    }
+  }
 
   return (
     <form className="mform" onSubmit={submit}>
-      <SelectField
-        placeholder={t.klub}
-        name="klub-reg"
-        value={data.klub}
-        onChange={set("klub")}
-        options={KLUBOVI}
-        required
-      />
       <TextField
         placeholder={t.ime}
         icon="user"
@@ -76,6 +126,15 @@ export default function RegisterForm({ onSwitch, t }: RegisterFormProps) {
         value={data.prezime}
         onChange={set("prezime") as React.ChangeEventHandler<HTMLInputElement>}
         autoComplete="family-name"
+        required
+      />
+      <TextField
+        placeholder={t.username}
+        icon="user"
+        name="username"
+        value={data.username}
+        onChange={set("username") as React.ChangeEventHandler<HTMLInputElement>}
+        autoComplete="username"
         required
       />
       <TextField
@@ -98,6 +157,27 @@ export default function RegisterForm({ onSwitch, t }: RegisterFormProps) {
         autoComplete="new-password"
         required
       />
+      <TextField
+        placeholder={t.confirmPassword}
+        icon="lock"
+        name="pass-confirm"
+        type="password"
+        value={data.confirmPassword}
+        onChange={
+          set("confirmPassword") as React.ChangeEventHandler<HTMLInputElement>
+        }
+        autoComplete="new-password"
+        required
+      />
+
+      {error && (
+        <div
+          role="alert"
+          className="text-sm text-red-300 bg-red-500/10 border border-red-500/30 rounded-md px-3 py-2"
+        >
+          {error}
+        </div>
+      )}
 
       <button
         type="submit"
@@ -125,17 +205,6 @@ export default function RegisterForm({ onSwitch, t }: RegisterFormProps) {
           {t.login}
         </button>
       </div>
-
-      {/* TODO(auth): Ukloniti pre produkcije */}
-      <button
-        type="button"
-        data-dev-only="true"
-        onClick={skipLogin}
-        aria-label="Privremeno preskakanje login-a — dev only"
-        className="block w-full text-center mt-3 text-xs text-white/40 hover:text-cyan-brand transition-colors rounded focus:outline-none focus:ring-2 focus:ring-cyan-brand"
-      >
-        ↪ {t.skipLogin}
-      </button>
     </form>
   );
 }

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Avatar } from "@/components/ui/Avatar";
 import { useSettingsStore } from "@/lib/store/settings-store";
+import { useCurrentUser } from "@/components/providers/CurrentUserProvider";
 import { readImageFile } from "@/lib/settings/image-upload";
 
 interface CreateClubModalProps {
@@ -17,6 +18,7 @@ interface CreateClubModalProps {
 
 export function CreateClubModal({ isOpen, onClose }: CreateClubModalProps) {
   const createClub = useSettingsStore((s) => s.createClub);
+  const user = useCurrentUser();
   const [name, setName] = useState("");
   const [city, setCity] = useState("");
   const [logo, setLogo] = useState<string | null>(null);
@@ -41,7 +43,15 @@ export function CreateClubModal({ isOpen, onClose }: CreateClubModalProps) {
   function handleSubmit() {
     if (!canSubmit) return;
     const clubName = name.trim();
-    createClub({ name: clubName, city, logo });
+    createClub(
+      { name: clubName, city, logo },
+      {
+        firstName: user.profile?.firstName ?? "",
+        lastName: user.profile?.lastName ?? "",
+        username: user.profile?.username ?? "",
+        avatar: user.profile?.avatarUrl ?? null,
+      }
+    );
     onClose();
     toast.success("Klub kreiran ✓", {
       description: `Vi ste administrator kluba ${clubName}.`,
