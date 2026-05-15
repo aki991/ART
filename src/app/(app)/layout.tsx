@@ -20,7 +20,7 @@ export default async function AppLayout({
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, username, first_name, last_name, phone, avatar_url")
+    .select("id, username, first_name, last_name, phone, avatar_url, is_super_admin")
     .eq("id", user.id)
     .single();
 
@@ -29,6 +29,7 @@ export default async function AppLayout({
       user={{
         id: user.id,
         email: user.email ?? "",
+        isSuperAdmin: profile?.is_super_admin === true,
         profile: profile
           ? {
               username: profile.username,

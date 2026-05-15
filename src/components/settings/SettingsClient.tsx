@@ -8,12 +8,17 @@ import { useCurrentUser } from "@/components/providers/CurrentUserProvider";
 import { updateProfileAction } from "@/app/auth/profile-actions";
 import type {
   AppearancePrefs,
-  Club,
-  ClubEditableData,
   LoftData,
   NotificationPrefs,
   ProfileData,
 } from "@/lib/settings/types";
+import type {
+  ClubCreationRequestRow,
+  ClubMemberRow,
+  ClubRow,
+  JoinRequestRow,
+  MembershipSnapshot,
+} from "@/app/actions/club-types";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { SettingsTabs } from "./SettingsTabs";
 import type { SettingsTab } from "./SettingsTabs";
@@ -35,15 +40,6 @@ const TABS: SettingsTab[] = [
 ];
 const TAB_IDS = TABS.map((t) => t.id);
 
-function clubEditableOf(club: Club): ClubEditableData {
-  return {
-    name: club.name,
-    city: club.city,
-    description: club.description,
-    logo: club.logo,
-  };
-}
-
 function profileEqual(a: ProfileData, b: ProfileData): boolean {
   return (
     a.firstName === b.firstName &&
@@ -57,15 +53,6 @@ function profileEqual(a: ProfileData, b: ProfileData): boolean {
 
 function loftEqual(a: LoftData, b: LoftData): boolean {
   return a.address === b.address && a.city === b.city;
-}
-
-function clubDraftEqual(a: ClubEditableData, b: ClubEditableData): boolean {
-  return (
-    a.name === b.name &&
-    a.city === b.city &&
-    a.description === b.description &&
-    a.logo === b.logo
-  );
 }
 
 function notificationsEqual(
@@ -90,7 +77,25 @@ function appearanceEqual(a: AppearancePrefs, b: AppearancePrefs): boolean {
   return a.theme === b.theme && a.language === b.language;
 }
 
-export function SettingsClient() {
+interface SettingsClientProps {
+  membership: MembershipSnapshot | null;
+  pendingJoinRequest:
+    | (JoinRequestRow & { club: ClubRow })
+    | null;
+  creationRequest: ClubCreationRequestRow | null;
+  initialClubs: ClubRow[];
+  members: ClubMemberRow[];
+  joinRequests: JoinRequestRow[];
+}
+
+export function SettingsClient({
+  membership,
+  pendingJoinRequest,
+  creationRequest,
+  initialClubs,
+  members,
+  joinRequests,
+}: SettingsClientProps) {
   const router = useRouter();
   const currentUser = useCurrentUser();
 
@@ -107,26 +112,15 @@ export function SettingsClient() {
   );
 
   const loft = useSettingsStore((s) => s.loft);
-  const membership = useSettingsStore((s) => s.membership);
-  const clubs = useSettingsStore((s) => s.clubs);
   const notifications = useSettingsStore((s) => s.notifications);
   const appearance = useSettingsStore((s) => s.appearance);
   const saveLoft = useSettingsStore((s) => s.saveLoft);
   const saveNotifications = useSettingsStore((s) => s.saveNotifications);
   const saveAppearance = useSettingsStore((s) => s.saveAppearance);
-  const updateClub = useSettingsStore((s) => s.updateClub);
-
-  const isAdmin = membership.status === "admin";
-  const myClub = membership.clubId
-    ? clubs.find((c) => c.id === membership.clubId) ?? null
-    : null;
 
   const [activeTab, setActiveTab] = useState("profil");
   const [draftProfile, setDraftProfile] = useState<ProfileData>(supabaseProfile);
   const [draftLoft, setDraftLoft] = useState(loft);
-  const [draftClub, setDraftClub] = useState<ClubEditableData | null>(
-    isAdmin && myClub ? clubEditableOf(myClub) : null
-  );
   const [draftNotifications, setDraftNotifications] = useState(notifications);
   const [draftAppearance, setDraftAppearance] = useState(appearance);
   const [saving, setSaving] = useState(false);
@@ -143,20 +137,14 @@ export function SettingsClient() {
   useEffect(() => setDraftLoft(loft), [loft]);
   useEffect(() => setDraftNotifications(notifications), [notifications]);
   useEffect(() => setDraftAppearance(appearance), [appearance]);
-  useEffect(() => {
-    setDraftClub(isAdmin && myClub ? clubEditableOf(myClub) : null);
-  }, [isAdmin, myClub]);
 
   const dirty =
     !profileEqual(draftProfile, supabaseProfile) ||
     !loftEqual(draftLoft, loft) ||
     !notificationsEqual(draftNotifications, notifications) ||
-    !appearanceEqual(draftAppearance, appearance) ||
-    (draftClub !== null &&
-      myClub !== null &&
-      !clubDraftEqual(draftClub, clubEditableOf(myClub)));
+    !appearanceEqual(draftAppearance, appearance);
 
-  // Guard against navigating away (sidebar links, refresh) with unsaved changes.
+  // Guard against navigating away with unsaved changes.
   useEffect(() => {
     if (!dirty) return;
 
@@ -224,7 +212,6 @@ export function SettingsClient() {
     saveLoft(draftLoft);
     saveNotifications(draftNotifications);
     saveAppearance(draftAppearance);
-    if (draftClub && myClub) updateClub(myClub.id, draftClub);
     setSaving(false);
     toast.success("Postavke sačuvane ✓");
     router.refresh();
@@ -235,7 +222,6 @@ export function SettingsClient() {
     setDraftLoft(loft);
     setDraftNotifications(notifications);
     setDraftAppearance(appearance);
-    setDraftClub(isAdmin && myClub ? clubEditableOf(myClub) : null);
   }
 
   function confirmLeave() {
@@ -249,6 +235,8 @@ export function SettingsClient() {
     setNavGuardOpen(false);
     pendingHrefRef.current = null;
   }
+
+  const isClubAdmin = membership?.role === "admin";
 
   return (
     <div>
@@ -264,7 +252,14 @@ export function SettingsClient() {
           <ProfileTab value={draftProfile} onChange={setDraftProfile} />
         )}
         {activeTab === "klub" && (
-          <ClubTab clubDraft={draftClub} onClubDraftChange={setDraftClub} />
+          <ClubTab
+            membership={membership}
+            pendingJoinRequest={pendingJoinRequest}
+            creationRequest={creationRequest}
+            initialClubs={initialClubs}
+            members={members}
+            joinRequests={joinRequests}
+          />
         )}
         {activeTab === "golubarnik" && (
           <LoftTab value={draftLoft} onChange={setDraftLoft} />
@@ -273,6 +268,7 @@ export function SettingsClient() {
           <NotificationsTab
             value={draftNotifications}
             onChange={setDraftNotifications}
+            isClubAdmin={isClubAdmin}
           />
         )}
         {activeTab === "izgled" && (

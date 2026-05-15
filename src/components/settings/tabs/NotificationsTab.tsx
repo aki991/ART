@@ -1,6 +1,5 @@
 "use client";
 
-import { useSettingsStore } from "@/lib/store/settings-store";
 import { Toggle } from "@/components/ui/Toggle";
 import { cn } from "@/lib/utils";
 import type {
@@ -11,6 +10,7 @@ import type {
 interface NotificationsTabProps {
   value: NotificationPrefs;
   onChange: (next: NotificationPrefs) => void;
+  isClubAdmin: boolean;
 }
 
 interface EventDef {
@@ -45,9 +45,11 @@ const EVENTS: EventDef[] = [
   },
 ];
 
-export function NotificationsTab({ value, onChange }: NotificationsTabProps) {
-  const isClubAdmin = useSettingsStore((s) => s.membership.status === "admin");
-
+export function NotificationsTab({
+  value,
+  onChange,
+  isClubAdmin,
+}: NotificationsTabProps) {
   const visibleEvents = EVENTS.filter((e) => !e.adminOnly || isClubAdmin);
   const channelsDisabled = !value.masterEnabled;
 

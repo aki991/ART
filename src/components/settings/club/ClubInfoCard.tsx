@@ -1,20 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Calendar, LogOut, MapPin, ShieldCheck, Users } from "lucide-react";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
-import { useSettingsStore } from "@/lib/store/settings-store";
-import type { Club } from "@/lib/settings/types";
+import { leaveClub } from "@/app/actions/clubs";
+import type { ClubMemberRow, ClubRow } from "@/app/actions/club-types";
 
 interface ClubInfoCardProps {
-  club: Club;
+  club: ClubRow;
+  members: ClubMemberRow[];
+  joinedAt: string;
+  blockLeave?: boolean;
 }
-
-// Stable reference — a fresh [] in the selector would loop zustand's snapshot check.
-const EMPTY: never[] = [];
 
 function formatDate(iso: string | null): string {
   if (!iso) return "—";
@@ -42,25 +43,45 @@ function InfoRow({
   );
 }
 
-export function ClubInfoCard({ club }: ClubInfoCardProps) {
-  const members = useSettingsStore((s) => s.members[club.id] ?? EMPTY);
-  const joinedAt = useSettingsStore((s) => s.membership.joinedAt);
-  const leaveClub = useSettingsStore((s) => s.leaveClub);
+export function ClubInfoCard({
+  club,
+  members,
+  joinedAt,
+  blockLeave = false,
+}: ClubInfoCardProps) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
   const [leaveOpen, setLeaveOpen] = useState(false);
 
-  const admin = members.find((m) => m.role === "admin") ?? null;
+  const admins = members.filter((m) => m.role === "admin");
+  const adminsLabel =
+    admins.length === 0
+      ? "—"
+      : admins
+          .map(
+            (a) =>
+              `${a.profile.first_name} ${a.profile.last_name} · @${a.profile.username}`
+          )
+          .join(", ");
 
   function handleLeave() {
-    leaveClub();
-    setLeaveOpen(false);
-    toast.success("Napustili ste klub");
+    startTransition(async () => {
+      const result = await leaveClub();
+      if (!result.success) {
+        toast.error(result.error);
+        return;
+      }
+      setLeaveOpen(false);
+      toast.success("Napustili ste klub");
+      router.refresh();
+    });
   }
 
   return (
     <div className="space-y-6 max-w-2xl">
       <div className="card-redesign p-6">
         <div className="flex items-center gap-4 mb-6">
-          <Avatar src={club.logo} name={club.name} size="lg" />
+          <Avatar src={club.logo_url} name={club.name} size="lg" />
           <div className="min-w-0">
             <h2 className="text-lg font-semibold text-white font-rajdhani truncate">
               {club.name}
@@ -82,12 +103,8 @@ export function ClubInfoCard({ club }: ClubInfoCardProps) {
           />
           <InfoRow
             icon={<ShieldCheck className="w-4 h-4" aria-hidden="true" />}
-            label="Admin kluba"
-            value={
-              admin
-                ? `${admin.firstName} ${admin.lastName} · @${admin.username}`
-                : "—"
-            }
+            label={admins.length > 1 ? "Admini kluba" : "Admin kluba"}
+            value={adminsLabel}
           />
           <InfoRow
             icon={<Calendar className="w-4 h-4" aria-hidden="true" />}
@@ -95,24 +112,26 @@ export function ClubInfoCard({ club }: ClubInfoCardProps) {
             value={formatDate(joinedAt)}
           />
         </div>
-
-        {club.description && (
-          <p className="text-sm text-white/60 mt-6 pt-5 border-t border-white/5 leading-relaxed">
-            {club.description}
-          </p>
-        )}
       </div>
 
       <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-6 flex items-center justify-between gap-4">
         <div>
           <h3 className="text-base font-semibold text-red-400">Napusti klub</h3>
           <p className="text-sm text-white/50 mt-0.5">
-            Vaše trke i golubovi ostaju, ali nećete više pripadati klubu.
+            {blockLeave
+              ? "Prvo promovišite drugog člana u admina pre nego što napustite klub."
+              : "Vaše trke i golubovi ostaju, ali nećete više pripadati klubu."}
           </p>
         </div>
         <Button
           variant="danger"
           onClick={() => setLeaveOpen(true)}
+          disabled={blockLeave || pending}
+          title={
+            blockLeave
+              ? "Prvo promovišite drugog člana u admina"
+              : undefined
+          }
           className="flex-shrink-0"
         >
           <LogOut className="w-4 h-4" aria-hidden="true" />
@@ -134,6 +153,7 @@ export function ClubInfoCard({ club }: ClubInfoCardProps) {
         }
         confirmLabel="Napusti klub"
         variant="danger"
+        loading={pending}
       />
     </div>
   );

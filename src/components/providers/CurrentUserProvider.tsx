@@ -13,6 +13,7 @@ export interface CurrentUserProfile {
 export interface CurrentUser {
   id: string;
   email: string;
+  isSuperAdmin: boolean;
   profile: CurrentUserProfile | null;
 }
 

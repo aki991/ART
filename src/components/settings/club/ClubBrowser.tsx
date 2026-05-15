@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Building2, Plus } from "lucide-react";
 import {
@@ -8,16 +9,17 @@ import {
   type SelectOption,
 } from "@/components/ui/SearchableSelect";
 import { Button } from "@/components/ui/Button";
-import { useSettingsStore } from "@/lib/store/settings-store";
-import { useCurrentUser } from "@/components/providers/CurrentUserProvider";
-import { getMockMemberCount } from "@/lib/data/mock-clubs";
-import { CreateClubModal } from "../modals/CreateClubModal";
+import { sendJoinRequest } from "@/app/actions/clubs";
+import type { ClubRow } from "@/app/actions/club-types";
+import { CreateClubRequestModal } from "../modals/CreateClubRequestModal";
 
-export function ClubBrowser() {
-  const clubs = useSettingsStore((s) => s.clubs);
-  const sendJoinRequest = useSettingsStore((s) => s.sendJoinRequest);
-  const user = useCurrentUser();
+interface ClubBrowserProps {
+  clubs: ClubRow[];
+}
 
+export function ClubBrowser({ clubs }: ClubBrowserProps) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -30,14 +32,16 @@ export function ClubBrowser() {
 
   function handleSendRequest() {
     if (!selected) return;
-    sendJoinRequest(selected.id, {
-      firstName: user.profile?.firstName ?? "",
-      lastName: user.profile?.lastName ?? "",
-      username: user.profile?.username ?? "",
-      avatar: user.profile?.avatarUrl ?? null,
-    });
-    toast.success("Zahtev za članstvo poslat", {
-      description: `Zahtev je poslat administratoru kluba ${selected.name}.`,
+    startTransition(async () => {
+      const result = await sendJoinRequest(selected.id);
+      if (!result.success) {
+        toast.error(result.error);
+        return;
+      }
+      toast.success("Zahtev za članstvo poslat", {
+        description: `Zahtev je poslat administratoru kluba ${selected.name}.`,
+      });
+      router.refresh();
     });
   }
 
@@ -65,19 +69,23 @@ export function ClubBrowser() {
       {selected && (
         <div className="rounded-lg border border-white/10 bg-white/5 p-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-lg bg-cyan-brand/15 border border-cyan-brand/30 flex items-center justify-center flex-shrink-0">
-              <Building2 className="w-5 h-5 text-cyan-brand" aria-hidden="true" />
+            <div className="w-10 h-10 rounded-lg bg-cyan-brand/15 border border-cyan-brand/30 flex items-center justify-center flex-shrink-0 overflow-hidden">
+              {selected.logo_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={selected.logo_url} alt="" className="w-full h-full object-cover" />
+              ) : (
+                <Building2 className="w-5 h-5 text-cyan-brand" aria-hidden="true" />
+              )}
             </div>
             <div className="min-w-0">
               <p className="text-white font-medium truncate">{selected.name}</p>
-              <p className="text-sm text-white/50 truncate">
-                {selected.city} · {getMockMemberCount(selected.id)} članova
-              </p>
+              <p className="text-sm text-white/50 truncate">{selected.city}</p>
             </div>
           </div>
           <Button
             variant="primary"
             onClick={handleSendRequest}
+            disabled={pending}
             className="flex-shrink-0"
           >
             Pošalji zahtev za članstvo
@@ -96,7 +104,7 @@ export function ClubBrowser() {
         </button>
       </div>
 
-      <CreateClubModal
+      <CreateClubRequestModal
         isOpen={createOpen}
         onClose={() => setCreateOpen(false)}
       />

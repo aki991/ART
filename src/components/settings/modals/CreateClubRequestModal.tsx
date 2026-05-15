@@ -1,27 +1,30 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Camera, Trash2 } from "lucide-react";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Avatar } from "@/components/ui/Avatar";
-import { useSettingsStore } from "@/lib/store/settings-store";
-import { useCurrentUser } from "@/components/providers/CurrentUserProvider";
 import { readImageFile } from "@/lib/settings/image-upload";
+import { requestClubCreation } from "@/app/actions/clubs";
 
-interface CreateClubModalProps {
+interface CreateClubRequestModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function CreateClubModal({ isOpen, onClose }: CreateClubModalProps) {
-  const createClub = useSettingsStore((s) => s.createClub);
-  const user = useCurrentUser();
+export function CreateClubRequestModal({
+  isOpen,
+  onClose,
+}: CreateClubRequestModalProps) {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [city, setCity] = useState("");
   const [logo, setLogo] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -38,23 +41,27 @@ export function CreateClubModal({ isOpen, onClose }: CreateClubModalProps) {
     if (file) readImageFile(file, setLogo);
   }
 
-  const canSubmit = name.trim().length > 0 && city.trim().length > 0;
+  const canSubmit = name.trim().length > 0 && city.trim().length > 0 && !pending;
 
   function handleSubmit() {
     if (!canSubmit) return;
     const clubName = name.trim();
-    createClub(
-      { name: clubName, city, logo },
-      {
-        firstName: user.profile?.firstName ?? "",
-        lastName: user.profile?.lastName ?? "",
-        username: user.profile?.username ?? "",
-        avatar: user.profile?.avatarUrl ?? null,
+    const clubCity = city.trim();
+    startTransition(async () => {
+      const result = await requestClubCreation({
+        name: clubName,
+        city: clubCity,
+        logoDataUrl: logo,
+      });
+      if (!result.success) {
+        toast.error(result.error);
+        return;
       }
-    );
-    onClose();
-    toast.success("Klub kreiran ✓", {
-      description: `Vi ste administrator kluba ${clubName}.`,
+      onClose();
+      toast.success("Zahtev poslat", {
+        description: `Vaš zahtev za kreiranje kluba "${clubName}" čeka odobrenje Super Admina.`,
+      });
+      router.refresh();
     });
   }
 
@@ -62,19 +69,28 @@ export function CreateClubModal({ isOpen, onClose }: CreateClubModalProps) {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Kreiraj novi klub"
+      title="Zahtev za kreiranje kluba"
       footer={
         <>
-          <Button variant="secondary" onClick={onClose}>
+          <Button variant="secondary" onClick={onClose} disabled={pending}>
             Odustani
           </Button>
-          <Button variant="primary" onClick={handleSubmit} disabled={!canSubmit}>
-            Kreiraj klub
+          <Button
+            variant="primary"
+            onClick={handleSubmit}
+            disabled={!canSubmit}
+            loading={pending}
+          >
+            Pošalji zahtev
           </Button>
         </>
       }
     >
       <div className="space-y-5">
+        <p className="text-sm text-white/60">
+          Vaš zahtev će biti prosleđen Super Adminu na odobrenje. Po odobrenju
+          postajete administrator novog kluba.
+        </p>
         <div className="flex items-center gap-4">
           <button
             type="button"

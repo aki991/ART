@@ -7,9 +7,11 @@ import {
   Radio,
   Target,
   Settings,
+  ShieldCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSidebarStore } from "@/lib/store/sidebar-store";
+import { useCurrentUser } from "@/components/providers/CurrentUserProvider";
 import { SidebarLogo } from "./SidebarLogo";
 import { SidebarNavLink } from "./SidebarNavLink";
 import { SidebarFooter } from "./SidebarFooter";
@@ -29,8 +31,15 @@ const SETTINGS_NAV: NavItem = {
   label: "Postavke",
 };
 
+const SUPER_ADMIN_NAV: NavItem = {
+  href: "/super-admin/club-requests",
+  icon: ShieldCheck,
+  label: "Super Admin",
+};
+
 export function Sidebar() {
   const { expanded, toggle } = useSidebarStore();
+  const user = useCurrentUser();
 
   return (
     <aside
@@ -62,6 +71,11 @@ export function Sidebar() {
         />
 
         <ul role="list">
+          {user.isSuperAdmin && (
+            <li>
+              <SidebarNavLink {...SUPER_ADMIN_NAV} />
+            </li>
+          )}
           <li>
             <SidebarNavLink {...SETTINGS_NAV} />
           </li>
