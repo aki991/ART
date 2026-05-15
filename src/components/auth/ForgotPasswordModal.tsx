@@ -36,13 +36,13 @@ export function ForgotPasswordModal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md rounded-2xl bg-[#0f1620] border border-white/10 shadow-2xl p-6"
+        className="w-full max-w-md rounded-2xl bg-bg-surface-elevated border border-border shadow-lg p-6"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-4 mb-3">
           <h3
             id="forgot-password-title"
-            className="text-lg font-semibold text-white font-rajdhani"
+            className="text-lg font-semibold text-text-primary font-rajdhani"
           >
             {t.forgotModalTitle}
           </h3>
@@ -50,17 +50,17 @@ export function ForgotPasswordModal({
             type="button"
             onClick={onClose}
             aria-label="Zatvori"
-            className="text-white/40 hover:text-white transition-colors"
+            className="text-text-tertiary hover:text-text-primary transition-colors"
           >
             <X size={18} strokeWidth={1.6} />
           </button>
         </div>
-        <p className="text-sm text-white/70">{t.forgotModalBody}</p>
+        <p className="text-sm text-text-secondary">{t.forgotModalBody}</p>
         <div className="mt-5 flex justify-end">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-md bg-cyan-brand/20 border border-cyan-brand/40 text-cyan-brand text-sm font-medium hover:bg-cyan-brand/30 transition-colors"
+            className="px-4 py-2 rounded-md bg-accent-light border border-accent/40 text-accent text-sm font-medium hover:bg-accent/20 transition-colors"
           >
             {t.forgotModalClose}
           </button>

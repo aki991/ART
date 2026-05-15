@@ -10,13 +10,13 @@ interface SidebarToggleProps {
 
 export function SidebarToggle({ expanded, toggle }: SidebarToggleProps) {
   return (
-    <div className="border-t border-white/10 px-3 py-2 flex justify-end flex-shrink-0">
+    <div className="border-t border-border px-3 py-2 flex justify-end flex-shrink-0">
       <button
         type="button"
         onClick={toggle}
         aria-expanded={expanded}
         aria-label={expanded ? "Skupi sidebar" : "Proširi sidebar"}
-        className="p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/5 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-brand/50"
+        className="p-2 rounded-lg text-text-tertiary hover:text-text-primary hover:bg-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent/50"
       >
         <ChevronLeft
           size={18}

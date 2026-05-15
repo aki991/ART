@@ -110,7 +110,7 @@ export function ProfileTab({ value, onChange }: ProfileTabProps) {
             type="button"
             onClick={() => fileInputRef.current?.click()}
             aria-label="Promeni avatar"
-            className="rounded-full focus:outline-none focus:ring-2 focus:ring-cyan-brand/40 group relative"
+            className="rounded-full focus:outline-none focus:ring-2 focus:ring-accent/40 group relative"
           >
             <Avatar
               src={value.avatar}
@@ -142,7 +142,7 @@ export function ProfileTab({ value, onChange }: ProfileTabProps) {
                 </Button>
               )}
             </div>
-            <p className="text-sm text-white/40">JPG ili PNG, do 2MB.</p>
+            <p className="text-sm text-text-disabled">JPG ili PNG, do 2MB.</p>
           </div>
           <input
             ref={fileInputRef}
@@ -181,13 +181,13 @@ export function ProfileTab({ value, onChange }: ProfileTabProps) {
           hint={usernameHint}
         />
         <div>
-          <label className="block text-sm font-medium text-white/70 mb-1.5">
+          <label className="block text-sm font-medium text-text-secondary mb-1.5">
             Email
           </label>
-          <div className="px-3 py-2 rounded-md bg-white/5 border border-white/10 text-white/60 text-sm">
+          <div className="px-3 py-2 rounded-md bg-bg-input border border-border text-text-tertiary text-sm">
             {currentUser.email}
           </div>
-          <p className="mt-1 text-xs text-white/40">
+          <p className="mt-1 text-xs text-text-disabled">
             Email se ne može menjati iz ovog ekrana.
           </p>
         </div>
@@ -204,8 +204,8 @@ export function ProfileTab({ value, onChange }: ProfileTabProps) {
       {/* Password */}
       <div className="card-redesign p-6 flex items-center justify-between gap-4">
         <div>
-          <h3 className="text-base font-semibold text-white">Lozinka</h3>
-          <p className="text-sm text-white/40 mt-0.5">
+          <h3 className="text-base font-semibold text-text-primary">Lozinka</h3>
+          <p className="text-sm text-text-disabled mt-0.5">
             Promenite lozinku za pristup nalogu.
           </p>
         </div>
@@ -220,16 +220,16 @@ export function ProfileTab({ value, onChange }: ProfileTabProps) {
       </div>
 
       {/* Danger zone */}
-      <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-6">
+      <div className="rounded-xl border border-status-error bg-bg-error-light p-6">
         <div className="flex items-center gap-2 mb-3">
           <TriangleAlert
-            className="w-4 h-4 text-red-400"
+            className="w-4 h-4 text-status-error"
             aria-hidden="true"
           />
-          <h3 className="text-base font-semibold text-red-400">Opasna zona</h3>
+          <h3 className="text-base font-semibold text-status-error">Opasna zona</h3>
         </div>
         <div className="flex items-center justify-between gap-4">
-          <p className="text-sm text-white/50">
+          <p className="text-sm text-text-tertiary">
             Brisanje naloga je trajno i ne može se opozvati.
           </p>
           <Button
@@ -257,7 +257,7 @@ export function ProfileTab({ value, onChange }: ProfileTabProps) {
           <>
             Ova akcija trajno briše vaš nalog i sve povezane postavke. Da biste
             potvrdili, ukucajte svoje korisničko ime{" "}
-            <span className="font-mono text-white">{savedUsername}</span> ispod.
+            <span className="font-mono text-text-primary">{savedUsername}</span> ispod.
           </>
         }
         confirmLabel={deleting ? "Brisanje…" : "Trajno obriši nalog"}

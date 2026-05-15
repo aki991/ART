@@ -17,18 +17,18 @@ export function AboutTab() {
       <div className="card-redesign p-6">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-lg font-semibold text-white font-rajdhani">
+            <h2 className="text-lg font-semibold text-text-primary font-rajdhani">
               {APP_NAME}
             </h2>
-            <p className="text-3xl font-mono font-bold text-cyan-brand mt-1">
+            <p className="text-3xl font-mono font-bold text-accent mt-1">
               v{APP_VERSION}
             </p>
-            <p className="text-sm text-white/40 mt-1 font-mono">
+            <p className="text-sm text-text-disabled mt-1 font-mono">
               Build {APP_BUILD}
             </p>
           </div>
           {isDev && (
-            <span className="text-xs uppercase tracking-wide bg-amber-400/10 text-amber-400 border border-amber-400/30 px-2.5 py-1 rounded-full">
+            <span className="text-xs uppercase tracking-wide bg-bg-warning-light text-status-warning border border-status-warning/30 px-2.5 py-1 rounded-full">
               Development
             </span>
           )}
@@ -37,29 +37,29 @@ export function AboutTab() {
 
       {/* Changelog */}
       <div className="card-redesign p-6">
-        <h2 className="text-lg font-semibold text-white font-rajdhani mb-4">
+        <h2 className="text-lg font-semibold text-text-primary font-rajdhani mb-4">
           Šta je novo
         </h2>
         <div className="space-y-4">
           {visibleReleases.map((release) => (
             <div
               key={release.version}
-              className="rounded-lg border border-white/10 bg-white/5 p-4"
+              className="rounded-lg border border-border bg-bg-hover p-4"
             >
               <div className="flex items-baseline gap-2 mb-2">
-                <span className="text-base font-mono font-bold text-cyan-brand">
+                <span className="text-base font-mono font-bold text-accent">
                   v{release.version}
                 </span>
-                <span className="text-sm text-white/40">— {release.date}</span>
+                <span className="text-sm text-text-disabled">— {release.date}</span>
               </div>
               <ul className="space-y-1">
                 {release.changes.map((change, i) => (
                   <li
                     key={i}
-                    className="text-sm text-white/70 flex gap-2 leading-relaxed"
+                    className="text-sm text-text-tertiary flex gap-2 leading-relaxed"
                   >
                     <span
-                      className="text-cyan-brand/50 flex-shrink-0"
+                      className="text-accent/50 flex-shrink-0"
                       aria-hidden="true"
                     >
                       •
@@ -74,7 +74,7 @@ export function AboutTab() {
         {hasMore && (
           <button
             type="button"
-            className="mt-4 text-sm text-cyan-brand hover:text-cyan-bright transition-colors"
+            className="mt-4 text-sm text-accent hover:text-cyan-bright transition-colors"
           >
             Vidi sve
           </button>

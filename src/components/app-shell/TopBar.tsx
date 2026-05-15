@@ -15,10 +15,10 @@ function LiveIndicator() {
   return (
     <span className="flex items-center gap-1.5 ml-3">
       <span className="relative flex h-2.5 w-2.5">
-        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
-        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500" />
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-status-error opacity-75" />
+        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-status-error" />
       </span>
-      <span className="text-xs font-semibold uppercase tracking-widest text-red-400">Live</span>
+      <span className="text-xs font-semibold uppercase tracking-widest text-status-error">Live</span>
     </span>
   );
 }
@@ -41,7 +41,7 @@ export function TopBar({ breadcrumbSegments }: TopBarProps) {
     : "Povezivanje uređaja";
 
   return (
-    <header className="h-[72px] bg-app-surface flex items-center justify-between px-6 flex-shrink-0">
+    <header className="h-[72px] bg-bg-app flex items-center justify-between px-6 flex-shrink-0">
       {isDashboard ? (
         <h1 className="text-3xl font-semibold font-rajdhani text-gradient-page-title">
           Dobrodošao u Aero Ring Tech
@@ -60,7 +60,7 @@ export function TopBar({ breadcrumbSegments }: TopBarProps) {
             if (window.history.length > 1) router.back();
             else router.push("/races");
           }}
-          className="flex items-center gap-4 text-2xl text-white/50 hover:text-white transition-colors cursor-pointer"
+          className="flex items-center gap-4 text-2xl text-text-tertiary hover:text-text-primary transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-8 h-8" />
           Nazad
@@ -72,7 +72,7 @@ export function TopBar({ breadcrumbSegments }: TopBarProps) {
       {isDashboard && (
         <Link
           href="/scanning"
-          className="btn-shine-redesign inline-flex items-center gap-2.5 px-6 py-3.5 rounded-lg font-bold text-lg bg-cyan-brand hover:bg-cyan-dark text-sidebar transition-colors"
+          className="btn-shine-redesign inline-flex items-center gap-2.5 px-6 py-3.5 rounded-lg font-bold text-lg bg-accent hover:bg-accent-hover text-text-on-accent transition-colors"
         >
           <Play className="w-5 h-5" fill="currentColor" aria-hidden="true" />
           Pokreni novu trku

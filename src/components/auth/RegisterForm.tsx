@@ -173,7 +173,7 @@ export default function RegisterForm({ onSwitch, t }: RegisterFormProps) {
       {error && (
         <div
           role="alert"
-          className="text-sm text-red-300 bg-red-500/10 border border-red-500/30 rounded-md px-3 py-2"
+          className="text-sm text-status-error bg-bg-error-light border border-status-error/30 rounded-md px-3 py-2"
         >
           {error}
         </div>

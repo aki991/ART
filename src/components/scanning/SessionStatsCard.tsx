@@ -42,29 +42,29 @@ export function SessionStatsCard() {
 
   return (
     <div className="card-redesign p-6">
-      <p className="text-sm uppercase tracking-widest text-white/60 mb-4">
+      <p className="text-sm uppercase tracking-widest text-text-tertiary mb-4">
         Statistike (sesija)
       </p>
 
       <div className="mb-4">
-        <p className="text-xs uppercase tracking-wide text-white/40 mb-1">
+        <p className="text-xs uppercase tracking-wide text-text-disabled mb-1">
           Trajanje sesije
         </p>
-        <p className="text-2xl font-semibold font-mono text-cyan-brand">
+        <p className="text-2xl font-semibold font-mono text-accent">
           {elapsed}
         </p>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-white/5 rounded p-3">
-          <p className="text-sm uppercase text-white/60 mb-1">Maksimum</p>
-          <p className="text-2xl font-semibold font-mono text-red-600">
+        <div className="bg-bg-hover rounded p-3">
+          <p className="text-sm uppercase text-text-tertiary mb-1">Maksimum</p>
+          <p className="text-2xl font-semibold font-mono text-status-error">
             {maxDisplay}
           </p>
         </div>
-        <div className="bg-white/5 rounded p-3">
-          <p className="text-sm uppercase text-white/60 mb-1">Minimum</p>
-          <p className="text-2xl font-semibold font-mono text-green-600">
+        <div className="bg-bg-hover rounded p-3">
+          <p className="text-sm uppercase text-text-tertiary mb-1">Minimum</p>
+          <p className="text-2xl font-semibold font-mono text-status-success">
             {minDisplay}
           </p>
         </div>

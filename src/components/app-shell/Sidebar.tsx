@@ -44,7 +44,7 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        "flex flex-col h-screen bg-sidebar flex-shrink-0 transition-[width] duration-200 ease-in-out overflow-hidden",
+        "flex flex-col h-screen bg-bg-surface border-r border-border flex-shrink-0 transition-[width] duration-200 ease-in-out overflow-hidden",
         expanded ? "w-[340px]" : "w-[72px]"
       )}
     >
@@ -67,7 +67,7 @@ export function Sidebar() {
         <div
           role="separator"
           aria-orientation="horizontal"
-          className="border-t border-white/10 my-2 mx-3"
+          className="border-t border-border my-2 mx-3"
         />
 
         <ul role="list">

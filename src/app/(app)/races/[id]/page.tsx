@@ -22,17 +22,17 @@ export default function RaceDetailPage() {
   if (!race) {
     return (
       <div className="px-6 py-6">
-        <div className="bg-card-dark border border-cyan-brand/15 rounded-xl p-12 text-center">
-          <h2 className="text-2xl font-bold text-white mb-2 font-rajdhani">
+        <div className="bg-bg-surface border border-accent/15 rounded-xl p-12 text-center">
+          <h2 className="text-2xl font-bold text-text-primary mb-2 font-rajdhani">
             Trka nije pronađena
           </h2>
-          <p className="text-white/60 mb-4">
+          <p className="text-text-tertiary mb-4">
             Možda je obrisana ili ID nije ispravan.
           </p>
           <button
             type="button"
             onClick={() => router.push("/races")}
-            className="px-4 py-2 bg-cyan-brand hover:bg-cyan-dark text-white rounded-md transition-colors"
+            className="px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-md transition-colors"
           >
             Vrati se na listu
           </button>
@@ -61,8 +61,8 @@ function RaceHeader({ race }: { race: Race }) {
   const durationSec = Math.floor((race.endedAt - race.startedAt) / 1000);
 
   return (
-    <div className="bg-card-dark border border-cyan-brand/15 rounded-xl p-6">
-      <h1 className="text-3xl font-bold text-white font-rajdhani mb-4">
+    <div className="bg-bg-surface border border-accent/15 rounded-xl p-6">
+      <h1 className="text-3xl font-bold text-text-primary font-rajdhani mb-4">
         {race.name}
       </h1>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -78,11 +78,11 @@ function RaceHeader({ race }: { race: Race }) {
 function InfoItem({ icon, label, value, mono }: { icon: ReactNode; label: string; value: string; mono?: boolean }) {
   return (
     <div>
-      <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-white/50 font-medium mb-1">
+      <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-text-tertiary font-medium mb-1">
         {icon}
         {label}
       </div>
-      <div className={`text-white font-medium${mono ? " font-mono" : ""}`}>{value}</div>
+      <div className={`text-text-primary font-medium${mono ? " font-mono" : ""}`}>{value}</div>
     </div>
   );
 }
@@ -124,12 +124,12 @@ function RaceChartCard({ race }: { race: Race }) {
   }, [chartData, race.pigeons]);
 
   return (
-    <div className="bg-card-dark border border-cyan-brand/15 rounded-xl p-6">
+    <div className="bg-bg-surface border border-accent/15 rounded-xl p-6">
       <div className="mb-4">
-        <h2 className="text-2xl font-bold text-white font-rajdhani">
+        <h2 className="text-2xl font-bold text-text-primary font-rajdhani">
           Visina kroz vreme
         </h2>
-        <p className="text-base text-white/60">Replay celog leta</p>
+        <p className="text-base text-text-tertiary">Replay celog leta</p>
       </div>
 
       <RaceAltitudeChart
@@ -146,14 +146,14 @@ function RaceChartCard({ race }: { race: Race }) {
 
 function RaceStatisticsTable({ race }: { race: Race }) {
   return (
-    <div className="bg-card-dark border border-cyan-brand/15 rounded-xl overflow-hidden">
+    <div className="bg-bg-surface border border-accent/15 rounded-xl overflow-hidden">
       <div className="p-6 pb-4">
-        <h2 className="text-2xl font-bold text-white font-rajdhani">
+        <h2 className="text-2xl font-bold text-text-primary font-rajdhani">
           Izveštaj po golubu
         </h2>
       </div>
       <table className="w-full">
-        <thead className="table-header-gradient text-xs uppercase text-white/50 font-medium">
+        <thead className="table-header-gradient text-xs uppercase text-text-tertiary font-medium">
           <tr>
             <th className="text-left py-3 px-6">Golub</th>
             <th className="text-left py-3 px-4">Trajanje leta</th>
@@ -176,31 +176,31 @@ function RaceStatisticsTable({ race }: { race: Race }) {
 
 function PigeonStatRow({ pigeon, stat }: { pigeon: RacePigeon; stat: PigeonStatistics }) {
   return (
-    <tr className="border-t border-white/5">
+    <tr className="border-t border-border">
       <td className="py-4 px-6">
         <div className="flex items-center gap-3">
           <div
             className="w-3 h-3 rounded-full flex-shrink-0"
             style={{ backgroundColor: pigeon.color }}
           />
-          <span className="text-white font-medium">{pigeon.name}</span>
+          <span className="text-text-primary font-medium">{pigeon.name}</span>
         </div>
       </td>
-      <td className="py-4 px-4 text-white/80 font-mono">
+      <td className="py-4 px-4 text-text-secondary font-mono">
         {formatDuration(stat.totalDurationSeconds)}
       </td>
-      <td className="py-4 px-4 text-white/80 font-mono">
+      <td className="py-4 px-4 text-text-secondary font-mono">
         {formatDuration(stat.timeAbove800Seconds)}
       </td>
-      <td className="py-4 px-4 text-cyan-brand font-mono font-semibold">{stat.maxAltitude}m</td>
+      <td className="py-4 px-4 text-accent font-mono font-semibold">{stat.maxAltitude}m</td>
       <td className="py-4 px-4">
         {stat.validFlight ? (
-          <div className="flex items-center gap-2 text-green-400">
+          <div className="flex items-center gap-2 text-status-success">
             <Check className="w-5 h-5" aria-hidden="true" />
             <span className="text-sm font-medium">Validan</span>
           </div>
         ) : (
-          <div className="flex items-center gap-2 text-red-400">
+          <div className="flex items-center gap-2 text-status-error">
             <X className="w-5 h-5" aria-hidden="true" />
             <span className="text-sm font-medium">Nije validan</span>
           </div>

@@ -15,9 +15,9 @@ interface StatCardProps {
 
 export function StatCard({ label, value, icon: Icon, accentColor, trend }: StatCardProps) {
   const iconBg = {
-    cyan: "bg-gradient-to-br from-cyan-brand/20 to-cyan-brand/5 text-cyan-brand",
+    cyan: "bg-accent-light text-accent",
     copper: "bg-gradient-to-br from-copper-brand/20 to-copper-brand/5 text-copper-brand",
-    neutral: "bg-gradient-to-br from-gray-100 to-gray-50 text-gray-600",
+    neutral: "bg-bg-hover text-text-secondary",
   }[accentColor];
 
   const displayValue =
@@ -31,9 +31,9 @@ export function StatCard({ label, value, icon: Icon, accentColor, trend }: StatC
     : Minus;
 
   const trendStyle =
-    trend?.direction === "up" ? "text-green-600"
-    : trend?.direction === "down" ? "text-red-600"
-    : "text-white/40";
+    trend?.direction === "up" ? "text-status-success"
+    : trend?.direction === "down" ? "text-status-error"
+    : "text-text-tertiary";
 
   return (
     <div className="card-redesign p-4">
@@ -43,11 +43,11 @@ export function StatCard({ label, value, icon: Icon, accentColor, trend }: StatC
         </div>
         <p className={cn(
           "text-2xl font-bold font-mono",
-          accentColor === "cyan" ? "text-gradient-cyan" : "text-white"
+          accentColor === "cyan" ? "text-gradient-cyan" : "text-text-primary"
         )}>
           {displayValue}
         </p>
-        <p className="text-sm text-white/60 truncate">{label}</p>
+        <p className="text-sm text-text-tertiary truncate">{label}</p>
         {trend && (
           <p className={cn("flex items-center gap-1 text-xs ml-auto flex-shrink-0", trendStyle)}>
             <TrendIcon size={12} aria-hidden="true" />

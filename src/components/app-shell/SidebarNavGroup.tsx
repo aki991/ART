@@ -21,7 +21,7 @@ export function SidebarNavGroup({ label, items, expanded }: SidebarNavGroupProps
     <div className="mb-1">
       <p
         className={cn(
-          "px-4 py-2 text-xs font-semibold tracking-widest uppercase text-white/30 whitespace-nowrap overflow-hidden transition-all duration-200",
+          "px-4 py-2 text-xs font-semibold tracking-widest uppercase text-text-tertiary whitespace-nowrap overflow-hidden transition-all duration-200",
           expanded ? "opacity-100 max-h-8" : "opacity-0 max-h-0 py-0"
         )}
       >

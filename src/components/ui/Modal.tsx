@@ -80,27 +80,27 @@ export function Modal({
       />
       <div
         className={cn(
-          "relative w-full bg-modal-dark rounded-xl shadow-2xl border border-white/10 transition-all duration-200",
+          "relative w-full bg-bg-surface-elevated rounded-xl shadow-lg border border-border transition-all duration-200",
           SIZES[size],
           mounted ? "opacity-100 scale-100" : "opacity-0 scale-95"
         )}
       >
-        <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between">
-          <h2 className="text-xl font-semibold font-rajdhani text-white">
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+          <h2 className="text-xl font-semibold font-rajdhani text-text-primary">
             {title}
           </h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Zatvori"
-            className="text-white/40 hover:text-white/80 transition-colors"
+            className="text-text-tertiary hover:text-text-primary transition-colors"
           >
             <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
         <div className="p-6">{children}</div>
         {footer && (
-          <div className="px-6 py-4 border-t border-white/10 flex justify-end gap-3">
+          <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
             {footer}
           </div>
         )}

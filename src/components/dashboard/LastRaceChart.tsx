@@ -55,16 +55,16 @@ export function LastRaceChart() {
   if (!lastRace) {
     return (
       <div className="card-redesign p-12 text-center">
-        <Trophy className="w-16 h-16 text-white/20 mx-auto mb-4" aria-hidden="true" />
-        <h3 className="text-lg font-semibold text-white/80 mb-2">
+        <Trophy className="w-16 h-16 text-text-disabled mx-auto mb-4" aria-hidden="true" />
+        <h3 className="text-lg font-semibold text-text-secondary mb-2">
           Još nema snimljenih trka
         </h3>
-        <p className="text-white/60 mb-4">
+        <p className="text-text-tertiary mb-4">
           Pokreni prvu trku da vidiš grafik ovde.
         </p>
         <Link
           href="/scanning"
-          className="inline-flex items-center gap-2 text-cyan-brand hover:text-cyan-dark font-medium transition-colors"
+          className="inline-flex items-center gap-2 text-accent hover:text-accent-hover font-medium transition-colors"
         >
           Pokreni prvu trku
           <ArrowRight className="w-4 h-4" aria-hidden="true" />
@@ -81,30 +81,30 @@ export function LastRaceChart() {
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <Trophy className="w-5 h-5 text-cyan-brand" aria-hidden="true" />
-            <span className="text-xs uppercase tracking-wide text-white/60 font-medium">
+            <Trophy className="w-5 h-5 text-accent" aria-hidden="true" />
+            <span className="text-xs uppercase tracking-wide text-text-tertiary font-medium">
               Poslednja trka
             </span>
           </div>
-          <div className="flex items-center gap-1 text-cyan-brand text-sm font-medium">
+          <div className="flex items-center gap-1 text-accent text-sm font-medium">
             Vidi detalje
             <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </div>
         </div>
 
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-white">{lastRace.name}</h2>
-          <div className="flex items-center gap-5 text-base text-white/70">
+          <h2 className="text-2xl font-bold text-text-primary">{lastRace.name}</h2>
+          <div className="flex items-center gap-5 text-base text-text-secondary">
             <div className="flex items-center gap-1.5">
-              <User className="w-4 h-4 text-white/40" aria-hidden="true" />
+              <User className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
               {lastRace.owner}
             </div>
             <div className="flex items-center gap-1.5">
-              <Calendar className="w-4 h-4 text-white/40" aria-hidden="true" />
+              <Calendar className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
               {formatDate(lastRace.startedAt)}
             </div>
             <div className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-white/40" aria-hidden="true" />
+              <Clock className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
               {formatDuration(durationSeconds)}
             </div>
           </div>

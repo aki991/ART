@@ -9,22 +9,22 @@ export function ConnectionStatusBadge() {
 
   const config = {
     disconnected: {
-      classes: "bg-gray-100 text-gray-700 border-gray-200",
-      icon: <Circle size={14} className="fill-gray-400 text-gray-400" aria-hidden="true" />,
+      classes: "bg-bg-hover text-text-tertiary border-border",
+      icon: <Circle size={14} className="fill-text-tertiary text-text-tertiary" aria-hidden="true" />,
       text: "Nije povezano",
     },
     connecting: {
-      classes: "bg-amber-50 text-amber-700 border-amber-200",
+      classes: "bg-bg-warning-light text-status-warning border-status-warning/40",
       icon: <Loader2 size={14} className="animate-spin" aria-hidden="true" />,
       text: "Povezivanje...",
     },
     connected: {
-      classes: "bg-green-50 text-green-700 border-green-200",
+      classes: "bg-bg-success-light text-status-success border-status-success/40",
       icon: <CheckCircle2 size={14} aria-hidden="true" />,
       text: deviceInfo ? `Povezano (${deviceInfo.deviceId})` : "Povezano",
     },
     error: {
-      classes: "bg-red-50 text-red-700 border-red-200",
+      classes: "bg-bg-error-light text-status-error border-status-error/40",
       icon: <AlertCircle size={14} aria-hidden="true" />,
       text: `Greška: ${errorMessage ?? "nepoznata"}`,
     },

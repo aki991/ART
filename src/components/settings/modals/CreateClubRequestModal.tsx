@@ -87,7 +87,7 @@ export function CreateClubRequestModal({
       }
     >
       <div className="space-y-5">
-        <p className="text-sm text-white/60">
+        <p className="text-sm text-text-tertiary">
           Vaš zahtev će biti prosleđen Super Adminu na odobrenje. Po odobrenju
           postajete administrator novog kluba.
         </p>
@@ -96,7 +96,7 @@ export function CreateClubRequestModal({
             type="button"
             onClick={() => fileRef.current?.click()}
             aria-label="Dodaj logo kluba"
-            className="rounded-full focus:outline-none focus:ring-2 focus:ring-cyan-brand/40 group relative"
+            className="rounded-full focus:outline-none focus:ring-2 focus:ring-accent/40 group relative"
           >
             <Avatar src={logo} name={name || "K"} size="lg" />
             <span className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -124,7 +124,7 @@ export function CreateClubRequestModal({
                 </Button>
               )}
             </div>
-            <p className="text-sm text-white/40">Opciono — JPG ili PNG, do 2MB.</p>
+            <p className="text-sm text-text-disabled">Opciono — JPG ili PNG, do 2MB.</p>
           </div>
           <input
             ref={fileRef}

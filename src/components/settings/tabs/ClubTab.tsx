@@ -93,7 +93,7 @@ export function ClubTab({
           message={
             <>
               Da li ste sigurni da želite da napustite klub{" "}
-              <span className="text-white font-medium">{membership.club.name}</span>?
+              <span className="text-text-primary font-medium">{membership.club.name}</span>?
             </>
           }
           confirmLabel="Napusti klub"
@@ -120,16 +120,16 @@ export function ClubTab({
     return (
       <div className="card-redesign p-6 max-w-2xl space-y-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-amber-400/10 border border-amber-400/30 flex items-center justify-center flex-shrink-0">
-            <Clock className="w-5 h-5 text-amber-400" aria-hidden="true" />
+          <div className="w-10 h-10 rounded-lg bg-bg-warning-light border border-status-warning/30 flex items-center justify-center flex-shrink-0">
+            <Clock className="w-5 h-5 text-status-warning" aria-hidden="true" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-white font-rajdhani">
+            <h2 className="text-lg font-semibold text-text-primary font-rajdhani">
               Zahtev na čekanju
             </h2>
-            <p className="text-sm text-white/60 mt-0.5">
+            <p className="text-sm text-text-tertiary mt-0.5">
               Zahtev za pridruživanje klubu{" "}
-              <span className="text-white font-medium">
+              <span className="text-text-primary font-medium">
                 {pendingJoinRequest.club.name}
               </span>{" "}
               čeka odobrenje.
@@ -161,16 +161,16 @@ export function ClubTab({
       return (
         <div className="card-redesign p-6 max-w-2xl space-y-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-amber-400/10 border border-amber-400/30 flex items-center justify-center flex-shrink-0">
-              <Clock className="w-5 h-5 text-amber-400" aria-hidden="true" />
+            <div className="w-10 h-10 rounded-lg bg-bg-warning-light border border-status-warning/30 flex items-center justify-center flex-shrink-0">
+              <Clock className="w-5 h-5 text-status-warning" aria-hidden="true" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-white font-rajdhani">
+              <h2 className="text-lg font-semibold text-text-primary font-rajdhani">
                 Zahtev za kreiranje kluba na čekanju
               </h2>
-              <p className="text-sm text-white/60 mt-0.5">
+              <p className="text-sm text-text-tertiary mt-0.5">
                 Vaš zahtev za kreiranje kluba{" "}
-                <span className="text-white font-medium">
+                <span className="text-text-primary font-medium">
                   &quot;{creationRequest.proposed_name}&quot;
                 </span>{" "}
                 čeka odobrenje Super Admina.
@@ -191,21 +191,21 @@ export function ClubTab({
     // rejected
     return (
       <>
-        <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-6 max-w-2xl space-y-4">
+        <div className="rounded-xl border border-status-error bg-bg-error-light p-6 max-w-2xl space-y-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-red-400/10 border border-red-400/30 flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-lg bg-bg-error-light border border-status-error/30 flex items-center justify-center flex-shrink-0">
               <TriangleAlert
-                className="w-5 h-5 text-red-400"
+                className="w-5 h-5 text-status-error"
                 aria-hidden="true"
               />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-red-400 font-rajdhani">
+              <h2 className="text-lg font-semibold text-status-error font-rajdhani">
                 Zahtev odbijen
               </h2>
-              <p className="text-sm text-white/60 mt-0.5">
+              <p className="text-sm text-text-tertiary mt-0.5">
                 Vaš zahtev za kreiranje kluba{" "}
-                <span className="text-white font-medium">
+                <span className="text-text-primary font-medium">
                   &quot;{creationRequest.proposed_name}&quot;
                 </span>{" "}
                 je odbijen.
@@ -213,11 +213,11 @@ export function ClubTab({
             </div>
           </div>
           {creationRequest.rejection_reason && (
-            <div className="rounded-md bg-white/5 border border-white/10 p-3">
-              <p className="text-xs uppercase tracking-wide text-white/40 mb-1">
+            <div className="rounded-md bg-bg-hover border border-border p-3">
+              <p className="text-xs uppercase tracking-wide text-text-disabled mb-1">
                 Razlog
               </p>
-              <p className="text-sm text-white/85">
+              <p className="text-sm text-text-secondary">
                 {creationRequest.rejection_reason}
               </p>
             </div>

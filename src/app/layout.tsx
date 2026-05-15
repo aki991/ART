@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import "./globals.css";
 
 const geist = Geist({
@@ -20,6 +21,8 @@ export const metadata: Metadata = {
   description: "Upravljanje elektronskim prstenovima golubova",
 };
 
+const themeBootScript = `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'){document.documentElement.classList.add('dark');}}catch(e){}})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -29,10 +32,16 @@ export default function RootLayout({
     <html
       lang="sr"
       className={`${geist.variable} ${geistMono.variable}`}
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
+      </head>
       <body className="font-sans">
-        {children}
-        <Toaster position="bottom-right" richColors closeButton duration={4000} />
+        <ThemeProvider>
+          {children}
+          <Toaster position="bottom-right" richColors closeButton duration={4000} />
+        </ThemeProvider>
       </body>
     </html>
   );

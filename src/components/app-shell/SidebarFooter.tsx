@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { useConnectionStore } from "@/lib/store/connection-store";
 import { useCurrentUser } from "@/components/providers/CurrentUserProvider";
 import { signOutAction } from "@/app/auth/actions";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 interface SidebarFooterProps {
   expanded: boolean;
@@ -54,14 +55,14 @@ export function SidebarFooter({ expanded }: SidebarFooterProps) {
 
   const dotClass = cn(
     "rounded-full border-2 flex-shrink-0",
-    status === "connected" && "bg-green-400 border-green-300",
-    status === "connecting" && "bg-amber-400 border-amber-300 animate-pulse",
-    status === "disconnected" && "bg-gray-400 border-gray-300",
-    status === "error" && "bg-red-400 border-red-300"
+    status === "connected" && "bg-status-success border-status-success/60",
+    status === "connecting" && "bg-status-warning border-status-warning/60 animate-pulse",
+    status === "disconnected" && "bg-text-disabled border-text-disabled/60",
+    status === "error" && "bg-status-error border-status-error/60"
   );
 
   return (
-    <div className="border-t border-white/10 px-4 h-[72px] flex items-center justify-between gap-3 flex-shrink-0">
+    <div className="border-t border-border px-4 h-[72px] flex items-center justify-between gap-3 flex-shrink-0">
       <div className="flex items-center gap-3 min-w-0">
         <div className="relative flex-shrink-0">
           {profile?.avatarUrl ? (
@@ -69,16 +70,16 @@ export function SidebarFooter({ expanded }: SidebarFooterProps) {
             <img
               src={profile.avatarUrl}
               alt=""
-              className="w-9 h-9 rounded-full object-cover border border-cyan-brand/40"
+              className="w-9 h-9 rounded-full object-cover border border-accent/40"
             />
           ) : (
-            <div className="w-9 h-9 rounded-full bg-cyan-brand/20 border border-cyan-brand/40 flex items-center justify-center text-cyan-brand text-base font-semibold font-rajdhani">
+            <div className="w-9 h-9 rounded-full bg-accent-light border border-accent/40 flex items-center justify-center text-accent text-base font-semibold font-rajdhani">
               {initials}
             </div>
           )}
           {!expanded && (
             <span
-              className={cn("absolute bottom-0 right-0 w-4 h-4 border-sidebar", dotClass)}
+              className={cn("absolute bottom-0 right-0 w-4 h-4 border-bg-surface", dotClass)}
               aria-hidden="true"
               title={`Status: ${STATUS_LABELS[status]}`}
             />
@@ -87,29 +88,31 @@ export function SidebarFooter({ expanded }: SidebarFooterProps) {
 
         {expanded && (
           <div className="min-w-0">
-            <p className="text-white text-base font-medium truncate font-rajdhani">
+            <p className="text-text-primary text-base font-medium truncate font-rajdhani">
               {displayName}
             </p>
-            <p className="text-white/40 text-xs truncate">{subtitle}</p>
+            <p className="text-text-tertiary text-xs truncate">{subtitle}</p>
           </div>
         )}
       </div>
 
       {expanded && (
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex items-center gap-1 flex-shrink-0">
           <div
             className="flex items-center gap-2.5"
             aria-label={`Status: ${STATUS_LABELS[status]}`}
+            title={`Status: ${STATUS_LABELS[status]}`}
           >
             <span className={cn("w-3 h-3", dotClass)} aria-hidden="true" />
           </div>
+          <ThemeToggle className="p-1.5" />
           <button
             type="button"
             onClick={handleSignOut}
             disabled={signingOut || pending}
             aria-label="Odjavi se"
             title="Odjavi se"
-            className="p-1.5 rounded-md text-white/40 hover:text-white hover:bg-white/5 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-brand/50 disabled:opacity-50"
+            className="p-1.5 rounded-md text-text-tertiary hover:text-text-primary hover:bg-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent/50 disabled:opacity-50"
           >
             <LogOut size={16} strokeWidth={1.6} />
           </button>

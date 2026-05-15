@@ -28,10 +28,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       {label && (
         <label
           htmlFor={inputId}
-          className="block text-base font-medium text-white/80 mb-1.5"
+          className="block text-base font-medium text-text-secondary mb-1.5"
         >
           {label}
-          {required && <span className="text-red-400 ml-0.5">*</span>}
+          {required && <span className="text-status-error ml-0.5">*</span>}
         </label>
       )}
       <input
@@ -40,20 +40,20 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy}
         className={cn(
-          "w-full px-4 py-2.5 bg-white/5 border rounded-md text-base text-white placeholder:text-white/30 focus:ring-2 focus:outline-none transition-colors",
+          "w-full px-4 py-2.5 bg-bg-input border rounded-md text-base text-text-primary placeholder:text-text-disabled focus:ring-2 focus:outline-none transition-colors",
           error
-            ? "border-red-500/60 focus:border-red-500 focus:ring-red-500/20"
-            : "border-white/10 focus:border-cyan-brand focus:ring-cyan-brand/20",
+            ? "border-status-error/60 focus:border-status-error focus:ring-status-error/20"
+            : "border-border focus:border-accent focus:ring-accent/20",
           className
         )}
         {...props}
       />
       {error ? (
-        <p id={`${inputId}-error`} className="mt-1 text-sm text-red-400">
+        <p id={`${inputId}-error`} className="mt-1 text-sm text-status-error">
           {error}
         </p>
       ) : hint ? (
-        <p id={`${inputId}-hint`} className="mt-1 text-sm text-white/40">
+        <p id={`${inputId}-hint`} className="mt-1 text-sm text-text-tertiary">
           {hint}
         </p>
       ) : null}

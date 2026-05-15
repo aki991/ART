@@ -4,10 +4,10 @@ import { cn } from "@/lib/utils";
 import { useConnectionStore } from "@/lib/store/connection-store";
 
 const STATUS_CONFIG = {
-  disconnected: { dot: "bg-gray-400",   bg: "bg-gray-100",   border: "border-gray-200",   text: "text-gray-500",   label: "Nije povezan" },
-  connecting:   { dot: "bg-amber-400",  bg: "bg-amber-50",   border: "border-amber-200",  text: "text-amber-700",  label: "Povezivanje..." },
-  connected:    { dot: "bg-green-500",  bg: "bg-green-50",   border: "border-green-200",  text: "text-green-700",  label: "Povezan" },
-  error:        { dot: "bg-red-500",    bg: "bg-red-50",     border: "border-red-200",    text: "text-red-700",    label: "Greška" },
+  disconnected: { dot: "bg-text-disabled",  bg: "bg-bg-hover",          border: "border-border",                text: "text-text-tertiary",  label: "Nije povezan" },
+  connecting:   { dot: "bg-status-warning", bg: "bg-bg-warning-light",  border: "border-status-warning/40",     text: "text-status-warning", label: "Povezivanje..." },
+  connected:    { dot: "bg-status-success", bg: "bg-bg-success-light",  border: "border-status-success/40",     text: "text-status-success", label: "Povezan" },
+  error:        { dot: "bg-status-error",   bg: "bg-bg-error-light",    border: "border-status-error/40",       text: "text-status-error",   label: "Greška" },
 } as const;
 
 export function ConnectionStatusPill() {

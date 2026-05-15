@@ -76,10 +76,10 @@ export function NotificationsTab({
       {/* Master toggle */}
       <div className="card-redesign p-5 flex items-center justify-between gap-4">
         <div>
-          <h2 className="text-base font-semibold text-white">
+          <h2 className="text-base font-semibold text-text-primary">
             Sve notifikacije
           </h2>
-          <p className="text-sm text-white/50 mt-0.5">
+          <p className="text-sm text-text-tertiary mt-0.5">
             Upravljajte koje notifikacije želite da primate i kako.
           </p>
         </div>
@@ -99,8 +99,8 @@ export function NotificationsTab({
             className="card-redesign p-5 flex items-center justify-between gap-6"
           >
             <div className="min-w-0">
-              <h3 className="text-base font-medium text-white">{event.name}</h3>
-              <p className="text-sm text-white/50 mt-0.5">
+              <h3 className="text-base font-medium text-text-primary">{event.name}</h3>
+              <p className="text-sm text-text-tertiary mt-0.5">
                 {event.description}
               </p>
             </div>
@@ -141,7 +141,7 @@ function ChannelToggle({
       <span
         className={cn(
           "text-xs uppercase tracking-wide",
-          disabled ? "text-white/20" : "text-white/40"
+          disabled ? "text-text-disabled" : "text-text-tertiary"
         )}
       >
         {label}

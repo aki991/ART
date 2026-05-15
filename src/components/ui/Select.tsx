@@ -136,7 +136,7 @@ export function Select({
       {label && (
         <label
           htmlFor={fieldId}
-          className="block text-base font-medium text-white/80 mb-1.5"
+          className="block text-base font-medium text-text-secondary mb-1.5"
         >
           {label}
         </label>
@@ -155,18 +155,18 @@ export function Select({
         onKeyDown={handleKeyDown}
         onBlur={onBlur}
         className={cn(
-          "w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-white/5 border rounded-md text-base text-left text-white focus:ring-2 focus:outline-none transition-colors",
+          "w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-bg-input border rounded-md text-base text-left text-text-primary focus:ring-2 focus:outline-none transition-colors",
           error
-            ? "border-red-500/60 focus:border-red-500 focus:ring-red-500/20"
-            : "border-white/10 focus:border-cyan-brand focus:ring-cyan-brand/20"
+            ? "border-status-error/60 focus:border-status-error focus:ring-status-error/20"
+            : "border-border focus:border-accent focus:ring-accent/20"
         )}
       >
-        <span className={cn(!selected && "text-white/30")}>
+        <span className={cn(!selected && "text-text-disabled")}>
           {selected ? selected.label : placeholder}
         </span>
         <ChevronDown
           className={cn(
-            "w-4 h-4 text-white/40 transition-transform flex-shrink-0",
+            "w-4 h-4 text-text-tertiary transition-transform flex-shrink-0",
             open && "rotate-180"
           )}
           aria-hidden="true"
@@ -174,7 +174,7 @@ export function Select({
       </button>
 
       {error && (
-        <p id={`${fieldId}-error`} className="mt-1 text-sm text-red-400">
+        <p id={`${fieldId}-error`} className="mt-1 text-sm text-status-error">
           {error}
         </p>
       )}
@@ -194,7 +194,7 @@ export function Select({
               width: rect.width,
               zIndex: 80,
             }}
-            className="bg-[#0B1E2E] border border-white/10 rounded-md shadow-[0_8px_32px_rgba(0,0,0,0.7)] max-h-60 overflow-y-auto py-1"
+            className="bg-bg-surface-elevated border border-border rounded-md shadow-lg max-h-60 overflow-y-auto py-1"
           >
             <div ref={listRef}>
               {options.map((opt, index) => {
@@ -212,14 +212,14 @@ export function Select({
                     className={cn(
                       "px-4 py-2.5 cursor-pointer text-base flex items-center justify-between gap-2 border-l-2 transition-colors",
                       highlighted === index
-                        ? "bg-white/10 border-l-cyan-brand text-white"
-                        : "border-l-transparent text-white/70"
+                        ? "bg-bg-hover border-l-accent text-text-primary"
+                        : "border-l-transparent text-text-secondary"
                     )}
                   >
                     <span>{opt.label}</span>
                     {isSelected && (
                       <Check
-                        className="w-4 h-4 text-cyan-brand flex-shrink-0"
+                        className="w-4 h-4 text-accent flex-shrink-0"
                         aria-hidden="true"
                       />
                     )}

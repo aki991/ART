@@ -27,8 +27,8 @@ export function Avatar({ src, name, size = "md", className }: AvatarProps) {
       className={cn(
         "rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden border",
         src
-          ? "border-white/10"
-          : "bg-cyan-brand/20 border-cyan-brand/40 text-cyan-brand font-semibold font-rajdhani",
+          ? "border-border"
+          : "bg-accent-light border-accent/40 text-accent font-semibold font-rajdhani",
         SIZES[size],
         className
       )}

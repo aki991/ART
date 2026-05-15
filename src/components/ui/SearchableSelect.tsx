@@ -148,7 +148,7 @@ export function SearchableSelect({
       {label && (
         <label
           htmlFor={fieldId}
-          className="block text-base font-medium text-white/80 mb-1.5"
+          className="block text-base font-medium text-text-secondary mb-1.5"
         >
           {label}
         </label>
@@ -172,7 +172,7 @@ export function SearchableSelect({
           aria-expanded={open}
           aria-controls={`${fieldId}-listbox`}
           aria-autocomplete="list"
-          className="w-full px-4 py-2.5 pr-16 bg-white/5 border border-white/10 rounded-md text-base text-white placeholder:text-white/30 focus:border-cyan-brand focus:ring-2 focus:ring-cyan-brand/20 focus:outline-none transition-colors"
+          className="w-full px-4 py-2.5 pr-16 bg-bg-input border border-border rounded-md text-base text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none transition-colors"
         />
         {value && !open ? (
           <button
@@ -183,12 +183,12 @@ export function SearchableSelect({
               setQuery("");
             }}
             aria-label="Obriši izbor"
-            className="absolute right-9 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80 transition-colors"
+            className="absolute right-9 top-1/2 -translate-y-1/2 text-text-tertiary hover:text-text-primary transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
         ) : (
-          <Search className="absolute right-9 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 pointer-events-none" />
+          <Search className="absolute right-9 top-1/2 -translate-y-1/2 w-4 h-4 text-text-disabled pointer-events-none" />
         )}
         <button
           type="button"
@@ -204,7 +204,7 @@ export function SearchableSelect({
             }
           }}
           aria-label={open ? "Zatvori listu" : "Otvori listu"}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60 transition-colors"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-text-tertiary hover:text-text-primary transition-colors"
         >
           <ChevronDown
             className={cn("w-4 h-4 transition-transform", open && "rotate-180")}
@@ -227,11 +227,11 @@ export function SearchableSelect({
               width: rect.width,
               zIndex: 80,
             }}
-            className="bg-[#0B1E2E] border border-white/10 rounded-md shadow-[0_8px_32px_rgba(0,0,0,0.7)] max-h-60 overflow-y-auto"
+            className="bg-bg-surface-elevated border border-border rounded-md shadow-lg max-h-60 overflow-y-auto"
           >
             <div ref={listRef}>
               {filtered.length === 0 ? (
-                <div className="px-4 py-3 text-white/40 text-sm italic">
+                <div className="px-4 py-3 text-text-tertiary text-sm italic">
                   {emptyText}
                 </div>
               ) : (
@@ -248,13 +248,13 @@ export function SearchableSelect({
                     className={cn(
                       "px-4 py-2.5 cursor-pointer text-base border-l-2 transition-colors",
                       highlighted === index
-                        ? "bg-white/10 border-l-cyan-brand text-white"
-                        : "border-l-transparent text-white/70 hover:bg-white/5"
+                        ? "bg-bg-hover border-l-accent text-text-primary"
+                        : "border-l-transparent text-text-secondary hover:bg-bg-hover"
                     )}
                   >
                     <span className="font-medium">{opt.label}</span>
                     {opt.sublabel && (
-                      <span className="text-white/50 ml-2 text-sm">
+                      <span className="text-text-tertiary ml-2 text-sm">
                         — {opt.sublabel}
                       </span>
                     )}

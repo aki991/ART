@@ -99,7 +99,7 @@ export default function LoginForm({ onSwitch, t }: LoginFormProps) {
         {error && (
           <div
             role="alert"
-            className="text-sm text-red-300 bg-red-500/10 border border-red-500/30 rounded-md px-3 py-2"
+            className="text-sm text-status-error bg-bg-error-light border border-status-error/30 rounded-md px-3 py-2"
           >
             {error}
           </div>
@@ -155,7 +155,7 @@ export default function LoginForm({ onSwitch, t }: LoginFormProps) {
             onClick={skipLogin}
             disabled={loading}
             aria-label="DEV login — koristi fiksnog test korisnika"
-            className="block w-full text-center mt-3 text-xs text-white/40 hover:text-cyan-brand transition-colors rounded focus:outline-none focus:ring-2 focus:ring-cyan-brand"
+            className="block w-full text-center mt-3 text-xs text-text-tertiary hover:text-accent transition-colors rounded focus:outline-none focus:ring-2 focus:ring-accent"
           >
             ↪ {t.skipLogin}
           </button>

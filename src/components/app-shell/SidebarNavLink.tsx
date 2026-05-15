@@ -27,10 +27,10 @@ export function SidebarNavLink({ href, icon: Icon, label }: SidebarNavLinkProps)
       title={!expanded ? label : undefined}
       className={cn(
         "flex items-center border-l-[3px] py-3 transition-colors duration-150",
-        "focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-brand/50",
+        "focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent/50",
         isActive
-          ? "border-cyan-brand text-cyan-brand bg-cyan-brand/10"
-          : "border-transparent text-white/80 hover:bg-white/5 hover:text-white"
+          ? "border-accent text-accent bg-accent-light"
+          : "border-transparent text-text-secondary hover:bg-bg-hover hover:text-text-primary"
       )}
     >
       <div className="flex items-center justify-center w-[69px] flex-shrink-0">

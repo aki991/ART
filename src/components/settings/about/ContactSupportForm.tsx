@@ -162,10 +162,10 @@ export function ContactSupportForm() {
   return (
     <div className="card-redesign p-6 space-y-5">
       <div>
-        <h2 className="text-lg font-semibold text-white font-rajdhani">
+        <h2 className="text-lg font-semibold text-text-primary font-rajdhani">
           Kontakt podrška
         </h2>
-        <p className="text-sm text-white/50 mt-0.5">
+        <p className="text-sm text-text-tertiary mt-0.5">
           Naišli ste na problem ili imate predlog? Javite nam se.
         </p>
       </div>
@@ -194,9 +194,9 @@ export function ContactSupportForm() {
       <div>
         <label
           htmlFor="support-description"
-          className="block text-base font-medium text-white/80 mb-1.5"
+          className="block text-base font-medium text-text-secondary mb-1.5"
         >
-          Opis problema <span className="text-red-400 ml-0.5">*</span>
+          Opis problema <span className="text-status-error ml-0.5">*</span>
         </label>
         <div className="relative">
           <textarea
@@ -209,33 +209,33 @@ export function ContactSupportForm() {
             placeholder="Opišite problem ili predlog (najmanje 20 karaktera)..."
             aria-invalid={descError ? true : undefined}
             className={cn(
-              "w-full px-4 py-2.5 pb-7 bg-white/5 border rounded-md text-base text-white placeholder:text-white/30 focus:ring-2 focus:outline-none transition-colors resize-y min-h-[120px]",
+              "w-full px-4 py-2.5 pb-7 bg-bg-input border rounded-md text-base text-text-primary placeholder:text-text-disabled focus:ring-2 focus:outline-none transition-colors resize-y min-h-[120px]",
               descError
-                ? "border-red-500/60 focus:border-red-500 focus:ring-red-500/20"
-                : "border-white/10 focus:border-cyan-brand focus:ring-cyan-brand/20"
+                ? "border-status-error/60 focus:border-status-error focus:ring-status-error/20"
+                : "border-border focus:border-accent focus:ring-accent/20"
             )}
           />
           <span
             className={cn(
               "absolute bottom-2 right-3 text-xs pointer-events-none",
               description.trim().length > 0 && description.trim().length < DESC_MIN
-                ? "text-amber-400/70"
-                : "text-white/30"
+                ? "text-status-warning/70"
+                : "text-text-disabled"
             )}
           >
             {description.length} / {DESC_MAX}
           </span>
         </div>
         {descError && (
-          <p className="mt-1 text-sm text-red-400">{descError}</p>
+          <p className="mt-1 text-sm text-status-error">{descError}</p>
         )}
       </div>
 
       {/* Attachments */}
       <div>
-        <label className="block text-base font-medium text-white/80 mb-1.5">
+        <label className="block text-base font-medium text-text-secondary mb-1.5">
           Prilozi{" "}
-          <span className="text-white/40 font-normal">
+          <span className="text-text-disabled font-normal">
             (opciono — do 3 slike, 5MB ukupno)
           </span>
         </label>
@@ -257,14 +257,14 @@ export function ContactSupportForm() {
           }}
           aria-label="Dodaj sliku — kliknite ili prevucite"
           className={cn(
-            "flex flex-col items-center justify-center gap-1.5 rounded-md border border-dashed py-6 cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-brand/40",
+            "flex flex-col items-center justify-center gap-1.5 rounded-md border border-dashed py-6 cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40",
             dragOver
-              ? "border-cyan-brand/60 bg-cyan-brand/5"
-              : "border-white/15 bg-white/[0.02] hover:border-white/30"
+              ? "border-accent/60 bg-accent-light"
+              : "border-border-strong bg-bg-input hover:border-border-strong"
           )}
         >
-          <ImagePlus className="w-5 h-5 text-white/40" aria-hidden="true" />
-          <span className="text-sm text-white/50">
+          <ImagePlus className="w-5 h-5 text-text-disabled" aria-hidden="true" />
+          <span className="text-sm text-text-tertiary">
             Dodaj sliku — kliknite ili prevucite ovde
           </span>
         </div>
@@ -282,7 +282,7 @@ export function ContactSupportForm() {
             {attachments.map((a) => (
               <div
                 key={a.id}
-                className="relative w-16 h-16 rounded-md overflow-hidden border border-white/10 group"
+                className="relative w-16 h-16 rounded-md overflow-hidden border border-border group"
               >
                 <img
                   src={a.dataUrl}
@@ -294,7 +294,7 @@ export function ContactSupportForm() {
                   type="button"
                   onClick={() => removeAttachment(a.id)}
                   aria-label={`Ukloni ${a.name}`}
-                  className="absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-black/70 text-white/80 hover:text-white hover:bg-black flex items-center justify-center transition-colors"
+                  className="absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-black/70 text-text-secondary hover:text-text-primary hover:bg-black flex items-center justify-center transition-colors"
                 >
                   <X className="w-3 h-3" aria-hidden="true" />
                 </button>
@@ -304,7 +304,7 @@ export function ContactSupportForm() {
         )}
       </div>
 
-      <p className="text-sm text-white/40 leading-relaxed">
+      <p className="text-sm text-text-disabled leading-relaxed">
         Uz poruku ćemo automatski poslati i vaš email i osnovne podatke o
         sistemu (verzija aplikacije, browser, OS) radi lakšeg rešavanja
         problema.

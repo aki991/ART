@@ -261,21 +261,21 @@ export function PigeonForm() {
   }
 
   const inputClass =
-    "w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-md text-lg text-white placeholder:text-white/30 focus:border-cyan-brand focus:ring-2 focus:ring-cyan-brand/20 focus:outline-none";
+    "w-full px-3 py-2.5 bg-bg-input border border-border rounded-md text-lg text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none";
 
   const bandInputClass =
-    "px-2 py-2.5 bg-white/5 border border-white/10 rounded-md text-lg text-white placeholder:text-white/30 focus:border-cyan-brand focus:ring-2 focus:ring-cyan-brand/20 focus:outline-none text-center font-mono";
+    "px-2 py-2.5 bg-bg-input border border-border rounded-md text-lg text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none text-center font-mono";
 
   return (
     <div className="card-redesign p-6">
-      <p className="text-sm uppercase tracking-widest text-white/60 font-medium mb-4">
+      <p className="text-sm uppercase tracking-widest text-text-tertiary font-medium mb-4">
         Podaci goluba
       </p>
 
       <div className="mb-4">
         <label
           htmlFor="pigeon-select"
-          className="block text-base font-medium text-white/80 mb-1.5"
+          className="block text-base font-medium text-text-secondary mb-1.5"
         >
           Golub
         </label>
@@ -308,12 +308,12 @@ export function PigeonForm() {
                 clearSelection();
               }}
               aria-label="Obriši izbor"
-              className="absolute right-9 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80 transition-colors"
+              className="absolute right-9 top-1/2 -translate-y-1/2 text-text-disabled hover:text-text-secondary transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
           ) : (
-            <Search className="absolute right-9 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 pointer-events-none" />
+            <Search className="absolute right-9 top-1/2 -translate-y-1/2 w-4 h-4 text-text-disabled pointer-events-none" />
           )}
           <button
             type="button"
@@ -329,7 +329,7 @@ export function PigeonForm() {
               }
             }}
             aria-label={isDropdownOpen ? "Zatvori listu" : "Otvori listu"}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60 transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-text-disabled hover:text-text-tertiary transition-colors"
           >
             <ChevronDown
               className={cn(
@@ -354,11 +354,11 @@ export function PigeonForm() {
                 width: dropdownRect.width,
                 zIndex: 9999,
               }}
-              className="bg-[#0B1E2E] border border-white/10 rounded-md shadow-[0_8px_32px_rgba(0,0,0,0.7)] max-h-56 overflow-y-auto"
+              className="bg-bg-surface border border-border rounded-md shadow-[0_8px_32px_rgba(0,0,0,0.7)] max-h-56 overflow-y-auto"
             >
               <div ref={listRef}>
                 {filteredPigeons.length === 0 ? (
-                  <div className="px-4 py-3 text-white/40 text-sm italic">
+                  <div className="px-4 py-3 text-text-disabled text-sm italic">
                     {inputValue.trim()
                       ? "Nema rezultata za tu pretragu"
                       : "Nema dostupnih golubova"}
@@ -377,12 +377,12 @@ export function PigeonForm() {
                       className={cn(
                         "px-4 py-2.5 cursor-pointer text-base transition-colors border-l-2",
                         highlightedIndex === index
-                          ? "bg-white/10 border-l-cyan-brand text-white"
-                          : "border-l-transparent text-white/70 hover:bg-white/5 hover:text-white"
+                          ? "bg-bg-hover border-l-accent text-text-primary"
+                          : "border-l-transparent text-text-tertiary hover:bg-bg-hover hover:text-text-primary"
                       )}
                     >
                       <span className="font-mono font-medium">{formatIdentifier(p)}</span>
-                      <span className="text-white/50 ml-2">— {p.pigeonColor}</span>
+                      <span className="text-text-tertiary ml-2">— {p.pigeonColor}</span>
                     </div>
                   ))
                 )}
@@ -392,20 +392,20 @@ export function PigeonForm() {
           )}
 
         {pigeons.length === 0 ? (
-          <p className="text-sm text-white/60 mt-1.5">
+          <p className="text-sm text-text-tertiary mt-1.5">
             Nema dodatih golubova. Možeš popuniti polja ručno ili dodati goluba na stranici
             &apos;Golubovi&apos;.
           </p>
         ) : availablePigeons.length === 0 ? (
-          <p className="text-sm text-white/60 mt-1.5">
+          <p className="text-sm text-text-tertiary mt-1.5">
             Svi golubovi su već programirani u ovoj sesiji.
           </p>
         ) : isUuid ? (
-          <p className="text-sm text-white/60 mt-1.5">
+          <p className="text-sm text-text-tertiary mt-1.5">
             Boja goluba i broj savezne alke se automatski preuzimaju iz odabranog goluba.
           </p>
         ) : (
-          <p className="text-sm text-white/60 mt-1.5">
+          <p className="text-sm text-text-tertiary mt-1.5">
             Ako golub nije u listi, popuni boju i broj alke ručno.
           </p>
         )}
@@ -416,9 +416,9 @@ export function PigeonForm() {
           <div className="mb-4">
             <label
               htmlFor="pigeon-color"
-              className="block text-base font-medium text-white/80 mb-1.5"
+              className="block text-base font-medium text-text-secondary mb-1.5"
             >
-              Boja goluba <span className="text-red-500">*</span>
+              Boja goluba <span className="text-status-error">*</span>
             </label>
             <input
               id="pigeon-color"
@@ -431,8 +431,8 @@ export function PigeonForm() {
           </div>
 
           <div className="mb-6">
-            <label className="block text-base font-medium text-white/80 mb-1.5">
-              Broj savezne alke <span className="text-red-500">*</span>
+            <label className="block text-base font-medium text-text-secondary mb-1.5">
+              Broj savezne alke <span className="text-status-error">*</span>
             </label>
             <div className="flex items-center gap-1.5">
               <input
@@ -449,7 +449,7 @@ export function PigeonForm() {
                 placeholder="SRB"
                 className={cn(bandInputClass, "w-16")}
               />
-              <span className="text-white/30 select-none font-mono">·</span>
+              <span className="text-text-disabled select-none font-mono">·</span>
               <input
                 ref={bandMainRef}
                 type="text"
@@ -467,7 +467,7 @@ export function PigeonForm() {
                 placeholder="444"
                 className={cn(bandInputClass, "w-16")}
               />
-              <span className="text-white/30 select-none font-mono">·</span>
+              <span className="text-text-disabled select-none font-mono">·</span>
               <input
                 ref={bandBreederRef}
                 type="text"
@@ -485,7 +485,7 @@ export function PigeonForm() {
                 placeholder="11"
                 className={cn(bandInputClass, "w-12")}
               />
-              <span className="text-white/30 select-none font-mono">·</span>
+              <span className="text-text-disabled select-none font-mono">·</span>
               <input
                 ref={bandPigeonRef}
                 type="text"
@@ -503,7 +503,7 @@ export function PigeonForm() {
                 placeholder="22"
                 className={cn(bandInputClass, "w-12")}
               />
-              <span className="text-white/30 select-none font-mono">·</span>
+              <span className="text-text-disabled select-none font-mono">·</span>
               <input
                 ref={bandYearRef}
                 type="text"
@@ -530,7 +530,7 @@ export function PigeonForm() {
         disabled={isDisabled}
         onClick={() => void handleSubmit()}
         aria-label="Programiraj prsten sa unetim podacima"
-        className="btn-shine-redesign w-full px-4 py-3 rounded-md inline-flex items-center justify-center gap-2 font-medium text-base transition-colors bg-cyan-brand hover:bg-cyan-dark text-white disabled:bg-white/10 disabled:text-white/30 disabled:cursor-not-allowed"
+        className="btn-shine-redesign w-full px-4 py-3 rounded-md inline-flex items-center justify-center gap-2 font-medium text-base transition-colors bg-accent hover:bg-accent-hover text-white disabled:bg-bg-hover disabled:text-text-disabled disabled:cursor-not-allowed"
       >
         {isProgramming ? (
           <>

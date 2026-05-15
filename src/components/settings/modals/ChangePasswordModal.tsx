@@ -34,9 +34,9 @@ const STRENGTH_META: Record<
   { label: string; bar: string; text: string; width: string }
 > = {
   0: { label: "", bar: "", text: "", width: "w-0" },
-  1: { label: "Slaba", bar: "bg-cyan-brand", text: "text-cyan-brand", width: "w-1/3" },
-  2: { label: "Srednja", bar: "bg-yellow-400", text: "text-yellow-400", width: "w-2/3" },
-  3: { label: "Jaka", bar: "bg-green-400", text: "text-green-400", width: "w-full" },
+  1: { label: "Slaba", bar: "bg-accent", text: "text-accent", width: "w-1/3" },
+  2: { label: "Srednja", bar: "bg-status-warning", text: "text-status-warning", width: "w-2/3" },
+  3: { label: "Jaka", bar: "bg-status-success", text: "text-status-success", width: "w-full" },
 };
 
 export function ChangePasswordModal({
@@ -146,7 +146,7 @@ export function ChangePasswordModal({
           />
           {strength > 0 && (
             <div className="mt-2">
-              <div className="h-1.5 w-full rounded-full bg-white/10 overflow-hidden">
+              <div className="h-1.5 w-full rounded-full bg-bg-hover overflow-hidden">
                 <div
                   className={cn(
                     "h-full rounded-full transition-all duration-300",

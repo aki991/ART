@@ -50,7 +50,7 @@ export function PigeonsListView() {
         <button
           type="button"
           onClick={openModal}
-          className="btn-shine-redesign inline-flex items-center gap-3 px-6 py-3 rounded-md text-lg font-bold bg-cyan-brand text-sidebar hover:bg-cyan-dark transition-colors"
+          className="btn-shine-redesign inline-flex items-center gap-3 px-6 py-3 rounded-md text-lg font-bold bg-accent text-sidebar hover:bg-accent-hover transition-colors"
         >
           <Plus className="w-6 h-6" aria-hidden="true" />
           Dodaj goluba
@@ -58,12 +58,12 @@ export function PigeonsListView() {
       </div>
 
       {pigeons.length === 0 ? (
-        <div className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
-          <Bird className="w-16 h-16 text-gray-300 mx-auto mb-4" aria-hidden="true" />
-          <h3 className="text-lg font-semibold text-gray-900">
+        <div className="bg-bg-surface border-2 border-dashed border-border rounded-lg p-12 text-center">
+          <Bird className="w-16 h-16 text-text-disabled mx-auto mb-4" aria-hidden="true" />
+          <h3 className="text-lg font-semibold text-text-primary">
             Još nemate dodanih golubova
           </h3>
-          <p className="text-sm text-gray-500 mt-2">
+          <p className="text-sm text-text-tertiary mt-2">
             Dodajte prvog goluba klikom na dugme iznad
           </p>
         </div>

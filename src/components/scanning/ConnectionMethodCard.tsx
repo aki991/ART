@@ -59,21 +59,21 @@ export function ConnectionMethodCard({
       onKeyDown={handleKeyDown}
       className={cn(
         "w-[200px] h-[200px] rounded-full flex flex-col items-center justify-center gap-3",
-        "bg-card-dark border shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition-all duration-200",
+        "bg-bg-surface border shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition-all duration-200",
         isActive
-          ? "border-cyan-brand shadow-[0_0_24px_rgba(0,210,255,0.25)]"
-          : "border-white/5",
+          ? "border-accent shadow-[0_0_24px_rgba(0,210,255,0.25)]"
+          : "border-border",
         disabled
           ? "opacity-60 cursor-not-allowed"
-          : "cursor-pointer hover:bg-card-dark-hover hover:border-cyan-brand/40 hover:shadow-[0_8px_24px_rgba(0,210,255,0.08)]"
+          : "cursor-pointer hover:bg-bg-hover hover:border-accent/40 hover:shadow-[0_8px_24px_rgba(0,210,255,0.08)]"
       )}
     >
       <Icon
-        className={cn("w-14 h-14", isActive ? "text-cyan-brand" : "text-white/70")}
+        className={cn("w-14 h-14", isActive ? "text-accent" : "text-text-tertiary")}
         strokeWidth={1.5}
         aria-hidden="true"
       />
-      <span className={cn("text-xl font-semibold font-rajdhani", isActive ? "text-cyan-brand" : "text-white")}>
+      <span className={cn("text-xl font-semibold font-rajdhani", isActive ? "text-accent" : "text-text-primary")}>
         {title}
       </span>
     </div>

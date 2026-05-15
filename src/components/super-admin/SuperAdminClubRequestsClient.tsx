@@ -87,7 +87,7 @@ export function SuperAdminClubRequestsClient({
 
   return (
     <div className="space-y-6">
-      <div className="flex gap-2 border-b border-white/10">
+      <div className="flex gap-2 border-b border-border">
         {STATUS_TABS.map((tab) => {
           const isActive = activeStatus === tab.id;
           return (
@@ -97,8 +97,8 @@ export function SuperAdminClubRequestsClient({
               className={cn(
                 "px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px",
                 isActive
-                  ? "border-cyan-brand text-cyan-brand"
-                  : "border-transparent text-white/50 hover:text-white"
+                  ? "border-accent text-accent"
+                  : "border-transparent text-text-tertiary hover:text-text-primary"
               )}
             >
               {tab.label}
@@ -109,8 +109,8 @@ export function SuperAdminClubRequestsClient({
 
       {requests.length === 0 ? (
         <div className="card-redesign p-10 flex flex-col items-center text-center gap-3">
-          <Inbox className="w-10 h-10 text-white/30" aria-hidden="true" />
-          <p className="text-white/60">Nema zahteva u ovoj kategoriji.</p>
+          <Inbox className="w-10 h-10 text-text-disabled" aria-hidden="true" />
+          <p className="text-text-tertiary">Nema zahteva u ovoj kategoriji.</p>
         </div>
       ) : (
         <div className="card-redesign overflow-hidden">
@@ -118,29 +118,29 @@ export function SuperAdminClubRequestsClient({
             <table className="w-full text-sm">
               <thead>
                 <tr className="table-header-gradient">
-                  <th className="px-6 py-3 text-left font-medium text-white/60 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left font-medium text-text-tertiary uppercase tracking-wider">
                     Logo
                   </th>
-                  <th className="px-6 py-3 text-left font-medium text-white/60 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left font-medium text-text-tertiary uppercase tracking-wider">
                     Predloženo ime
                   </th>
-                  <th className="px-6 py-3 text-left font-medium text-white/60 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left font-medium text-text-tertiary uppercase tracking-wider">
                     Grad
                   </th>
-                  <th className="px-6 py-3 text-left font-medium text-white/60 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left font-medium text-text-tertiary uppercase tracking-wider">
                     Podneo
                   </th>
-                  <th className="px-6 py-3 text-left font-medium text-white/60 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left font-medium text-text-tertiary uppercase tracking-wider">
                     Datum
                   </th>
-                  <th className="px-6 py-3 text-right font-medium text-white/60 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-right font-medium text-text-tertiary uppercase tracking-wider">
                     Akcije
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {requests.map((req) => (
-                  <tr key={req.id} className="border-t border-white/5">
+                  <tr key={req.id} className="border-t border-border">
                     <td className="px-6 py-3">
                       <Avatar
                         src={req.proposed_logo_url}
@@ -148,18 +148,18 @@ export function SuperAdminClubRequestsClient({
                         size="sm"
                       />
                     </td>
-                    <td className="px-6 py-3 text-white font-medium">
+                    <td className="px-6 py-3 text-text-primary font-medium">
                       {req.proposed_name}
                     </td>
-                    <td className="px-6 py-3 text-white/80">
+                    <td className="px-6 py-3 text-text-secondary">
                       {req.proposed_city}
                     </td>
-                    <td className="px-6 py-3 text-white/70">
+                    <td className="px-6 py-3 text-text-tertiary">
                       {req.requester
                         ? `${req.requester.first_name} ${req.requester.last_name} · @${req.requester.username}`
                         : "—"}
                     </td>
-                    <td className="px-6 py-3 text-white/60">
+                    <td className="px-6 py-3 text-text-tertiary">
                       {formatDate(req.created_at)}
                     </td>
                     <td className="px-6 py-3">
@@ -186,7 +186,7 @@ export function SuperAdminClubRequestsClient({
                               variant="ghost"
                               size="sm"
                               onClick={() => setRejecting(req)}
-                              className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                              className="text-status-error hover:text-status-error hover:bg-bg-error-light"
                             >
                               <X className="w-4 h-4" aria-hidden="true" />
                               Odbij
@@ -223,59 +223,59 @@ export function SuperAdminClubRequestsClient({
                 size="lg"
               />
               <div>
-                <h3 className="text-lg font-semibold text-white font-rajdhani">
+                <h3 className="text-lg font-semibold text-text-primary font-rajdhani">
                   {viewing.proposed_name}
                 </h3>
-                <p className="text-sm text-white/60">{viewing.proposed_city}</p>
+                <p className="text-sm text-text-tertiary">{viewing.proposed_city}</p>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
+            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border">
               <div>
-                <p className="text-xs uppercase tracking-wide text-white/40">
+                <p className="text-xs uppercase tracking-wide text-text-disabled">
                   Podneo
                 </p>
-                <p className="text-sm text-white/85">
+                <p className="text-sm text-text-secondary">
                   {viewing.requester
                     ? `${viewing.requester.first_name} ${viewing.requester.last_name}`
                     : "—"}
                 </p>
                 {viewing.requester && (
-                  <p className="text-xs text-white/50 font-mono">
+                  <p className="text-xs text-text-tertiary font-mono">
                     @{viewing.requester.username}
                   </p>
                 )}
               </div>
               <div>
-                <p className="text-xs uppercase tracking-wide text-white/40">
+                <p className="text-xs uppercase tracking-wide text-text-disabled">
                   Datum
                 </p>
-                <p className="text-sm text-white/85">
+                <p className="text-sm text-text-secondary">
                   {formatDate(viewing.created_at)}
                 </p>
               </div>
               <div>
-                <p className="text-xs uppercase tracking-wide text-white/40">
+                <p className="text-xs uppercase tracking-wide text-text-disabled">
                   Status
                 </p>
-                <p className="text-sm text-white/85">{viewing.status}</p>
+                <p className="text-sm text-text-secondary">{viewing.status}</p>
               </div>
               {viewing.resolved_at && (
                 <div>
-                  <p className="text-xs uppercase tracking-wide text-white/40">
+                  <p className="text-xs uppercase tracking-wide text-text-disabled">
                     Rešen
                   </p>
-                  <p className="text-sm text-white/85">
+                  <p className="text-sm text-text-secondary">
                     {formatDate(viewing.resolved_at)}
                   </p>
                 </div>
               )}
             </div>
             {viewing.rejection_reason && (
-              <div className="rounded-md bg-red-500/5 border border-red-500/30 p-3">
-                <p className="text-xs uppercase tracking-wide text-red-400 mb-1">
+              <div className="rounded-md bg-bg-error-light border border-status-error/30 p-3">
+                <p className="text-xs uppercase tracking-wide text-status-error mb-1">
                   Razlog odbijanja
                 </p>
-                <p className="text-sm text-white/85">
+                <p className="text-sm text-text-secondary">
                   {viewing.rejection_reason}
                 </p>
               </div>
@@ -294,11 +294,11 @@ export function SuperAdminClubRequestsClient({
           approving ? (
             <>
               Odobravanjem zahteva kreira se klub{" "}
-              <span className="text-white font-medium">
+              <span className="text-text-primary font-medium">
                 &quot;{approving.proposed_name}&quot;
               </span>
               , a{" "}
-              <span className="text-white font-medium">
+              <span className="text-text-primary font-medium">
                 {approving.requester?.first_name} {approving.requester?.last_name}
               </span>{" "}
               postaje njegov admin.
@@ -342,9 +342,9 @@ export function SuperAdminClubRequestsClient({
       >
         {rejecting && (
           <div className="space-y-3">
-            <p className="text-sm text-white/70">
+            <p className="text-sm text-text-secondary">
               Unesite razlog odbijanja zahteva za klub{" "}
-              <span className="text-white font-medium">
+              <span className="text-text-primary font-medium">
                 &quot;{rejecting.proposed_name}&quot;
               </span>
               . Razlog se prikazuje korisniku.

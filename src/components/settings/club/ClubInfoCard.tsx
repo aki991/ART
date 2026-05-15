@@ -34,10 +34,10 @@ function InfoRow({
 }) {
   return (
     <div className="flex items-start gap-2.5">
-      <span className="text-cyan-brand/60 mt-0.5 flex-shrink-0">{icon}</span>
+      <span className="text-accent/60 mt-0.5 flex-shrink-0">{icon}</span>
       <div className="min-w-0">
-        <p className="text-xs uppercase tracking-wide text-white/40">{label}</p>
-        <p className="text-base text-white/90">{value}</p>
+        <p className="text-xs uppercase tracking-wide text-text-disabled">{label}</p>
+        <p className="text-base text-text-secondary">{value}</p>
       </div>
     </div>
   );
@@ -83,10 +83,10 @@ export function ClubInfoCard({
         <div className="flex items-center gap-4 mb-6">
           <Avatar src={club.logo_url} name={club.name} size="lg" />
           <div className="min-w-0">
-            <h2 className="text-lg font-semibold text-white font-rajdhani truncate">
+            <h2 className="text-lg font-semibold text-text-primary font-rajdhani truncate">
               {club.name}
             </h2>
-            <p className="text-sm text-white/50">Vaš klub</p>
+            <p className="text-sm text-text-tertiary">Vaš klub</p>
           </div>
         </div>
 
@@ -114,10 +114,10 @@ export function ClubInfoCard({
         </div>
       </div>
 
-      <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-6 flex items-center justify-between gap-4">
+      <div className="rounded-xl border border-status-error bg-bg-error-light p-6 flex items-center justify-between gap-4">
         <div>
-          <h3 className="text-base font-semibold text-red-400">Napusti klub</h3>
-          <p className="text-sm text-white/50 mt-0.5">
+          <h3 className="text-base font-semibold text-status-error">Napusti klub</h3>
+          <p className="text-sm text-text-tertiary mt-0.5">
             {blockLeave
               ? "Prvo promovišite drugog člana u admina pre nego što napustite klub."
               : "Vaše trke i golubovi ostaju, ali nećete više pripadati klubu."}
@@ -148,7 +148,7 @@ export function ClubInfoCard({
           <>
             Da li ste sigurni da želite da napustite klub? Vaše trke i golubovi
             ostaju, ali nećete više pripadati klubu{" "}
-            <span className="text-white font-medium">{club.name}</span>.
+            <span className="text-text-primary font-medium">{club.name}</span>.
           </>
         }
         confirmLabel="Napusti klub"

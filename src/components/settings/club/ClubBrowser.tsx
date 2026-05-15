@@ -48,10 +48,10 @@ export function ClubBrowser({ clubs }: ClubBrowserProps) {
   return (
     <div className="card-redesign p-6 space-y-5 max-w-2xl">
       <div>
-        <h2 className="text-lg font-semibold text-white font-rajdhani">
+        <h2 className="text-lg font-semibold text-text-primary font-rajdhani">
           Niste član nijednog kluba
         </h2>
-        <p className="text-sm text-white/50 mt-0.5">
+        <p className="text-sm text-text-tertiary mt-0.5">
           Pronađite svoj klub i pošaljite zahtev za članstvo, ili kreirajte
           novi.
         </p>
@@ -67,19 +67,19 @@ export function ClubBrowser({ clubs }: ClubBrowserProps) {
       />
 
       {selected && (
-        <div className="rounded-lg border border-white/10 bg-white/5 p-4 flex items-center justify-between gap-4">
+        <div className="rounded-lg border border-border bg-bg-hover p-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-lg bg-cyan-brand/15 border border-cyan-brand/30 flex items-center justify-center flex-shrink-0 overflow-hidden">
+            <div className="w-10 h-10 rounded-lg bg-accent-light border border-accent/30 flex items-center justify-center flex-shrink-0 overflow-hidden">
               {selected.logo_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={selected.logo_url} alt="" className="w-full h-full object-cover" />
               ) : (
-                <Building2 className="w-5 h-5 text-cyan-brand" aria-hidden="true" />
+                <Building2 className="w-5 h-5 text-accent" aria-hidden="true" />
               )}
             </div>
             <div className="min-w-0">
-              <p className="text-white font-medium truncate">{selected.name}</p>
-              <p className="text-sm text-white/50 truncate">{selected.city}</p>
+              <p className="text-text-primary font-medium truncate">{selected.name}</p>
+              <p className="text-sm text-text-tertiary truncate">{selected.city}</p>
             </div>
           </div>
           <Button
@@ -93,11 +93,11 @@ export function ClubBrowser({ clubs }: ClubBrowserProps) {
         </div>
       )}
 
-      <div className="pt-3 border-t border-white/5">
+      <div className="pt-3 border-t border-border">
         <button
           type="button"
           onClick={() => setCreateOpen(true)}
-          className="inline-flex items-center gap-1.5 text-sm text-cyan-brand hover:text-cyan-bright transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm text-accent hover:text-cyan-bright transition-colors"
         >
           <Plus className="w-4 h-4" aria-hidden="true" />
           Ili kreiraj novi klub

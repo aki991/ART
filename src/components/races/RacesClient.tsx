@@ -17,12 +17,12 @@ export function RacesClient() {
 
 function EmptyState() {
   return (
-    <div className="bg-card-dark border border-cyan-brand/15 rounded-xl p-12 text-center">
-      <Trophy className="w-16 h-16 text-white/20 mx-auto mb-4" />
-      <h2 className="text-2xl font-bold text-white mb-2 font-rajdhani">
+    <div className="bg-bg-surface border border-accent/15 rounded-xl p-12 text-center">
+      <Trophy className="w-16 h-16 text-text-disabled mx-auto mb-4" />
+      <h2 className="text-2xl font-bold text-text-primary mb-2 font-rajdhani">
         Još nema rezultata
       </h2>
-      <p className="text-white/60">
+      <p className="text-text-tertiary">
         Poveži uređaj na stranici &quot;Povezivanje uređaja&quot; i sačekaj kraj trke.
       </p>
     </div>
@@ -31,9 +31,9 @@ function EmptyState() {
 
 function ResultsTable({ races }: { races: Race[] }) {
   return (
-    <div className="bg-card-dark border border-cyan-brand/15 rounded-xl overflow-hidden">
+    <div className="bg-bg-surface border border-accent/15 rounded-xl overflow-hidden">
       <table className="w-full">
-        <thead className="table-header-gradient text-xs uppercase text-white/50 font-medium">
+        <thead className="table-header-gradient text-xs uppercase text-text-tertiary font-medium">
           <tr>
             <th className="text-left py-3 px-4">Naziv</th>
             <th className="text-left py-3 px-4">Golubar</th>
@@ -80,15 +80,15 @@ function ResultRow({ race }: { race: Race }) {
   return (
     <tr
       onClick={() => router.push(`/races/${race.id}`)}
-      className="border-t border-white/5 hover:bg-white/5 cursor-pointer transition-colors"
+      className="border-t border-border hover:bg-bg-hover cursor-pointer transition-colors"
     >
-      <td className="py-4 px-4 text-white font-medium">{race.name}</td>
-      <td className="py-4 px-4 text-white/80">{race.owner}</td>
-      <td className="py-4 px-4 text-white/80">Klub {race.club}</td>
-      <td className="py-4 px-4 text-white/80 font-mono">{formatDuration(durationSec)}</td>
-      <td className="py-4 px-4 text-cyan-brand font-semibold">{avgOfAvgs}m</td>
-      <td className="py-4 px-4 text-cyan-brand font-semibold">{maxOfMaxs}m</td>
-      <td className="py-4 px-4 text-white/60 text-sm">{dateStr}</td>
+      <td className="py-4 px-4 text-text-primary font-medium">{race.name}</td>
+      <td className="py-4 px-4 text-text-secondary">{race.owner}</td>
+      <td className="py-4 px-4 text-text-secondary">Klub {race.club}</td>
+      <td className="py-4 px-4 text-text-secondary font-mono">{formatDuration(durationSec)}</td>
+      <td className="py-4 px-4 text-accent font-semibold">{avgOfAvgs}m</td>
+      <td className="py-4 px-4 text-accent font-semibold">{maxOfMaxs}m</td>
+      <td className="py-4 px-4 text-text-tertiary text-sm">{dateStr}</td>
     </tr>
   );
 }

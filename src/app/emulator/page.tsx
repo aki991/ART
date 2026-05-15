@@ -18,15 +18,15 @@ export default function EmulatorPage() {
   const sessionPrograms = useProgrammerStore((s) => s.sessionPrograms);
 
   return (
-    <div className="min-h-screen bg-app-surface p-8">
+    <div className="min-h-screen bg-bg-app p-8">
       <div className="max-w-5xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white font-rajdhani mb-2">
+          <h1 className="text-3xl font-bold text-text-primary font-rajdhani mb-2">
             Emulator bazne stanice
           </h1>
-          <p className="text-white/60">
+          <p className="text-text-tertiary">
             Test interfejs — ubaci prstenove i prati programiranje sa stranice{" "}
-            <code className="text-cyan-brand">/programming</code> u drugom tabu.
+            <code className="text-accent">/programming</code> u drugom tabu.
           </p>
         </div>
 
@@ -44,13 +44,13 @@ export default function EmulatorPage() {
                 key={slot.index}
                 className={cn(
                   "rounded-xl p-5 border-2 transition-all",
-                  display === "free" && "bg-card-dark/40 border-dashed border-white/15",
-                  display === "detected" && "bg-card-dark border-amber-400/50",
-                  display === "programmed" && "bg-card-dark border-green-400/50"
+                  display === "free" && "bg-bg-surface/40 border-dashed border-border",
+                  display === "detected" && "bg-bg-surface border-status-warning/40",
+                  display === "programmed" && "bg-bg-surface border-status-success/40"
                 )}
               >
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs uppercase tracking-wide text-white/50 font-medium">
+                  <span className="text-xs uppercase tracking-wide text-text-tertiary font-medium">
                     Slot {slot.index}
                   </span>
                   <StatusBadge status={display} />
@@ -58,11 +58,11 @@ export default function EmulatorPage() {
 
                 {display === "free" && (
                   <div className="space-y-3">
-                    <div className="text-center text-sm text-white/30 italic">
+                    <div className="text-center text-sm text-text-disabled italic">
                       Slobodan slot — spreman za novi prsten
                     </div>
                     <div>
-                      <div className="text-xs text-white/50 mb-2 text-center">
+                      <div className="text-xs text-text-tertiary mb-2 text-center">
                         Boja prstena
                       </div>
                       <div className="flex flex-wrap items-center justify-center gap-2">
@@ -86,7 +86,7 @@ export default function EmulatorPage() {
                     <button
                       type="button"
                       onClick={() => insertRing(slot.index)}
-                      className="w-full py-2.5 bg-cyan-brand hover:bg-cyan-dark text-white font-medium rounded-md transition-colors text-sm"
+                      className="w-full py-2.5 bg-accent hover:bg-accent-hover text-white font-medium rounded-md transition-colors text-sm"
                     >
                       Ubaci prsten
                     </button>
@@ -97,17 +97,17 @@ export default function EmulatorPage() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-center gap-3 min-h-[48px]">
                       <div
-                        className="w-6 h-6 rounded-full ring-2 ring-white/30 flex-shrink-0"
+                        className="w-6 h-6 rounded-full ring-2 ring-border-strong flex-shrink-0"
                         style={{ backgroundColor: slot.ringColor }}
                       />
-                      <span className="text-2xl font-mono font-bold text-amber-400">
+                      <span className="text-2xl font-mono font-bold text-status-warning">
                         {slot.ringId}
                       </span>
                     </div>
                     <button
                       type="button"
                       onClick={() => ejectRing(slot.index)}
-                      className="w-full py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 font-medium rounded-md transition-colors text-sm"
+                      className="w-full py-2.5 bg-bg-input hover:bg-bg-hover border border-border text-text-secondary font-medium rounded-md transition-colors text-sm"
                     >
                       Izbaci prsten
                     </button>
@@ -118,20 +118,20 @@ export default function EmulatorPage() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-center gap-3 min-h-[48px]">
                       <div
-                        className="w-6 h-6 rounded-full ring-2 ring-white/30 flex-shrink-0"
+                        className="w-6 h-6 rounded-full ring-2 ring-border-strong flex-shrink-0"
                         style={{ backgroundColor: slot.ringColor }}
                       />
-                      <span className="text-2xl font-mono font-bold text-green-400">
+                      <span className="text-2xl font-mono font-bold text-status-success">
                         {slot.ringId}
                       </span>
                     </div>
-                    <div className="text-center text-xs text-green-400 font-medium">
+                    <div className="text-center text-xs text-status-success font-medium">
                       ✓ Programiran
                     </div>
                     <button
                       type="button"
                       onClick={() => ejectRing(slot.index)}
-                      className="w-full py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 font-medium rounded-md transition-colors text-sm"
+                      className="w-full py-2.5 bg-bg-input hover:bg-bg-hover border border-border text-text-secondary font-medium rounded-md transition-colors text-sm"
                     >
                       Izbaci prsten
                     </button>
@@ -143,9 +143,9 @@ export default function EmulatorPage() {
         </div>
 
         <div className="flex items-center gap-6 text-sm">
-          <LegendItem color="border-white/30 border-dashed" label="Slobodan" />
-          <LegendItem color="border-amber-400" label="Detektovan (nije programiran)" />
-          <LegendItem color="border-green-400" label="Programiran" />
+          <LegendItem color="border-border-strong border-dashed" label="Slobodan" />
+          <LegendItem color="border-status-warning" label="Detektovan (nije programiran)" />
+          <LegendItem color="border-status-success" label="Programiran" />
         </div>
       </div>
     </div>
@@ -154,9 +154,9 @@ export default function EmulatorPage() {
 
 function StatusBadge({ status }: { status: DisplayStatus }) {
   const config: Record<DisplayStatus, { label: string; className: string }> = {
-    free: { label: "Slobodan", className: "bg-white/5 text-white/50" },
-    detected: { label: "Detektovan", className: "bg-amber-400/15 text-amber-400" },
-    programmed: { label: "✓ Programiran", className: "bg-green-400/15 text-green-400" },
+    free: { label: "Slobodan", className: "bg-bg-input text-text-tertiary" },
+    detected: { label: "Detektovan", className: "bg-bg-warning-light text-status-warning" },
+    programmed: { label: "✓ Programiran", className: "bg-bg-success-light text-status-success" },
   };
   const c = config[status];
   return (
@@ -170,7 +170,7 @@ function LegendItem({ color, label }: { color: string; label: string }) {
   return (
     <div className="flex items-center gap-2">
       <div className={cn("w-4 h-4 rounded border-2", color)} />
-      <span className="text-white/60">{label}</span>
+      <span className="text-text-tertiary">{label}</span>
     </div>
   );
 }

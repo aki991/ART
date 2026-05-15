@@ -64,7 +64,7 @@ export function ConfirmModal({
       }
     >
       <div className="space-y-4">
-        <div className="text-base text-white/70 leading-relaxed">{message}</div>
+        <div className="text-base text-text-secondary leading-relaxed">{message}</div>
         {confirmationText && (
           <Input
             label={confirmationLabel}

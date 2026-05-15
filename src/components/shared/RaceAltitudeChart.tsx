@@ -11,14 +11,7 @@ import {
   ReferenceLine,
   ResponsiveContainer,
 } from "recharts";
-
-const TICK_STYLE = {
-  fill: "rgba(255,255,255,0.7)",
-  fontSize: 14,
-  fontWeight: 600,
-  fontFamily: "var(--font-geist-mono), 'SF Mono', Menlo, monospace",
-};
-const AXIS_LINE = { stroke: "rgba(255,255,255,0.12)" };
+import { useChartTheme } from "@/lib/hooks/useChartTheme";
 
 interface ChartPigeon {
   id: string;
@@ -37,10 +30,18 @@ function AltitudeTooltip({
   active,
   payload,
   label,
+  tooltipBg,
+  tooltipBorder,
+  tooltipText,
+  tooltipMuted,
 }: {
   active?: boolean;
   payload?: TooltipEntry[];
   label?: number;
+  tooltipBg: string;
+  tooltipBorder: string;
+  tooltipText: string;
+  tooltipMuted: string;
 }) {
   if (!active || !payload || payload.length === 0) return null;
   const timeLabel = (() => {
@@ -54,15 +55,15 @@ function AltitudeTooltip({
   return (
     <div
       style={{
-        background: "rgba(9,45,65,0.95)",
-        border: "1px solid rgba(0,210,255,0.3)",
+        background: tooltipBg,
+        border: `1px solid ${tooltipBorder}`,
         borderRadius: 8,
         padding: "8px 12px",
         fontSize: 14,
         fontFamily: "var(--font-geist), system-ui, sans-serif",
       }}
     >
-      <div style={{ color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>{timeLabel}</div>
+      <div style={{ color: tooltipMuted, marginBottom: 6 }}>{timeLabel}</div>
       {payload.map((entry) => (
         <div
           key={entry.dataKey}
@@ -78,7 +79,7 @@ function AltitudeTooltip({
             }}
           />
           <span style={{ color: entry.color }}>{entry.name}</span>
-          <span style={{ color: "rgba(255,255,255,0.8)", fontFamily: "monospace", marginLeft: 2 }}>
+          <span style={{ color: tooltipText, fontFamily: "monospace", marginLeft: 2 }}>
             : {Math.round(entry.value)}m
           </span>
         </div>
@@ -106,6 +107,16 @@ export function RaceAltitudeChart({
   yAxisConfig,
   height = 400,
 }: RaceAltitudeChartProps) {
+  const chartTheme = useChartTheme();
+
+  const tickStyle = {
+    fill: chartTheme.textColor,
+    fontSize: 14,
+    fontWeight: 600,
+    fontFamily: "var(--font-geist-mono), 'SF Mono', Menlo, monospace",
+  };
+  const axisLine = { stroke: chartTheme.gridStroke };
+
   return (
     <div style={{ height }}>
       <ResponsiveContainer width="100%" height="100%">
@@ -113,36 +124,45 @@ export function RaceAltitudeChart({
           data={chartData}
           margin={{ top: 4, right: 80, bottom: 4, left: 8 }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+          <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.gridStroke} />
           <XAxis
             dataKey={xDataKey}
             type="number"
             domain={[0, xMaxMinutes]}
             ticks={xTicks}
             tickFormatter={(v: number) => `${v}min`}
-            tick={TICK_STYLE}
-            axisLine={AXIS_LINE}
-            tickLine={AXIS_LINE}
+            tick={tickStyle}
+            axisLine={axisLine}
+            tickLine={axisLine}
           />
           <YAxis
             domain={yAxisConfig.domain}
             ticks={yAxisConfig.ticks}
             tickFormatter={(v: number) => `${v}m`}
-            tick={TICK_STYLE}
-            axisLine={AXIS_LINE}
-            tickLine={AXIS_LINE}
+            tick={tickStyle}
+            axisLine={axisLine}
+            tickLine={axisLine}
             width={52}
           />
-          <Tooltip content={<AltitudeTooltip />} />
+          <Tooltip
+            content={
+              <AltitudeTooltip
+                tooltipBg={chartTheme.background}
+                tooltipBorder={chartTheme.accentLine}
+                tooltipText={chartTheme.textColor}
+                tooltipMuted={chartTheme.axisStroke}
+              />
+            }
+          />
           <ReferenceLine
             y={800}
-            stroke="#FBBF24"
+            stroke={chartTheme.goalLineColor}
             strokeWidth={2}
             strokeDasharray="6 4"
             label={{
               value: "Cilj: 800m",
               position: "right",
-              fill: "#FBBF24",
+              fill: chartTheme.goalLineColor,
               fontSize: 13,
               fontWeight: 600,
             }}
@@ -161,7 +181,7 @@ export function RaceAltitudeChart({
             />
           ))}
           <Legend
-            wrapperStyle={{ fontSize: 14, fontWeight: 500, color: "rgba(255,255,255,0.8)" }}
+            wrapperStyle={{ fontSize: 14, fontWeight: 500, color: chartTheme.textColor }}
           />
         </LineChart>
       </ResponsiveContainer>

@@ -174,7 +174,7 @@ export function ClubAdminSections({
       {/* a) Editable club data */}
       <div className="card-redesign p-6 space-y-5 max-w-2xl">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="text-lg font-semibold text-white font-rajdhani">
+          <h2 className="text-lg font-semibold text-text-primary font-rajdhani">
             Podaci o klubu
           </h2>
           <Button
@@ -193,7 +193,7 @@ export function ClubAdminSections({
             type="button"
             onClick={() => fileRef.current?.click()}
             aria-label="Promeni logo kluba"
-            className="rounded-full focus:outline-none focus:ring-2 focus:ring-cyan-brand/40 group relative"
+            className="rounded-full focus:outline-none focus:ring-2 focus:ring-accent/40 group relative"
           >
             <Avatar src={logo} name={name || "K"} size="lg" />
             <span className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -217,7 +217,7 @@ export function ClubAdminSections({
                 </Button>
               )}
             </div>
-            <p className="text-sm text-white/40">JPG ili PNG, do 2MB.</p>
+            <p className="text-sm text-text-disabled">JPG ili PNG, do 2MB.</p>
           </div>
           <input
             ref={fileRef}
@@ -247,15 +247,15 @@ export function ClubAdminSections({
       {/* b) Join requests */}
       {joinRequests.length > 0 && (
         <div className="card-redesign max-w-2xl">
-          <div className="px-6 py-4 border-b border-white/10 flex items-center gap-2">
-            <h2 className="text-lg font-semibold text-white font-rajdhani">
+          <div className="px-6 py-4 border-b border-border flex items-center gap-2">
+            <h2 className="text-lg font-semibold text-text-primary font-rajdhani">
               Zahtevi za članstvo
             </h2>
-            <span className="bg-cyan-brand/10 text-cyan-brand rounded-full px-2 py-0.5 text-xs font-medium">
+            <span className="bg-accent-light text-accent rounded-full px-2 py-0.5 text-xs font-medium">
               {joinRequests.length}
             </span>
           </div>
-          <ul className="divide-y divide-white/5">
+          <ul className="divide-y divide-border">
             {joinRequests.map((req) => {
               const fullName = `${req.profile.first_name} ${req.profile.last_name}`;
               return (
@@ -266,8 +266,8 @@ export function ClubAdminSections({
                     size="md"
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="text-white font-medium truncate">{fullName}</p>
-                    <p className="text-sm text-white/50 truncate">
+                    <p className="text-text-primary font-medium truncate">{fullName}</p>
+                    <p className="text-sm text-text-tertiary truncate">
                       @{req.profile.username} · {formatDate(req.created_at)}
                     </p>
                   </div>
@@ -298,11 +298,11 @@ export function ClubAdminSections({
 
       {/* c) Members */}
       <div className="card-redesign">
-        <div className="px-6 py-4 border-b border-white/10 flex items-center gap-2">
-          <h2 className="text-lg font-semibold text-white font-rajdhani">
+        <div className="px-6 py-4 border-b border-border flex items-center gap-2">
+          <h2 className="text-lg font-semibold text-text-primary font-rajdhani">
             Članovi kluba
           </h2>
-          <span className="bg-white/10 text-white/60 rounded-full px-2 py-0.5 text-sm">
+          <span className="bg-bg-hover text-text-tertiary rounded-full px-2 py-0.5 text-sm">
             {members.length}
           </span>
         </div>
@@ -310,19 +310,19 @@ export function ClubAdminSections({
           <table className="w-full text-base">
             <thead>
               <tr className="table-header-gradient">
-                <th className="px-6 py-3 text-left text-sm font-medium text-white/60 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider">
                   Član
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-white/60 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider">
                   Korisničko ime
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-white/60 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider">
                   Pridružen
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-white/60 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider">
                   Uloga
                 </th>
-                <th className="px-6 py-3 text-right text-sm font-medium text-white/60 uppercase tracking-wider">
+                <th className="px-6 py-3 text-right text-sm font-medium text-text-tertiary uppercase tracking-wider">
                   Akcije
                 </th>
               </tr>
@@ -332,7 +332,7 @@ export function ClubAdminSections({
                 const isSelf = m.user_id === currentUserId;
                 const isAdmin = m.role === "admin";
                 return (
-                  <tr key={m.id} className="border-t border-white/5">
+                  <tr key={m.id} className="border-t border-border">
                     <td className="px-6 py-3">
                       <div className="flex items-center gap-2.5">
                         <Avatar
@@ -340,28 +340,28 @@ export function ClubAdminSections({
                           name={m.profile.first_name}
                           size="sm"
                         />
-                        <span className="text-white">
+                        <span className="text-text-primary">
                           {m.profile.first_name} {m.profile.last_name}
                           {isSelf && (
-                            <span className="text-white/40"> (Vi)</span>
+                            <span className="text-text-disabled"> (Vi)</span>
                           )}
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-3 font-mono text-sm text-white/70">
+                    <td className="px-6 py-3 font-mono text-sm text-text-tertiary">
                       @{m.profile.username}
                     </td>
-                    <td className="px-6 py-3 text-white/70">
+                    <td className="px-6 py-3 text-text-tertiary">
                       {formatDate(m.joined_at)}
                     </td>
                     <td className="px-6 py-3">
                       {isAdmin ? (
-                        <span className="inline-flex items-center gap-1 text-sm bg-cyan-brand/10 text-cyan-brand border border-cyan-brand/30 px-2 py-0.5 rounded-full">
+                        <span className="inline-flex items-center gap-1 text-sm bg-accent-light text-accent border border-accent/30 px-2 py-0.5 rounded-full">
                           <Crown className="w-3 h-3" aria-hidden="true" />
                           Admin
                         </span>
                       ) : (
-                        <span className="text-sm bg-white/5 text-white/60 border border-white/10 px-2 py-0.5 rounded-full">
+                        <span className="text-sm bg-bg-hover text-text-tertiary border border-border px-2 py-0.5 rounded-full">
                           Član
                         </span>
                       )}
@@ -413,7 +413,7 @@ export function ClubAdminSections({
                               setPendingAction({ type: "remove", member: m })
                             }
                             disabled={actionPending}
-                            className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                            className="text-status-error hover:text-status-error hover:bg-bg-error-light"
                           >
                             <UserMinus
                               className="w-4 h-4"
@@ -433,10 +433,10 @@ export function ClubAdminSections({
       </div>
 
       {/* d) Leave club */}
-      <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-6 flex items-center justify-between gap-4">
+      <div className="rounded-xl border border-status-error bg-bg-error-light p-6 flex items-center justify-between gap-4">
         <div>
-          <h3 className="text-base font-semibold text-red-400">Napusti klub</h3>
-          <p className="text-sm text-white/50 mt-0.5">
+          <h3 className="text-base font-semibold text-status-error">Napusti klub</h3>
+          <p className="text-sm text-text-tertiary mt-0.5">
             {blockLeave
               ? "Prvo promovišite drugog člana u admina pre nego što napustite klub."
               : "Vaše trke i golubovi ostaju, ali nećete više pripadati klubu."}
@@ -472,7 +472,7 @@ export function ClubAdminSections({
           pendingAction?.type === "promote" ? (
             <>
               Promovisati{" "}
-              <span className="text-white font-medium">
+              <span className="text-text-primary font-medium">
                 {pendingAction.member.profile.first_name}{" "}
                 {pendingAction.member.profile.last_name}
               </span>{" "}
@@ -481,7 +481,7 @@ export function ClubAdminSections({
           ) : pendingAction?.type === "demote" ? (
             <>
               Skinuti admin ulogu sa{" "}
-              <span className="text-white font-medium">
+              <span className="text-text-primary font-medium">
                 {pendingAction.member.profile.first_name}{" "}
                 {pendingAction.member.profile.last_name}
               </span>
@@ -490,7 +490,7 @@ export function ClubAdminSections({
           ) : pendingAction?.type === "remove" ? (
             <>
               Ukloniti{" "}
-              <span className="text-white font-medium">
+              <span className="text-text-primary font-medium">
                 {pendingAction.member.profile.first_name}{" "}
                 {pendingAction.member.profile.last_name}
               </span>{" "}

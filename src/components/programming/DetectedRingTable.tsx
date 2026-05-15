@@ -20,13 +20,13 @@ export function DetectedRingTable() {
 
   return (
     <div className="card-redesign">
-      <div className="px-6 py-4 border-b border-cyan-brand/10 flex items-center gap-2">
-        <Search className="w-4 h-4 text-white/40" aria-hidden="true" />
-        <h2 className="text-lg font-semibold font-rajdhani text-white">
+      <div className="px-6 py-4 border-b border-accent/10 flex items-center gap-2">
+        <Search className="w-4 h-4 text-text-disabled" aria-hidden="true" />
+        <h2 className="text-lg font-semibold font-rajdhani text-text-primary">
           Detektovani prstenovi
         </h2>
         {insertedSlots.length > 0 && (
-          <span className="bg-cyan-brand/10 text-cyan-brand rounded-full px-2 py-0.5 text-xs font-medium">
+          <span className="bg-accent-light text-accent rounded-full px-2 py-0.5 text-xs font-medium">
             {insertedSlots.length}
           </span>
         )}
@@ -36,16 +36,16 @@ export function DetectedRingTable() {
         <table className="w-full text-base">
           <thead>
             <tr className="table-header-gradient">
-              <th className="px-6 py-3 text-left text-sm font-medium text-white/60 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider">
                 ID Prstena
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-white/60 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider">
                 Slot
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-white/60 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-right text-sm font-medium text-white/60 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-sm font-medium text-text-tertiary uppercase tracking-wider">
                 Akcije
               </th>
             </tr>
@@ -53,7 +53,7 @@ export function DetectedRingTable() {
           <tbody>
             {insertedSlots.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-6 py-8 text-center text-base text-white/60">
+                <td colSpan={4} className="px-6 py-8 text-center text-base text-text-tertiary">
                   Nema detektovanog prstena. Ubaci prsten u emulator u drugom tabu.
                 </td>
               </tr>
@@ -72,12 +72,12 @@ export function DetectedRingTable() {
                       selectRing(slot.ringId!, slot.index);
                     }}
                     className={cn(
-                      "border-t border-white/5 transition-colors",
+                      "border-t border-border transition-colors",
                       isProgrammed
                         ? "opacity-50 cursor-not-allowed"
                         : "cursor-pointer",
                       !isProgrammed &&
-                        (isSelected ? "bg-cyan-brand/10" : "hover:bg-white/5")
+                        (isSelected ? "bg-accent-light" : "hover:bg-bg-hover")
                     )}
                   >
                     <td className="px-6 py-3">
@@ -86,19 +86,19 @@ export function DetectedRingTable() {
                           className="w-4 h-4 rounded-full flex-shrink-0"
                           style={{ backgroundColor: slot.ringColor }}
                         />
-                        <span className="bg-cyan-brand/10 text-cyan-brand font-mono font-semibold px-2 py-0.5 rounded text-base">
+                        <span className="bg-accent-light text-accent font-mono font-semibold px-2 py-0.5 rounded text-base">
                           {slot.ringId}
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-3 text-white/80">Slot {slot.index}</td>
+                    <td className="px-6 py-3 text-text-secondary">Slot {slot.index}</td>
                     <td className="px-6 py-3">
                       {isProgrammed ? (
-                        <span className="text-sm bg-cyan-brand/10 text-cyan-brand border border-cyan-brand/30 px-2 py-0.5 rounded-full">
+                        <span className="text-sm bg-bg-success-light text-status-success border border-status-success/40 px-2 py-0.5 rounded-full">
                           Programiran
                         </span>
                       ) : (
-                        <span className="text-sm bg-amber-500/10 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full">
+                        <span className="text-sm bg-bg-warning-light text-status-warning border border-status-warning/40 px-2 py-0.5 rounded-full">
                           Ubačen
                         </span>
                       )}
@@ -107,7 +107,7 @@ export function DetectedRingTable() {
                       <div className="flex items-center justify-end gap-2">
                         {isSelected && (
                           <Check
-                            className="w-4 h-4 text-cyan-brand"
+                            className="w-4 h-4 text-accent"
                             aria-label="Izabran"
                           />
                         )}
@@ -118,7 +118,7 @@ export function DetectedRingTable() {
                             e.stopPropagation();
                             ejectRing(slot.index);
                           }}
-                          className="text-white/40 hover:text-red-400 transition-colors cursor-pointer"
+                          className="text-text-disabled hover:text-status-error transition-colors cursor-pointer"
                         >
                           <X className="w-4 h-4" aria-hidden="true" />
                         </button>
@@ -133,7 +133,7 @@ export function DetectedRingTable() {
       </div>
 
       {insertedSlots.length > 0 && (
-        <p className="text-sm text-white/60 italic mt-3 px-6 pb-4">
+        <p className="text-sm text-text-tertiary italic mt-3 px-6 pb-4">
           {selectedRingId
             ? "Popunite podatke goluba i kliknite \"Programiraj prsten\" →"
             : "Kliknite na red da izaberete prsten za programiranje."}

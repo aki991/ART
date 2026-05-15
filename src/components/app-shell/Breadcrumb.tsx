@@ -50,12 +50,12 @@ export function Breadcrumb({ segments }: BreadcrumbProps) {
           return (
             <li key={i} className="flex items-center gap-1.5">
               {i > 0 && (
-                <ChevronRight size={14} className="text-white/30 flex-shrink-0" />
+                <ChevronRight size={14} className="text-text-tertiary flex-shrink-0" />
               )}
               {seg.href ? (
                 <Link
                   href={seg.href}
-                  className="text-sm text-white/50 hover:text-white transition-colors"
+                  className="text-sm text-text-tertiary hover:text-text-primary transition-colors"
                 >
                   {seg.label}
                 </Link>
@@ -64,7 +64,7 @@ export function Breadcrumb({ segments }: BreadcrumbProps) {
                   className={
                     isLast && isOnlySegment
                       ? "text-3xl font-semibold font-rajdhani text-gradient-page-title"
-                      : "text-sm font-semibold text-white font-rajdhani"
+                      : "text-sm font-semibold text-text-primary font-rajdhani"
                   }
                 >
                   {seg.label}
