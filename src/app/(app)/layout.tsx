@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/app-shell/Sidebar";
 import { TopBar } from "@/components/app-shell/TopBar";
+import { MobileShell } from "@/components/app-shell/MobileShell";
+import { MobileBottomTabBar } from "@/components/app-shell/MobileBottomTabBar";
 import { CurrentUserProvider } from "@/components/providers/CurrentUserProvider";
 import { createClient } from "@/lib/supabase/server";
 
@@ -44,8 +46,10 @@ export default async function AppLayout({
       <div className="flex h-screen overflow-hidden bg-bg-app">
         <Sidebar />
         <div className="flex flex-col flex-1 min-w-0 overflow-hidden bg-bg-app">
+          <MobileShell />
           <TopBar />
-          <main className="flex-1 overflow-y-auto">{children}</main>
+          <main className="flex-1 overflow-y-auto pb-16 lg:pb-0">{children}</main>
+          <MobileBottomTabBar />
         </div>
       </div>
     </CurrentUserProvider>

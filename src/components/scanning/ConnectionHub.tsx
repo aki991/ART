@@ -13,10 +13,10 @@ export function ConnectionHub() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto flex flex-col items-center gap-12">
+    <div className="max-w-2xl mx-auto flex flex-col items-center gap-6 lg:gap-12">
       <DeviceImage />
 
-      <div className="flex gap-10 justify-center">
+      <div className="flex gap-4 lg:gap-10 justify-center">
         <ConnectionMethodCard method="usb-c" title="USB-C" />
         <ConnectionMethodCard method="bluetooth" title="Bluetooth" />
       </div>

@@ -41,7 +41,7 @@ export function TopBar({ breadcrumbSegments }: TopBarProps) {
     : "Povezivanje uređaja";
 
   return (
-    <header className="h-[72px] bg-bg-app flex items-center justify-between px-4 xl:px-5 2xl:px-6 flex-shrink-0 gap-3 min-w-0">
+    <header className="h-[72px] bg-bg-app hidden lg:flex items-center justify-between px-4 xl:px-5 2xl:px-6 flex-shrink-0 gap-3 min-w-0">
       {isDashboard ? (
         <h1 className="text-2xl xl:text-2xl 2xl:text-3xl font-semibold font-rajdhani text-gradient-page-title truncate min-w-0">
           Dobrodošao u Aero Ring Tech

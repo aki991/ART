@@ -15,16 +15,26 @@ export function LiveFlightDashboard() {
   useRaceSimulator();
 
   return (
-    <div className="grid grid-cols-10 gap-4 xl:gap-5 2xl:gap-6 2xl:h-full">
-      <aside className="col-span-3 flex flex-col gap-3 xl:gap-3.5 2xl:gap-4 2xl:overflow-y-auto min-w-0">
-        <MaxAltitudeCard />
-        <SessionStatsCard />
-        <PigeonLegend />
+    <div className="flex flex-col gap-4 lg:grid lg:grid-cols-10 lg:gap-4 xl:lg:gap-5 2xl:gap-6 2xl:h-full">
+      <div className="order-1 lg:order-none lg:col-start-1 lg:col-span-3 lg:row-start-4 min-w-0">
         <SimulationControls />
-      </aside>
-      <main className="col-span-7 2xl:h-full min-w-0 min-h-[500px]">
+      </div>
+
+      <main className="order-2 lg:order-none lg:col-start-4 lg:col-span-7 lg:row-start-1 lg:row-span-4 2xl:h-full min-w-0 min-h-[300px] lg:min-h-[500px]">
         <AltitudeChart />
       </main>
+
+      <div className="order-3 lg:order-none lg:col-start-1 lg:col-span-3 lg:row-start-1 min-w-0">
+        <MaxAltitudeCard />
+      </div>
+
+      <div className="order-4 lg:order-none lg:col-start-1 lg:col-span-3 lg:row-start-2 min-w-0">
+        <SessionStatsCard />
+      </div>
+
+      <div className="order-5 lg:order-none lg:col-start-1 lg:col-span-3 lg:row-start-3 min-w-0">
+        <PigeonLegend />
+      </div>
     </div>
   );
 }

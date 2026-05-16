@@ -58,7 +58,7 @@ export function ConnectionMethodCard({
       onClick={() => void handleActivate()}
       onKeyDown={handleKeyDown}
       className={cn(
-        "w-[200px] h-[200px] rounded-full flex flex-col items-center justify-center gap-3",
+        "w-[110px] h-[110px] lg:w-[200px] lg:h-[200px] rounded-full flex flex-col items-center justify-center gap-2 lg:gap-3",
         "bg-bg-surface border shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition-all duration-200",
         isActive
           ? "border-accent shadow-[0_0_24px_rgba(0,210,255,0.25)]"
@@ -69,11 +69,11 @@ export function ConnectionMethodCard({
       )}
     >
       <Icon
-        className={cn("w-14 h-14", isActive ? "text-accent" : "text-text-tertiary")}
+        className={cn("w-8 h-8 lg:w-14 lg:h-14", isActive ? "text-accent" : "text-text-tertiary")}
         strokeWidth={1.5}
         aria-hidden="true"
       />
-      <span className={cn("text-xl font-semibold font-rajdhani", isActive ? "text-accent" : "text-text-primary")}>
+      <span className={cn("text-base lg:text-xl font-semibold font-rajdhani", isActive ? "text-accent" : "text-text-primary")}>
         {title}
       </span>
     </div>

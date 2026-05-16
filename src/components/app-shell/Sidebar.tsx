@@ -44,7 +44,7 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        "flex flex-col h-screen bg-bg-surface border-r border-border flex-shrink-0 transition-[width] duration-200 ease-in-out overflow-hidden",
+        "hidden lg:flex flex-col h-screen bg-bg-surface border-r border-border flex-shrink-0 transition-[width] duration-200 ease-in-out overflow-hidden",
         expanded ? "w-[240px] xl:w-[290px] 2xl:w-[340px]" : "w-[72px]"
       )}
     >
