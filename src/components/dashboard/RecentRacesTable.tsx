@@ -1,19 +1,16 @@
 "use client";
 
-import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Trophy, ArrowRight, Check, X } from "lucide-react";
-import { useRacesStore, type Race } from "@/lib/store/races-store";
+import type { RaceListItem } from "@/lib/types/race";
 
-export function RecentRacesTable() {
+interface RecentRacesTableProps {
+  races: RaceListItem[];
+}
+
+export function RecentRacesTable({ races }: RecentRacesTableProps) {
   const router = useRouter();
-  const races = useRacesStore((s) => s.races);
-
-  const recentRaces = useMemo(
-    () => [...races].sort((a, b) => b.startedAt - a.startedAt).slice(0, 3),
-    [races]
-  );
 
   return (
     <div className="card-redesign p-6">
@@ -31,7 +28,7 @@ export function RecentRacesTable() {
         </Link>
       </div>
 
-      {recentRaces.length === 0 ? (
+      {races.length === 0 ? (
         <div className="text-center py-12">
           <Trophy className="w-16 h-16 text-text-disabled mx-auto mb-4" aria-hidden="true" />
           <p className="text-text-tertiary mb-1">Još nema trka.</p>
@@ -52,12 +49,34 @@ export function RecentRacesTable() {
               </tr>
             </thead>
             <tbody>
-              {recentRaces.map((race) => (
-                <RaceRow
+              {races.map((race) => (
+                <tr
                   key={race.id}
-                  race={race}
                   onClick={() => router.push(`/races/${race.id}`)}
-                />
+                  className="border-t border-border hover:bg-bg-hover cursor-pointer transition-colors"
+                >
+                  <td className="py-3 px-4 text-text-primary font-medium text-sm">
+                    {race.name}
+                  </td>
+                  <td className="py-3 px-4 text-text-secondary font-mono text-sm">
+                    {formatDate(race.started_at)}
+                  </td>
+                  <td className="py-3 px-4 text-text-secondary font-mono text-sm">
+                    {race.duration_seconds != null
+                      ? formatDuration(race.duration_seconds)
+                      : "—"}
+                  </td>
+                  <td className="py-3 px-4 text-text-secondary font-mono text-sm">
+                    {race.pigeon_count}
+                  </td>
+                  <td className="py-3 px-4">
+                    {race.is_valid ? (
+                      <Check className="w-5 h-5 text-status-success" aria-hidden="true" />
+                    ) : (
+                      <X className="w-5 h-5 text-status-error" aria-hidden="true" />
+                    )}
+                  </td>
+                </tr>
               ))}
             </tbody>
           </table>
@@ -67,34 +86,8 @@ export function RecentRacesTable() {
   );
 }
 
-function RaceRow({ race, onClick }: { race: Race; onClick: () => void }) {
-  const isValid = race.statistics.some((s) => s.validFlight);
-  const durationSeconds = Math.round((race.endedAt - race.startedAt) / 1000);
-
-  return (
-    <tr
-      onClick={onClick}
-      className="border-t border-border hover:bg-bg-hover cursor-pointer transition-colors"
-    >
-      <td className="py-3 px-4 text-text-primary font-medium text-sm">{race.name}</td>
-      <td className="py-3 px-4 text-text-secondary font-mono text-sm">{formatDate(race.startedAt)}</td>
-      <td className="py-3 px-4 text-text-secondary font-mono text-sm">
-        {formatDuration(durationSeconds)}
-      </td>
-      <td className="py-3 px-4 text-text-secondary font-mono text-sm">{race.pigeons.length}</td>
-      <td className="py-3 px-4">
-        {isValid ? (
-          <Check className="w-5 h-5 text-status-success" aria-hidden="true" />
-        ) : (
-          <X className="w-5 h-5 text-status-error" aria-hidden="true" />
-        )}
-      </td>
-    </tr>
-  );
-}
-
-function formatDate(timestamp: number): string {
-  return new Date(timestamp).toLocaleDateString("sr-RS", {
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString("sr-RS", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",

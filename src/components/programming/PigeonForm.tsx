@@ -6,11 +6,12 @@ import { ChevronDown, Loader2, Search, X, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useProgrammerStore } from "@/lib/store/programmer-store";
-import { usePigeonsStore } from "@/lib/store/pigeons-store";
 import { useEmulatorStore } from "@/lib/store/emulator-store";
+import { getMyPigeons, searchMyPigeons } from "@/app/actions/pigeons";
+import type { Pigeon } from "@/lib/types/pigeon";
 
 export function PigeonForm() {
-  const [selectedPigeonId, setSelectedPigeonId] = useState("");
+  const [selectedPigeon, setSelectedPigeon] = useState<Pigeon | null>(null);
   const [pigeonColor, setPigeonColor] = useState("");
   const [bandPrefix, setBandPrefix] = useState("");
   const [bandMain, setBandMain] = useState("");
@@ -22,6 +23,10 @@ export function PigeonForm() {
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [dropdownRect, setDropdownRect] = useState<DOMRect | null>(null);
   const [mounted, setMounted] = useState(false);
+
+  const [pigeons, setPigeons] = useState<Pigeon[]>([]);
+  const [loadingPigeons, setLoadingPigeons] = useState(false);
+  const [pigeonsLoaded, setPigeonsLoaded] = useState(false);
 
   const anchorRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -37,10 +42,6 @@ export function PigeonForm() {
   const programRing = useProgrammerStore((s) => s.programRing);
   const selectedRingId = useProgrammerStore((s) => s.selectedRingId);
   const clearSelectedRing = useProgrammerStore((s) => s.clearSelectedRing);
-
-  const pigeons = usePigeonsStore((s) => s.pigeons);
-  const formatIdentifier = usePigeonsStore((s) => s.formatIdentifier);
-  const getPigeonById = usePigeonsStore((s) => s.getPigeonById);
   const sessionPrograms = useProgrammerStore((s) => s.sessionPrograms);
 
   const programmedIdentifiers = useMemo(
@@ -49,19 +50,9 @@ export function PigeonForm() {
   );
 
   const availablePigeons = useMemo(
-    () => pigeons.filter((p) => !programmedIdentifiers.has(formatIdentifier(p))),
-    [pigeons, programmedIdentifiers, formatIdentifier]
+    () => pigeons.filter((p) => !programmedIdentifiers.has(p.full_ring_number)),
+    [pigeons, programmedIdentifiers]
   );
-
-  const filteredPigeons = useMemo(() => {
-    if (!inputValue.trim() || selectedPigeonId) return availablePigeons;
-    const query = inputValue.toLowerCase();
-    return availablePigeons.filter(
-      (p) =>
-        formatIdentifier(p).toLowerCase().includes(query) ||
-        p.pigeonColor.toLowerCase().includes(query)
-    );
-  }, [availablePigeons, inputValue, selectedPigeonId, formatIdentifier]);
 
   const emulatorSlots = useEmulatorStore((s) => s.slots);
   const insertedSlots = useMemo(
@@ -86,9 +77,47 @@ export function PigeonForm() {
     setBandBreeder("");
     setBandPigeon("");
     setBandYear("");
-  }, [selectedPigeonId]);
+  }, [selectedPigeon]);
 
-  // Recompute dropdown position whenever it opens or window resizes
+  // Initial load: when dropdown is first opened, fetch all pigeons.
+  useEffect(() => {
+    if (!isDropdownOpen || pigeonsLoaded) return;
+    let cancelled = false;
+    setLoadingPigeons(true);
+    void getMyPigeons().then((res) => {
+      if (cancelled) return;
+      setLoadingPigeons(false);
+      setPigeonsLoaded(true);
+      if (res.success) setPigeons(res.data);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [isDropdownOpen, pigeonsLoaded]);
+
+  // Server-side search with debounce when user types.
+  useEffect(() => {
+    if (!pigeonsLoaded) return;
+    if (selectedPigeon) return;
+
+    const term = inputValue.trim();
+    let cancelled = false;
+    const handle = setTimeout(() => {
+      setLoadingPigeons(true);
+      const run = term ? searchMyPigeons(term) : getMyPigeons();
+      void run.then((res) => {
+        if (cancelled) return;
+        setLoadingPigeons(false);
+        if (res.success) setPigeons(res.data);
+      });
+    }, 300);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(handle);
+    };
+  }, [inputValue, pigeonsLoaded, selectedPigeon]);
+
   useEffect(() => {
     if (!isDropdownOpen || !anchorRef.current) return;
     const updateRect = () => {
@@ -103,7 +132,6 @@ export function PigeonForm() {
     };
   }, [isDropdownOpen]);
 
-  // Close on click outside (both the anchor and the portal dropdown)
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       const inAnchor = anchorRef.current?.contains(e.target as Node);
@@ -111,14 +139,13 @@ export function PigeonForm() {
       if (!inAnchor && !inPortal) {
         setIsDropdownOpen(false);
         setHighlightedIndex(-1);
-        if (!selectedPigeonId) setInputValue("");
+        if (!selectedPigeon) setInputValue("");
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [selectedPigeonId]);
+  }, [selectedPigeon]);
 
-  // Scroll highlighted item into view
   useEffect(() => {
     if (highlightedIndex < 0 || !listRef.current) return;
     const item = listRef.current.children[highlightedIndex] as HTMLElement;
@@ -130,16 +157,15 @@ export function PigeonForm() {
     setIsDropdownOpen(true);
   }
 
-  function selectPigeon(pigeonId: string) {
-    const pigeon = getPigeonById(pigeonId);
-    setSelectedPigeonId(pigeonId);
-    setInputValue(pigeon ? `${formatIdentifier(pigeon)} — ${pigeon.pigeonColor}` : "");
+  function selectPigeon(pigeon: Pigeon) {
+    setSelectedPigeon(pigeon);
+    setInputValue(`${pigeon.full_ring_number} — ${pigeon.color}`);
     setIsDropdownOpen(false);
     setHighlightedIndex(-1);
   }
 
   function clearSelection() {
-    setSelectedPigeonId("");
+    setSelectedPigeon(null);
     setInputValue("");
     openDropdown();
     setHighlightedIndex(-1);
@@ -148,7 +174,7 @@ export function PigeonForm() {
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setInputValue(e.target.value);
-    setSelectedPigeonId("");
+    setSelectedPigeon(null);
     openDropdown();
     setHighlightedIndex(0);
   }
@@ -165,7 +191,7 @@ export function PigeonForm() {
     switch (e.key) {
       case "ArrowDown":
         e.preventDefault();
-        setHighlightedIndex((i) => Math.min(i + 1, filteredPigeons.length - 1));
+        setHighlightedIndex((i) => Math.min(i + 1, availablePigeons.length - 1));
         break;
       case "ArrowUp":
         e.preventDefault();
@@ -173,8 +199,8 @@ export function PigeonForm() {
         break;
       case "Enter":
         e.preventDefault();
-        if (highlightedIndex >= 0 && filteredPigeons[highlightedIndex]) {
-          selectPigeon(filteredPigeons[highlightedIndex].id);
+        if (highlightedIndex >= 0 && availablePigeons[highlightedIndex]) {
+          selectPigeon(availablePigeons[highlightedIndex]);
         }
         break;
       case "Escape":
@@ -185,12 +211,11 @@ export function PigeonForm() {
     }
   }
 
-  const showManualFields = selectedPigeonId === "";
-  const isUuid = selectedPigeonId !== "";
+  const showManualFields = selectedPigeon === null;
 
   const federationBandNumber =
     bandPrefix && bandMain && bandBreeder && bandPigeon && bandYear
-      ? `${bandPrefix.toUpperCase()}${bandMain}·${bandBreeder}·${bandPigeon}·${bandYear}`
+      ? `${bandPrefix.toUpperCase()}-${bandMain}-${bandBreeder}-${bandPigeon}-${bandYear}`
       : "";
 
   function handleBandPaste(e: React.ClipboardEvent<HTMLInputElement>) {
@@ -210,8 +235,7 @@ export function PigeonForm() {
   const isDisabled =
     !selectedRingId ||
     isProgramming ||
-    (selectedPigeonId === "" && (!pigeonColor.trim() || !federationBandNumber.trim())) ||
-    (isUuid && !getPigeonById(selectedPigeonId));
+    (selectedPigeon === null && (!pigeonColor.trim() || !federationBandNumber.trim()));
 
   async function handleSubmit() {
     if (!selectedRingId) {
@@ -222,17 +246,12 @@ export function PigeonForm() {
     let pigeonIdentifier: string;
     let finalPigeonColor: string;
 
-    if (selectedPigeonId === "") {
+    if (selectedPigeon) {
+      pigeonIdentifier = selectedPigeon.full_ring_number;
+      finalPigeonColor = selectedPigeon.color;
+    } else {
       pigeonIdentifier = federationBandNumber.trim();
       finalPigeonColor = pigeonColor.trim();
-    } else {
-      const pigeon = getPigeonById(selectedPigeonId);
-      if (!pigeon) {
-        toast.error("Izabrani golub više ne postoji");
-        return;
-      }
-      pigeonIdentifier = formatIdentifier(pigeon);
-      finalPigeonColor = pigeon.pigeonColor;
     }
 
     const result = await programRing({
@@ -245,7 +264,7 @@ export function PigeonForm() {
       toast.success("Prsten programiran", {
         description: `Ring ID ${selectedRingId} je uspešno povezan sa golubom.`,
       });
-      setSelectedPigeonId("");
+      setSelectedPigeon(null);
       setInputValue("");
       setPigeonColor("");
       setBandPrefix("");
@@ -280,7 +299,6 @@ export function PigeonForm() {
           Golub
         </label>
 
-        {/* anchor: getBoundingClientRect source for portal positioning */}
         <div className="relative" ref={anchorRef}>
           <input
             ref={inputRef}
@@ -290,7 +308,7 @@ export function PigeonForm() {
             onChange={handleInputChange}
             onFocus={() => {
               openDropdown();
-              if (selectedPigeonId) inputRef.current?.select();
+              if (selectedPigeon) inputRef.current?.select();
             }}
             onKeyDown={handleKeyDown}
             placeholder="Pretraži goluba po broju..."
@@ -300,7 +318,7 @@ export function PigeonForm() {
             aria-haspopup="listbox"
             className={cn(inputClass, "pr-16")}
           />
-          {selectedPigeonId ? (
+          {selectedPigeon ? (
             <button
               type="button"
               onMouseDown={(e) => {
@@ -340,7 +358,6 @@ export function PigeonForm() {
           </button>
         </div>
 
-        {/* Portal dropdown — rendered in document.body, outside all overflow/stacking constraints */}
         {mounted && isDropdownOpen && dropdownRect &&
           createPortal(
             <div
@@ -354,24 +371,31 @@ export function PigeonForm() {
                 width: dropdownRect.width,
                 zIndex: 9999,
               }}
-              className="bg-bg-surface border border-border rounded-md shadow-[0_8px_32px_rgba(0,0,0,0.7)] max-h-56 overflow-y-auto"
+              className="bg-bg-surface-elevated border border-border rounded-md shadow-lg max-h-56 overflow-y-auto"
             >
               <div ref={listRef}>
-                {filteredPigeons.length === 0 ? (
+                {loadingPigeons ? (
+                  <div className="px-4 py-3 text-text-tertiary text-sm flex items-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
+                    Učitavanje...
+                  </div>
+                ) : availablePigeons.length === 0 ? (
                   <div className="px-4 py-3 text-text-disabled text-sm italic">
-                    {inputValue.trim()
-                      ? "Nema rezultata za tu pretragu"
-                      : "Nema dostupnih golubova"}
+                    {pigeons.length === 0
+                      ? "Niste još dodali nijednog goluba — dodajte na stranici Golubovi."
+                      : inputValue.trim()
+                        ? "Nema rezultata za tu pretragu"
+                        : "Svi golubovi su već programirani u ovoj sesiji."}
                   </div>
                 ) : (
-                  filteredPigeons.map((p, index) => (
+                  availablePigeons.map((p, index) => (
                     <div
                       key={p.id}
                       role="option"
-                      aria-selected={selectedPigeonId === p.id}
+                      aria-selected={selectedPigeon?.id === p.id}
                       onMouseDown={(e) => {
                         e.preventDefault();
-                        selectPigeon(p.id);
+                        selectPigeon(p);
                       }}
                       onMouseEnter={() => setHighlightedIndex(index)}
                       className={cn(
@@ -381,8 +405,8 @@ export function PigeonForm() {
                           : "border-l-transparent text-text-tertiary hover:bg-bg-hover hover:text-text-primary"
                       )}
                     >
-                      <span className="font-mono font-medium">{formatIdentifier(p)}</span>
-                      <span className="text-text-tertiary ml-2">— {p.pigeonColor}</span>
+                      <span className="font-mono font-medium">{p.full_ring_number}</span>
+                      <span className="text-text-tertiary ml-2">— {p.color}</span>
                     </div>
                   ))
                 )}
@@ -391,16 +415,12 @@ export function PigeonForm() {
             document.body
           )}
 
-        {pigeons.length === 0 ? (
+        {pigeonsLoaded && pigeons.length === 0 ? (
           <p className="text-sm text-text-tertiary mt-1.5">
             Nema dodatih golubova. Možeš popuniti polja ručno ili dodati goluba na stranici
             &apos;Golubovi&apos;.
           </p>
-        ) : availablePigeons.length === 0 ? (
-          <p className="text-sm text-text-tertiary mt-1.5">
-            Svi golubovi su već programirani u ovoj sesiji.
-          </p>
-        ) : isUuid ? (
+        ) : selectedPigeon ? (
           <p className="text-sm text-text-tertiary mt-1.5">
             Boja goluba i broj savezne alke se automatski preuzimaju iz odabranog goluba.
           </p>
@@ -449,7 +469,7 @@ export function PigeonForm() {
                 placeholder="SRB"
                 className={cn(bandInputClass, "w-16")}
               />
-              <span className="text-text-disabled select-none font-mono">·</span>
+              <span className="text-text-disabled select-none font-mono">-</span>
               <input
                 ref={bandMainRef}
                 type="text"
@@ -467,7 +487,7 @@ export function PigeonForm() {
                 placeholder="444"
                 className={cn(bandInputClass, "w-16")}
               />
-              <span className="text-text-disabled select-none font-mono">·</span>
+              <span className="text-text-disabled select-none font-mono">-</span>
               <input
                 ref={bandBreederRef}
                 type="text"
@@ -485,7 +505,7 @@ export function PigeonForm() {
                 placeholder="11"
                 className={cn(bandInputClass, "w-12")}
               />
-              <span className="text-text-disabled select-none font-mono">·</span>
+              <span className="text-text-disabled select-none font-mono">-</span>
               <input
                 ref={bandPigeonRef}
                 type="text"
@@ -503,7 +523,7 @@ export function PigeonForm() {
                 placeholder="22"
                 className={cn(bandInputClass, "w-12")}
               />
-              <span className="text-text-disabled select-none font-mono">·</span>
+              <span className="text-text-disabled select-none font-mono">-</span>
               <input
                 ref={bandYearRef}
                 type="text"

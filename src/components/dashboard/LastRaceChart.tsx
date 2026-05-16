@@ -4,46 +4,45 @@ import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Trophy, User, Calendar, Clock, ArrowRight } from "lucide-react";
-import { useRacesStore } from "@/lib/store/races-store";
 import { computeYAxisConfig, buildXTicks } from "@/lib/utils/y-axis";
 import { RaceAltitudeChart } from "@/components/shared/RaceAltitudeChart";
+import { PIGEON_COLOR_PALETTE } from "@/lib/utils/pigeon-palette";
+import type { RaceWithDetails } from "@/lib/types/race";
 
-export function LastRaceChart() {
+interface LastRaceChartProps {
+  race: RaceWithDetails | null;
+}
+
+export function LastRaceChart({ race }: LastRaceChartProps) {
   const router = useRouter();
-  const races = useRacesStore((s) => s.races);
 
-  const lastRace = useMemo(
-    () =>
-      races.length === 0
-        ? null
-        : [...races].sort((a, b) => b.startedAt - a.startedAt)[0],
-    [races]
-  );
-
-  const durationSeconds = lastRace
-    ? Math.round((lastRace.endedAt - lastRace.startedAt) / 1000)
-    : 0;
+  const pigeonsWithColor = useMemo(() => {
+    if (!race) return [];
+    return race.race_pigeons.map((rp, idx) => ({
+      ...rp,
+      chartColor: PIGEON_COLOR_PALETTE[idx % PIGEON_COLOR_PALETTE.length],
+    }));
+  }, [race]);
 
   const chartData = useMemo(() => {
-    if (!lastRace) return [];
-    return lastRace.readings.map((reading) => ({
-      elapsedMinutes: (reading.timestamp - lastRace.startedAt) / 1000 / 60,
-      ...reading.altitudes,
-    }));
-  }, [lastRace]);
-
-  const maxAltitude = useMemo(() => {
-    if (!lastRace) return 0;
-    let max = 0;
-    for (const reading of lastRace.readings) {
-      for (const alt of Object.values(reading.altitudes)) {
-        if (alt > max) max = alt;
-      }
+    if (pigeonsWithColor.length === 0) return [];
+    const elapsedSet = new Set<number>();
+    for (const p of pigeonsWithColor) {
+      for (const r of p.readings) elapsedSet.add(r.elapsed_seconds);
     }
-    return max;
-  }, [lastRace]);
+    const elapsedSorted = Array.from(elapsedSet).sort((a, b) => a - b);
 
-  const yAxisConfig = useMemo(() => computeYAxisConfig(maxAltitude), [maxAltitude]);
+    return elapsedSorted.map((es) => {
+      const point: Record<string, number> = {
+        elapsedMinutes: parseFloat((es / 60).toFixed(4)),
+      };
+      for (const p of pigeonsWithColor) {
+        const reading = p.readings.find((r) => r.elapsed_seconds === es);
+        if (reading) point[p.id] = reading.altitude;
+      }
+      return point;
+    });
+  }, [pigeonsWithColor]);
 
   const xMaxMinutes = useMemo(() => {
     if (chartData.length === 0) return 1;
@@ -52,7 +51,26 @@ export function LastRaceChart() {
 
   const xTicks = useMemo(() => buildXTicks(xMaxMinutes), [xMaxMinutes]);
 
-  if (!lastRace) {
+  const yAxisConfig = useMemo(() => {
+    if (!race) return computeYAxisConfig(800);
+    let maxAlt = race.goal_altitude;
+    for (const p of pigeonsWithColor) {
+      if ((p.max_altitude ?? 0) > maxAlt) maxAlt = p.max_altitude ?? maxAlt;
+    }
+    return computeYAxisConfig(maxAlt);
+  }, [pigeonsWithColor, race]);
+
+  const chartPigeons = useMemo(
+    () =>
+      pigeonsWithColor.map((p) => ({
+        id: p.id,
+        name: p.pigeon_full_ring_number,
+        color: p.chartColor,
+      })),
+    [pigeonsWithColor]
+  );
+
+  if (!race) {
     return (
       <div className="card-redesign p-12 text-center">
         <Trophy className="w-16 h-16 text-text-disabled mx-auto mb-4" aria-hidden="true" />
@@ -73,9 +91,15 @@ export function LastRaceChart() {
     );
   }
 
+  const durationSeconds = race.duration_seconds ?? 0;
+  const ownerName = race.owner_profile
+    ? `${race.owner_profile.first_name} ${race.owner_profile.last_name}`.trim() ||
+      race.owner_profile.username
+    : "—";
+
   return (
     <div
-      onClick={() => router.push(`/races/${lastRace.id}`)}
+      onClick={() => router.push(`/races/${race.id}`)}
       className="card-redesign p-6 cursor-pointer hover:shadow-lg transition-shadow"
     >
       <div className="mb-4">
@@ -93,38 +117,44 @@ export function LastRaceChart() {
         </div>
 
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-text-primary">{lastRace.name}</h2>
+          <h2 className="text-2xl font-bold text-text-primary">{race.name}</h2>
           <div className="flex items-center gap-5 text-base text-text-secondary">
             <div className="flex items-center gap-1.5">
               <User className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
-              {lastRace.owner}
+              {ownerName}
             </div>
             <div className="flex items-center gap-1.5">
               <Calendar className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
-              {formatDate(lastRace.startedAt)}
+              {formatDate(race.started_at)}
             </div>
             <div className="flex items-center gap-1.5">
               <Clock className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
-              {formatDuration(durationSeconds)}
+              {durationSeconds > 0 ? formatDuration(durationSeconds) : "—"}
             </div>
           </div>
         </div>
       </div>
 
-      <RaceAltitudeChart
-        chartData={chartData}
-        pigeons={lastRace.pigeons}
-        xMaxMinutes={xMaxMinutes}
-        xTicks={xTicks}
-        yAxisConfig={yAxisConfig}
-        height={400}
-      />
+      {chartData.length === 0 ? (
+        <div className="text-center py-12 text-text-tertiary">
+          Nema snimljenih merenja za ovu trku.
+        </div>
+      ) : (
+        <RaceAltitudeChart
+          chartData={chartData}
+          pigeons={chartPigeons}
+          xMaxMinutes={xMaxMinutes}
+          xTicks={xTicks}
+          yAxisConfig={yAxisConfig}
+          height={400}
+        />
+      )}
     </div>
   );
 }
 
-function formatDate(ts: number): string {
-  return new Date(ts).toLocaleDateString("sr-RS", {
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString("sr-RS", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",

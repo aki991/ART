@@ -1,44 +1,41 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useTelemetryStore } from "@/lib/store/telemetry-store";
+import { useEffect, useMemo, useState } from "react";
+import { useConnectionStore } from "@/lib/store/connection-store";
+import { useLiveRaceStore } from "@/lib/store/live-race-store";
 
 export function SessionStatsCard() {
-  const sessionMaxAltitude = useTelemetryStore((s) => s.sessionMaxAltitude);
-  const sessionMinAltitude = useTelemetryStore((s) => s.sessionMinAltitude);
-  const recordingStartedAt = useTelemetryStore((s) => s.recordingStartedAt);
-  const [elapsed, setElapsed] = useState("00:00");
+  const raceStartedAtMs = useConnectionStore((s) => s.raceStartedAtMs);
+  const readings = useLiveRaceStore((s) => s.readings);
+  const [elapsed, setElapsed] = useState(() =>
+    formatElapsed(raceStartedAtMs ? Date.now() - raceStartedAtMs : 0)
+  );
 
   useEffect(() => {
-    if (!recordingStartedAt) {
+    if (!raceStartedAtMs) {
       setElapsed("00:00");
       return;
     }
-
-    const interval = setInterval(() => {
-      const diff = Math.floor((Date.now() - recordingStartedAt) / 1000);
-      const hours = Math.floor(diff / 3600);
-      const minutes = Math.floor((diff % 3600) / 60);
-      const seconds = diff % 60;
-
-      if (hours > 0) {
-        setElapsed(
-          `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`
-        );
-      } else {
-        setElapsed(
-          `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`
-        );
-      }
-    }, 1000);
-
+    function tick() {
+      setElapsed(formatElapsed(Date.now() - raceStartedAtMs!));
+    }
+    tick();
+    const interval = setInterval(tick, 1000);
     return () => clearInterval(interval);
-  }, [recordingStartedAt]);
+  }, [raceStartedAtMs]);
 
-  const maxDisplay =
-    sessionMaxAltitude > 0 ? `${Math.round(sessionMaxAltitude)} m` : "—";
-  const minDisplay =
-    sessionMinAltitude === Infinity ? "—" : `${Math.round(sessionMinAltitude)} m`;
+  const { max, min } = useMemo(() => {
+    let mx = 0;
+    let mn = Infinity;
+    for (const r of readings) {
+      if (r.altitude > mx) mx = r.altitude;
+      if (r.altitude < mn) mn = r.altitude;
+    }
+    return { max: mx, min: mn };
+  }, [readings]);
+
+  const maxDisplay = max > 0 ? `${Math.round(max)} m` : "—";
+  const minDisplay = min === Infinity ? "—" : `${Math.round(min)} m`;
 
   return (
     <div className="card-redesign p-6">
@@ -50,9 +47,7 @@ export function SessionStatsCard() {
         <p className="text-xs uppercase tracking-wide text-text-disabled mb-1">
           Trajanje sesije
         </p>
-        <p className="text-2xl font-semibold font-mono text-accent">
-          {elapsed}
-        </p>
+        <p className="text-2xl font-semibold font-mono text-accent">{elapsed}</p>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -71,4 +66,15 @@ export function SessionStatsCard() {
       </div>
     </div>
   );
+}
+
+function formatElapsed(diffMs: number): string {
+  const diff = Math.max(0, Math.floor(diffMs / 1000));
+  const hours = Math.floor(diff / 3600);
+  const minutes = Math.floor((diff % 3600) / 60);
+  const seconds = diff % 60;
+  if (hours > 0) {
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  }
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }

@@ -1,11 +1,26 @@
 "use client";
 
-import { useTelemetryStore } from "@/lib/store/telemetry-store";
+import { useMemo } from "react";
 import { useConnectionStore } from "@/lib/store/connection-store";
+import { useLiveRaceStore } from "@/lib/store/live-race-store";
 
 export function PigeonLegend() {
-  const readings = useTelemetryStore((s) => s.readings);
   const activeRacePigeons = useConnectionStore((s) => s.activeRacePigeons);
+  const readings = useLiveRaceStore((s) => s.readings);
+
+  // Latest altitude per pigeon (by pigeon_id, picking max elapsed_seconds).
+  const latestByPigeonId = useMemo(() => {
+    const map = new Map<string, number>();
+    const maxSeenAt = new Map<string, number>();
+    for (const r of readings) {
+      const seen = maxSeenAt.get(r.pigeon_id) ?? -1;
+      if (r.elapsed_seconds > seen) {
+        maxSeenAt.set(r.pigeon_id, r.elapsed_seconds);
+        map.set(r.pigeon_id, r.altitude);
+      }
+    }
+    return map;
+  }, [readings]);
 
   return (
     <div className="card-redesign p-6">
@@ -14,11 +29,9 @@ export function PigeonLegend() {
       </p>
       <ul className="space-y-3">
         {activeRacePigeons.map((pigeon) => {
-          const arr = readings.get(pigeon.id) ?? [];
-          const last = arr[arr.length - 1];
-          const altDisplay = last
-            ? `${last.altitudeMeters.toFixed(0)} m`
-            : "—";
+          const last = latestByPigeonId.get(pigeon.pigeonId);
+          const altDisplay =
+            typeof last === "number" ? `${Math.round(last)} m` : "—";
 
           return (
             <li key={pigeon.id} className="flex items-center gap-3">

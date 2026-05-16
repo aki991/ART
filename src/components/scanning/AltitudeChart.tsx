@@ -1,52 +1,52 @@
 "use client";
 
 import { useMemo } from "react";
-import { useTelemetryStore } from "@/lib/store/telemetry-store";
 import { useConnectionStore } from "@/lib/store/connection-store";
+import { useLiveRaceStore } from "@/lib/store/live-race-store";
 import { computeYAxisConfig, buildXTicks } from "@/lib/utils/y-axis";
 import { RaceAltitudeChart } from "@/components/shared/RaceAltitudeChart";
 
 export function AltitudeChart() {
-  const readings = useTelemetryStore((s) => s.readings);
   const raceActive = useConnectionStore((s) => s.raceActive);
   const activeRacePigeons = useConnectionStore((s) => s.activeRacePigeons);
+  const readings = useLiveRaceStore((s) => s.readings);
+
+  const pigeonByPigeonId = useMemo(
+    () => new Map(activeRacePigeons.map((p) => [p.pigeonId, p])),
+    [activeRacePigeons]
+  );
 
   const chartData = useMemo(() => {
-    if (activeRacePigeons.length === 0) return [];
-    const baseArr = readings.get(activeRacePigeons[0].id) ?? [];
-    if (baseArr.length === 0) return [];
+    if (activeRacePigeons.length === 0 || readings.length === 0) return [];
 
-    const firstTs = baseArr[0].timestamp.getTime();
-
-    return baseArr.map((baseReading, i) => {
-      const elapsedMinutes = parseFloat(
-        ((baseReading.timestamp.getTime() - firstTs) / 60000).toFixed(4)
-      );
-      const point: Record<string, number> = { elapsedMinutes };
-      for (const pigeon of activeRacePigeons) {
-        const arr = readings.get(pigeon.id) ?? [];
-        const r = arr[i];
-        if (r !== undefined) {
-          point[pigeon.id] = parseFloat(r.altitudeMeters.toFixed(1));
-        }
+    // Group readings by elapsed_seconds, build one chart row per time slot.
+    const byElapsed = new Map<number, Record<string, number>>();
+    for (const r of readings) {
+      const pigeon = pigeonByPigeonId.get(r.pigeon_id);
+      if (!pigeon) continue;
+      let row = byElapsed.get(r.elapsed_seconds);
+      if (!row) {
+        row = { elapsedMinutes: parseFloat((r.elapsed_seconds / 60).toFixed(4)) };
+        byElapsed.set(r.elapsed_seconds, row);
       }
-      return point;
-    });
-  }, [readings, activeRacePigeons]);
+      row[pigeon.id] = r.altitude;
+    }
+    return Array.from(byElapsed.values()).sort(
+      (a, b) => (a.elapsedMinutes as number) - (b.elapsedMinutes as number)
+    );
+  }, [readings, activeRacePigeons, pigeonByPigeonId]);
 
   const yAxisConfig = useMemo(() => {
     let maxAlt = 0;
-    for (const arr of readings.values()) {
-      for (const r of arr) {
-        if (r.altitudeMeters > maxAlt) maxAlt = r.altitudeMeters;
-      }
+    for (const r of readings) {
+      if (r.altitude > maxAlt) maxAlt = r.altitude;
     }
     return computeYAxisConfig(maxAlt);
   }, [readings]);
 
   const xMaxMinutes = useMemo(() => {
     if (chartData.length === 0) return 1;
-    const maxElapsed = chartData[chartData.length - 1].elapsedMinutes;
+    const maxElapsed = chartData[chartData.length - 1].elapsedMinutes as number;
     return Math.max(1, Math.ceil(maxElapsed));
   }, [chartData]);
 
@@ -84,7 +84,7 @@ export function AltitudeChart() {
           </p>
         </div>
       ) : (
-        <div className="relative flex-1 min-h-0">
+        <div className="relative flex-1 min-h-[200px]">
           <RaceAltitudeChart
             chartData={chartData}
             pigeons={activeRacePigeons}
