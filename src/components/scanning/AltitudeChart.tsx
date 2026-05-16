@@ -55,12 +55,12 @@ export function AltitudeChart() {
   const hasData = chartData.length > 0;
 
   return (
-    <div className="bg-bg-surface border border-accent/15 rounded-xl overflow-hidden p-4 xl:p-6 h-full min-h-[500px] flex flex-col">
-      <div className="flex-shrink-0 mb-4 xl:mb-6">
-        <h2 className="text-2xl xl:text-3xl font-bold font-rajdhani text-text-primary">
+    <div className="bg-bg-surface border border-accent/15 rounded-xl overflow-hidden p-4 xl:p-5 2xl:p-6 h-full min-h-[500px] flex flex-col">
+      <div className="flex-shrink-0 mb-4 xl:mb-5 2xl:mb-6">
+        <h2 className="text-2xl xl:text-2xl 2xl:text-3xl font-bold font-rajdhani text-text-primary">
           Visina kroz vreme
         </h2>
-        <p className="text-base xl:text-lg text-text-tertiary">Real-time praćenje visine</p>
+        <p className="text-base xl:text-base 2xl:text-lg text-text-tertiary">Real-time praćenje visine</p>
       </div>
 
       {!raceActive ? (

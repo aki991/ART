@@ -33,14 +33,14 @@ export function SidebarNavLink({ href, icon: Icon, label }: SidebarNavLinkProps)
           : "border-transparent text-text-secondary hover:bg-bg-hover hover:text-text-primary"
       )}
     >
-      <div className="flex items-center justify-center w-[52px] xl:w-[69px] flex-shrink-0">
+      <div className="flex items-center justify-center w-[52px] xl:w-[60px] 2xl:w-[69px] flex-shrink-0">
         <Icon size={22} strokeWidth={1.6} aria-hidden="true" />
       </div>
 
       <span
         className={cn(
-          "whitespace-nowrap overflow-hidden transition-all duration-200 text-base xl:text-lg font-medium font-rajdhani",
-          expanded ? "opacity-100 max-w-[260px] pr-4 xl:pr-5" : "opacity-0 max-w-0"
+          "whitespace-nowrap overflow-hidden transition-all duration-200 text-base xl:text-base 2xl:text-lg font-medium font-rajdhani",
+          expanded ? "opacity-100 max-w-[260px] pr-4 xl:pr-4 2xl:pr-5" : "opacity-0 max-w-0"
         )}
       >
         {label}

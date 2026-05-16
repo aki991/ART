@@ -21,12 +21,12 @@ export function SessionProgramsTable() {
 
   return (
     <div className="card-redesign">
-      <div className="px-6 py-4 border-b border-accent/10 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <h2 className="text-lg font-semibold font-rajdhani text-text-primary">
+      <div className="px-4 xl:px-5 2xl:px-6 py-3 xl:py-3.5 2xl:py-4 border-b border-accent/10 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <h2 className="text-base xl:text-base 2xl:text-lg font-semibold font-rajdhani text-text-primary truncate">
             Programirani prstenovi (sesija)
           </h2>
-          <span className="bg-bg-hover text-text-tertiary rounded-full px-2 py-0.5 text-sm">
+          <span className="bg-bg-hover text-text-tertiary rounded-full px-2 py-0.5 text-xs xl:text-xs 2xl:text-sm flex-shrink-0">
             {sessionPrograms.length}
           </span>
         </div>
@@ -35,7 +35,7 @@ export function SessionProgramsTable() {
           disabled={sessionPrograms.length === 0}
           onClick={handleClearSession}
           aria-label="Obriši sve programirane prstenove iz sesije"
-          className="text-base text-text-tertiary hover:text-status-error inline-flex items-center gap-1 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="text-sm xl:text-sm 2xl:text-base text-text-tertiary hover:text-status-error inline-flex items-center gap-1 transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap flex-shrink-0"
         >
           <Trash2 className="w-4 h-4" aria-hidden="true" />
           Obriši sesiju
@@ -46,19 +46,19 @@ export function SessionProgramsTable() {
         <table className="w-full text-base">
           <thead>
             <tr className="table-header-gradient">
-              <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
+              <th className="px-4 xl:px-5 2xl:px-6 py-3 text-left text-xs xl:text-xs 2xl:text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
                 ID Prstena
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
+              <th className="px-4 xl:px-5 2xl:px-6 py-3 text-left text-xs xl:text-xs 2xl:text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
                 Golub
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
+              <th className="px-4 xl:px-5 2xl:px-6 py-3 text-left text-xs xl:text-xs 2xl:text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
                 Boja goluba
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
+              <th className="px-4 xl:px-5 2xl:px-6 py-3 text-left text-xs xl:text-xs 2xl:text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
                 Vreme
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
+              <th className="px-4 xl:px-5 2xl:px-6 py-3 text-left text-xs xl:text-xs 2xl:text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
                 Akcije
               </th>
             </tr>
@@ -76,7 +76,7 @@ export function SessionProgramsTable() {
             ) : (
               sessionPrograms.map((ring: ProgrammedRing) => (
                 <tr key={ring.id} className="table-row-alt table-row-hover border-t border-border">
-                  <td className="px-6 py-3">
+                  <td className="px-4 xl:px-5 2xl:px-6 py-3">
                     <div className="flex items-center gap-2">
                       <div
                         className="w-4 h-4 rounded-full flex-shrink-0"
@@ -87,7 +87,7 @@ export function SessionProgramsTable() {
                       </span>
                     </div>
                   </td>
-                  <td className="px-6 py-3">
+                  <td className="px-4 xl:px-5 2xl:px-6 py-3">
                     {ring.pigeonIdentifier === "Drugi golub" ? (
                       <span className="text-text-disabled italic text-base">Drugi golub</span>
                     ) : (
@@ -96,11 +96,11 @@ export function SessionProgramsTable() {
                       </span>
                     )}
                   </td>
-                  <td className="px-6 py-3 text-text-secondary">{ring.pigeonColor}</td>
-                  <td className="px-6 py-3 text-text-secondary">
+                  <td className="px-4 xl:px-5 2xl:px-6 py-3 text-text-secondary text-sm xl:text-sm 2xl:text-base">{ring.pigeonColor}</td>
+                  <td className="px-4 xl:px-5 2xl:px-6 py-3 text-text-secondary text-sm xl:text-sm 2xl:text-base">
                     {ring.programmedAt.toLocaleTimeString("sr-RS")}
                   </td>
-                  <td className="px-6 py-3">
+                  <td className="px-4 xl:px-5 2xl:px-6 py-3">
                     <button
                       type="button"
                       aria-label={`Ukloni programirani prsten ${ring.ringId}`}

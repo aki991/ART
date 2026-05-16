@@ -13,15 +13,15 @@ export function RecentRacesTable({ races }: RecentRacesTableProps) {
   const router = useRouter();
 
   return (
-    <div className="card-redesign p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-text-secondary flex items-center gap-2">
-          <Trophy className="w-5 h-5 text-accent" aria-hidden="true" />
-          Poslednje trke
+    <div className="card-redesign p-4 xl:p-5 2xl:p-6">
+      <div className="flex items-center justify-between mb-3 xl:mb-3.5 2xl:mb-4 gap-2">
+        <h2 className="text-base xl:text-base 2xl:text-lg font-semibold text-text-secondary flex items-center gap-2 min-w-0">
+          <Trophy className="w-5 h-5 text-accent flex-shrink-0" aria-hidden="true" />
+          <span className="truncate">Poslednje trke</span>
         </h2>
         <Link
           href="/races"
-          className="text-sm text-accent hover:text-accent-hover flex items-center gap-1 transition-colors"
+          className="text-sm xl:text-sm 2xl:text-sm text-accent hover:text-accent-hover flex items-center gap-1 transition-colors whitespace-nowrap flex-shrink-0"
         >
           Vidi sve
           <ArrowRight className="w-4 h-4" aria-hidden="true" />

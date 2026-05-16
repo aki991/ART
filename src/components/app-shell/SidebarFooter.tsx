@@ -62,7 +62,7 @@ export function SidebarFooter({ expanded }: SidebarFooterProps) {
   );
 
   return (
-    <div className="border-t border-border px-3 xl:px-4 h-[72px] flex items-center justify-between gap-2 xl:gap-3 flex-shrink-0">
+    <div className="border-t border-border px-3 xl:px-3.5 2xl:px-4 h-[72px] flex items-center justify-between gap-2 xl:gap-2.5 2xl:gap-3 flex-shrink-0">
       <div className="flex items-center gap-3 min-w-0">
         <div className="relative flex-shrink-0">
           {profile?.avatarUrl ? (

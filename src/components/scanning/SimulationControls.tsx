@@ -193,12 +193,12 @@ export function SimulationControls() {
   }
 
   return (
-    <div className="card-redesign p-3 xl:p-6">
-      <p className="text-[10px] xl:text-sm uppercase tracking-widest text-text-tertiary mb-2 xl:mb-3">
+    <div className="card-redesign p-3 xl:p-4 2xl:p-6">
+      <p className="text-[10px] xl:text-xs 2xl:text-sm uppercase tracking-widest text-text-tertiary mb-2 xl:mb-2.5 2xl:mb-3">
         Kontrole
       </p>
 
-      <div className="space-y-2 xl:space-y-3">
+      <div className="space-y-2 xl:space-y-2.5 2xl:space-y-3">
         {!raceActive ? (
           <>
             <div>
@@ -261,7 +261,7 @@ export function SimulationControls() {
               type="button"
               onClick={handleStartRace}
               disabled={!canStart}
-              className="w-full px-3 xl:px-4 py-2.5 xl:py-3 rounded-md text-sm xl:text-base font-medium transition-colors inline-flex items-center justify-center gap-2 bg-status-success hover:bg-status-success/90 text-white disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
+              className="w-full px-3 xl:px-3.5 2xl:px-4 py-2.5 xl:py-2.5 2xl:py-3 rounded-md text-sm xl:text-sm 2xl:text-base font-medium transition-colors inline-flex items-center justify-center gap-2 bg-status-success hover:bg-status-success/90 text-white disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
             >
               {starting ? (
                 <Loader2 size={20} className="animate-spin" aria-hidden="true" />
@@ -284,7 +284,7 @@ export function SimulationControls() {
             type="button"
             onClick={handleEndRace}
             disabled={ending}
-            className="w-full px-3 xl:px-4 py-2.5 xl:py-3 rounded-md text-sm xl:text-base font-medium transition-colors inline-flex items-center justify-center gap-2 bg-status-warning hover:bg-status-warning/90 text-white disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
+            className="w-full px-3 xl:px-3.5 2xl:px-4 py-2.5 xl:py-2.5 2xl:py-3 rounded-md text-sm xl:text-sm 2xl:text-base font-medium transition-colors inline-flex items-center justify-center gap-2 bg-status-warning hover:bg-status-warning/90 text-white disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
           >
             {ending ? (
               <Loader2 size={20} className="animate-spin" aria-hidden="true" />
@@ -298,7 +298,7 @@ export function SimulationControls() {
         <button
           type="button"
           onClick={() => void disconnect()}
-          className="w-full px-3 xl:px-4 py-2.5 xl:py-3 rounded-md text-sm xl:text-base font-medium transition-colors inline-flex items-center justify-center gap-2 bg-bg-error-light text-status-error border border-status-error/30 hover:bg-status-error/20 whitespace-nowrap"
+          className="w-full px-3 xl:px-3.5 2xl:px-4 py-2.5 xl:py-2.5 2xl:py-3 rounded-md text-sm xl:text-sm 2xl:text-base font-medium transition-colors inline-flex items-center justify-center gap-2 bg-bg-error-light text-status-error border border-status-error/30 hover:bg-status-error/20 whitespace-nowrap"
         >
           <Unplug size={20} aria-hidden="true" />
           Diskonektuj

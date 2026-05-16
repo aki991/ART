@@ -20,9 +20,9 @@ export function DetectedRingTable() {
 
   return (
     <div className="card-redesign">
-      <div className="px-6 py-4 border-b border-accent/10 flex items-center gap-2">
+      <div className="px-4 xl:px-5 2xl:px-6 py-3 xl:py-3.5 2xl:py-4 border-b border-accent/10 flex items-center gap-2">
         <Search className="w-4 h-4 text-text-disabled" aria-hidden="true" />
-        <h2 className="text-lg font-semibold font-rajdhani text-text-primary">
+        <h2 className="text-base xl:text-base 2xl:text-lg font-semibold font-rajdhani text-text-primary">
           Detektovani prstenovi
         </h2>
         {insertedSlots.length > 0 && (
@@ -36,16 +36,16 @@ export function DetectedRingTable() {
         <table className="w-full text-base">
           <thead>
             <tr className="table-header-gradient">
-              <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
+              <th className="px-4 xl:px-5 2xl:px-6 py-3 text-left text-xs xl:text-xs 2xl:text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
                 ID Prstena
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
+              <th className="px-4 xl:px-5 2xl:px-6 py-3 text-left text-xs xl:text-xs 2xl:text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
                 Slot
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
+              <th className="px-4 xl:px-5 2xl:px-6 py-3 text-left text-xs xl:text-xs 2xl:text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
                 Status
               </th>
-              <th className="px-6 py-3 text-right text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
+              <th className="px-4 xl:px-5 2xl:px-6 py-3 text-right text-xs xl:text-xs 2xl:text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
                 Akcije
               </th>
             </tr>
@@ -80,7 +80,7 @@ export function DetectedRingTable() {
                         (isSelected ? "bg-accent-light" : "hover:bg-bg-hover")
                     )}
                   >
-                    <td className="px-6 py-3">
+                    <td className="px-4 xl:px-5 2xl:px-6 py-3">
                       <div className="flex items-center gap-2">
                         <div
                           className="w-4 h-4 rounded-full flex-shrink-0"
@@ -91,8 +91,8 @@ export function DetectedRingTable() {
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-3 text-text-secondary whitespace-nowrap">Slot {slot.index}</td>
-                    <td className="px-6 py-3">
+                    <td className="px-4 xl:px-5 2xl:px-6 py-3 text-text-secondary whitespace-nowrap text-sm xl:text-sm 2xl:text-base">Slot {slot.index}</td>
+                    <td className="px-4 xl:px-5 2xl:px-6 py-3">
                       {isProgrammed ? (
                         <span className="text-sm bg-bg-success-light text-status-success border border-status-success/40 px-2 py-0.5 rounded-full">
                           Programiran
@@ -103,7 +103,7 @@ export function DetectedRingTable() {
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-3">
+                    <td className="px-4 xl:px-5 2xl:px-6 py-3">
                       <div className="flex items-center justify-end gap-2">
                         {isSelected && (
                           <Check

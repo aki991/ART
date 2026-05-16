@@ -15,14 +15,14 @@ export function LiveFlightDashboard() {
   useRaceSimulator();
 
   return (
-    <div className="grid grid-cols-10 gap-4 xl:gap-6 xl:h-full">
-      <aside className="col-span-3 flex flex-col gap-3 xl:gap-4 xl:overflow-y-auto min-w-0">
+    <div className="grid grid-cols-10 gap-4 xl:gap-5 2xl:gap-6 2xl:h-full">
+      <aside className="col-span-3 flex flex-col gap-3 xl:gap-3.5 2xl:gap-4 2xl:overflow-y-auto min-w-0">
         <MaxAltitudeCard />
         <SessionStatsCard />
         <PigeonLegend />
         <SimulationControls />
       </aside>
-      <main className="col-span-7 xl:h-full min-w-0 min-h-[500px]">
+      <main className="col-span-7 2xl:h-full min-w-0 min-h-[500px]">
         <AltitudeChart />
       </main>
     </div>

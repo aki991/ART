@@ -38,28 +38,28 @@ export function SessionStatsCard() {
   const minDisplay = min === Infinity ? "—" : `${Math.round(min)} m`;
 
   return (
-    <div className="card-redesign p-3 xl:p-6 min-w-0">
-      <p className="text-[10px] xl:text-sm uppercase tracking-widest text-text-tertiary mb-2 xl:mb-4 whitespace-nowrap">
+    <div className="card-redesign p-3 xl:p-4 2xl:p-6 min-w-0">
+      <p className="text-[10px] xl:text-xs 2xl:text-sm uppercase tracking-widest text-text-tertiary mb-2 xl:mb-3 2xl:mb-4 whitespace-nowrap">
         Statistike
       </p>
 
-      <div className="mb-2 xl:mb-4 min-w-0">
-        <p className="text-[10px] xl:text-xs uppercase tracking-wide text-text-disabled mb-1 whitespace-nowrap">
+      <div className="mb-2 xl:mb-3 2xl:mb-4 min-w-0">
+        <p className="text-[10px] xl:text-[11px] 2xl:text-xs uppercase tracking-wide text-text-disabled mb-1 whitespace-nowrap">
           Trajanje sesije
         </p>
-        <p className="text-lg xl:text-2xl font-semibold font-mono text-accent whitespace-nowrap">{elapsed}</p>
+        <p className="text-lg xl:text-xl 2xl:text-2xl font-semibold font-mono text-accent whitespace-nowrap">{elapsed}</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 xl:gap-3">
-        <div className="bg-bg-hover rounded p-2 xl:p-3 min-w-0">
-          <p className="text-[10px] xl:text-sm uppercase text-text-tertiary mb-1 truncate">Maksimum</p>
-          <p className="text-base xl:text-2xl font-semibold font-mono text-status-error whitespace-nowrap">
+      <div className="grid grid-cols-2 gap-2 xl:gap-2.5 2xl:gap-3">
+        <div className="bg-bg-hover rounded p-2 xl:p-2.5 2xl:p-3 min-w-0">
+          <p className="text-[10px] xl:text-xs 2xl:text-sm uppercase text-text-tertiary mb-1 truncate">Maksimum</p>
+          <p className="text-base xl:text-lg 2xl:text-2xl font-semibold font-mono text-status-error whitespace-nowrap">
             {maxDisplay}
           </p>
         </div>
-        <div className="bg-bg-hover rounded p-2 xl:p-3 min-w-0">
-          <p className="text-[10px] xl:text-sm uppercase text-text-tertiary mb-1 truncate">Minimum</p>
-          <p className="text-base xl:text-2xl font-semibold font-mono text-status-success whitespace-nowrap">
+        <div className="bg-bg-hover rounded p-2 xl:p-2.5 2xl:p-3 min-w-0">
+          <p className="text-[10px] xl:text-xs 2xl:text-sm uppercase text-text-tertiary mb-1 truncate">Minimum</p>
+          <p className="text-base xl:text-lg 2xl:text-2xl font-semibold font-mono text-status-success whitespace-nowrap">
             {minDisplay}
           </p>
         </div>

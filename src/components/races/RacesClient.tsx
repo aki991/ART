@@ -41,7 +41,7 @@ export function RacesClient({ initialRaces }: RacesClientProps) {
   }
 
   return (
-    <div className="px-4 xl:px-6 py-4 xl:py-6 space-y-4">
+    <div className="px-4 xl:px-5 2xl:px-6 py-4 xl:py-5 2xl:py-6 space-y-4">
       <div className="flex items-center gap-2 flex-wrap">
         {FILTERS.map((f) => (
           <button
@@ -49,7 +49,7 @@ export function RacesClient({ initialRaces }: RacesClientProps) {
             type="button"
             onClick={() => changeFilter(f.value)}
             className={cn(
-              "px-4 py-2 rounded-md text-sm font-medium transition-colors",
+              "px-3 xl:px-3.5 2xl:px-4 py-2 rounded-md text-sm xl:text-sm 2xl:text-base font-medium transition-colors whitespace-nowrap",
               filter === f.value
                 ? "bg-accent text-text-on-accent"
                 : "bg-bg-surface border border-border text-text-secondary hover:bg-bg-hover"
@@ -94,17 +94,17 @@ function ResultsTable({ races }: { races: RaceListItem[] }) {
     <div className="bg-bg-surface border border-accent/15 rounded-xl overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="table-header-gradient text-xs uppercase text-text-tertiary font-medium">
+          <thead className="table-header-gradient text-[10px] 2xl:text-xs uppercase text-text-tertiary font-medium">
             <tr>
-              <th className="text-left py-3 px-4 whitespace-nowrap">Naziv</th>
-              <th className="text-left py-3 px-4 whitespace-nowrap">Golubar</th>
-              <th className="text-left py-3 px-4 whitespace-nowrap">Klub</th>
-              <th className="text-left py-3 px-4 whitespace-nowrap">Trajanje</th>
-              <th className="text-left py-3 px-4 whitespace-nowrap">Prosečna visina</th>
-              <th className="text-left py-3 px-4 whitespace-nowrap">Max visina</th>
-              <th className="text-left py-3 px-4 whitespace-nowrap">Datum</th>
-              <th className="text-left py-3 px-4 whitespace-nowrap">Vidljivost</th>
-              <th className="text-left py-3 px-4 whitespace-nowrap">Validna</th>
+              <th className="text-left py-3 px-2 2xl:px-4 whitespace-nowrap">Naziv</th>
+              <th className="text-left py-3 px-2 2xl:px-4 whitespace-nowrap">Golubar</th>
+              <th className="text-left py-3 px-2 2xl:px-4 whitespace-nowrap">Klub</th>
+              <th className="text-left py-3 px-2 2xl:px-4 whitespace-nowrap">Trajanje</th>
+              <th className="text-left py-3 px-2 2xl:px-4 whitespace-nowrap">Prosečna visina</th>
+              <th className="text-left py-3 px-2 2xl:px-4 whitespace-nowrap">Max visina</th>
+              <th className="text-left py-3 px-2 2xl:px-4 whitespace-nowrap">Datum</th>
+              <th className="text-left py-3 px-2 2xl:px-4 whitespace-nowrap">Vidljivost</th>
+              <th className="text-left py-3 px-2 2xl:px-4 whitespace-nowrap">Validna</th>
             </tr>
           </thead>
           <tbody>
@@ -140,34 +140,34 @@ function ResultRow({ race }: { race: RaceListItem }) {
   return (
     <tr
       onClick={() => router.push(`/races/${race.id}`)}
-      className="border-t border-border hover:bg-bg-hover cursor-pointer transition-colors"
+      className="border-t border-border hover:bg-bg-hover cursor-pointer transition-colors text-xs 2xl:text-sm"
     >
-      <td className="py-4 px-4 text-text-primary font-medium whitespace-nowrap">{race.name}</td>
-      <td className="py-4 px-4 text-text-secondary whitespace-nowrap">{ownerName}</td>
-      <td className="py-4 px-4 text-text-secondary whitespace-nowrap">{clubLabel}</td>
-      <td className="py-4 px-4 text-text-secondary font-mono whitespace-nowrap">
+      <td className="py-3 px-2 2xl:py-4 2xl:px-4 text-text-primary font-medium whitespace-nowrap">{race.name}</td>
+      <td className="py-3 px-2 2xl:py-4 2xl:px-4 text-text-secondary whitespace-nowrap">{ownerName}</td>
+      <td className="py-3 px-2 2xl:py-4 2xl:px-4 text-text-secondary whitespace-nowrap">{clubLabel}</td>
+      <td className="py-3 px-2 2xl:py-4 2xl:px-4 text-text-secondary font-mono whitespace-nowrap">
         {race.duration_seconds != null ? formatDuration(race.duration_seconds) : "—"}
       </td>
-      <td className="py-4 px-4 text-accent font-semibold whitespace-nowrap">
+      <td className="py-3 px-2 2xl:py-4 2xl:px-4 text-accent font-semibold whitespace-nowrap">
         {race.avg_altitude != null ? `${race.avg_altitude}m` : "—"}
       </td>
-      <td className="py-4 px-4 text-accent font-semibold whitespace-nowrap">
+      <td className="py-3 px-2 2xl:py-4 2xl:px-4 text-accent font-semibold whitespace-nowrap">
         {race.max_altitude != null ? `${race.max_altitude}m` : "—"}
       </td>
-      <td className="py-4 px-4 text-text-tertiary text-sm whitespace-nowrap">{dateStr}</td>
-      <td className="py-4 px-4 text-text-tertiary text-sm whitespace-nowrap">
+      <td className="py-3 px-2 2xl:py-4 2xl:px-4 text-text-tertiary whitespace-nowrap">{dateStr}</td>
+      <td className="py-3 px-2 2xl:py-4 2xl:px-4 text-text-tertiary whitespace-nowrap">
         <span className="inline-flex items-center gap-1.5">
           <VisIcon className="w-3.5 h-3.5" aria-hidden="true" />
           {visLabel}
         </span>
       </td>
-      <td className="py-4 px-4 whitespace-nowrap">
+      <td className="py-3 px-2 2xl:py-4 2xl:px-4 whitespace-nowrap">
         {race.status !== "completed" ? (
-          <span className="text-xs text-status-warning font-medium">{race.status === "in_progress" ? "U toku" : "Otkazano"}</span>
+          <span className="text-status-warning font-medium">{race.status === "in_progress" ? "U toku" : "Otkazano"}</span>
         ) : race.is_valid ? (
-          <span className="text-xs text-status-success font-medium">Validna</span>
+          <span className="text-status-success font-medium">Validna</span>
         ) : (
-          <span className="text-xs text-status-error font-medium">Nije validna</span>
+          <span className="text-status-error font-medium">Nije validna</span>
         )}
       </td>
     </tr>

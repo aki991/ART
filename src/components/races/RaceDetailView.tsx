@@ -53,7 +53,7 @@ export function RaceDetailView({ race }: RaceDetailViewProps) {
   }
 
   return (
-    <div className="px-4 xl:px-6 py-4 xl:py-6 space-y-4 xl:space-y-6">
+    <div className="px-4 xl:px-5 2xl:px-6 py-4 xl:py-5 2xl:py-6 space-y-4 xl:space-y-5 2xl:space-y-6">
       <RaceHeader race={race} />
       <RaceChartCard race={race} pigeonsWithColor={pigeonsWithColor} />
       <RaceStatisticsTable
@@ -88,17 +88,17 @@ function RaceHeader({ race }: { race: RaceWithDetails }) {
   const { Icon: VisIcon, label: visLabel } = VISIBILITY_META[race.visibility];
 
   return (
-    <div className="bg-bg-surface border border-accent/15 rounded-xl p-4 xl:p-6">
-      <div className="flex items-start justify-between mb-3 xl:mb-4 gap-3 xl:gap-4 min-w-0">
-        <h1 className="text-2xl xl:text-3xl font-bold text-text-primary font-rajdhani truncate min-w-0">
+    <div className="bg-bg-surface border border-accent/15 rounded-xl p-4 xl:p-5 2xl:p-6">
+      <div className="flex items-start justify-between mb-3 xl:mb-3.5 2xl:mb-4 gap-3 xl:gap-3.5 2xl:gap-4 min-w-0">
+        <h1 className="text-2xl xl:text-2xl 2xl:text-3xl font-bold text-text-primary font-rajdhani truncate min-w-0">
           {race.name}
         </h1>
-        <span className="inline-flex items-center gap-1.5 px-2 xl:px-3 py-1 xl:py-1.5 rounded-md bg-bg-input border border-border text-xs xl:text-sm text-text-secondary whitespace-nowrap flex-shrink-0">
+        <span className="inline-flex items-center gap-1.5 px-2 xl:px-2.5 2xl:px-3 py-1 xl:py-1 2xl:py-1.5 rounded-md bg-bg-input border border-border text-xs xl:text-xs 2xl:text-sm text-text-secondary whitespace-nowrap flex-shrink-0">
           <VisIcon className="w-4 h-4" aria-hidden="true" />
           {visLabel}
         </span>
       </div>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 xl:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 xl:gap-3.5 2xl:gap-4">
         <InfoItem icon={<Trophy className="w-4 h-4" />} label="Golubar" value={ownerName} />
         <InfoItem icon={<MapPin className="w-4 h-4" />} label="Klub" value={clubLabel} />
         <InfoItem
@@ -197,12 +197,12 @@ function RaceChartCard({
   );
 
   return (
-    <div className="bg-bg-surface border border-accent/15 rounded-xl p-6">
-      <div className="mb-4">
-        <h2 className="text-2xl font-bold text-text-primary font-rajdhani">
+    <div className="bg-bg-surface border border-accent/15 rounded-xl p-4 xl:p-5 2xl:p-6">
+      <div className="mb-3 xl:mb-3.5 2xl:mb-4">
+        <h2 className="text-xl xl:text-xl 2xl:text-2xl font-bold text-text-primary font-rajdhani">
           Visina kroz vreme
         </h2>
-        <p className="text-base text-text-tertiary">Replay celog leta</p>
+        <p className="text-sm xl:text-sm 2xl:text-base text-text-tertiary">Replay celog leta</p>
       </div>
 
       {chartData.length === 0 ? (
@@ -236,11 +236,11 @@ function RaceStatisticsTable({
 }) {
   return (
     <div className="bg-bg-surface border border-accent/15 rounded-xl overflow-hidden">
-      <div className="p-6 pb-4">
-        <h2 className="text-2xl font-bold text-text-primary font-rajdhani">
+      <div className="p-4 xl:p-5 2xl:p-6 pb-3 xl:pb-3.5 2xl:pb-4">
+        <h2 className="text-xl xl:text-xl 2xl:text-2xl font-bold text-text-primary font-rajdhani">
           Izveštaj po golubu
         </h2>
-        <p className="text-sm text-text-tertiary">Cilj: {goalAltitude}m</p>
+        <p className="text-sm xl:text-sm 2xl:text-base text-text-tertiary">Cilj: {goalAltitude}m</p>
       </div>
       <table className="w-full">
         <thead className="table-header-gradient text-xs uppercase text-text-tertiary font-medium">

@@ -23,11 +23,11 @@ export function PigeonLegend() {
   }, [readings]);
 
   return (
-    <div className="card-redesign p-3 xl:p-6">
-      <p className="text-[10px] xl:text-sm uppercase tracking-widest text-text-tertiary mb-2 xl:mb-3">
+    <div className="card-redesign p-3 xl:p-4 2xl:p-6">
+      <p className="text-[10px] xl:text-xs 2xl:text-sm uppercase tracking-widest text-text-tertiary mb-2 xl:mb-2.5 2xl:mb-3">
         Golubovi
       </p>
-      <ul className="space-y-2 xl:space-y-3">
+      <ul className="space-y-2 xl:space-y-2.5 2xl:space-y-3">
         {activeRacePigeons.map((pigeon) => {
           const last = latestByPigeonId.get(pigeon.pigeonId);
           const altDisplay =
@@ -40,10 +40,10 @@ export function PigeonLegend() {
                 style={{ backgroundColor: pigeon.color }}
                 aria-hidden="true"
               />
-              <span className="text-sm xl:text-base font-medium font-mono text-text-primary flex-1 whitespace-nowrap truncate min-w-0">
+              <span className="text-sm xl:text-sm 2xl:text-base font-medium font-mono text-text-primary flex-1 whitespace-nowrap truncate min-w-0">
                 {pigeon.name}
               </span>
-              <span className="text-sm xl:text-base font-medium font-mono text-text-tertiary whitespace-nowrap flex-shrink-0">
+              <span className="text-sm xl:text-sm 2xl:text-base font-medium font-mono text-text-tertiary whitespace-nowrap flex-shrink-0">
                 {altDisplay}
               </span>
             </li>

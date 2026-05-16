@@ -16,7 +16,7 @@ export function SettingsFooter({
   onDiscard,
 }: SettingsFooterProps) {
   return (
-    <div className="sticky bottom-0 -mx-6 px-6 py-4 mt-6 border-t border-border bg-bg-app/95 backdrop-blur-sm flex items-center justify-between gap-4">
+    <div className="sticky bottom-0 z-20 -mx-6 px-6 py-4 mt-6 border-t border-border bg-white dark:bg-[#0F2030] shadow-lg flex items-center justify-between gap-4">
       <p className="text-sm text-text-disabled">
         {dirty ? "Imate nesačuvane izmene." : "Sve izmene su sačuvane."}
       </p>

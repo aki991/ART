@@ -302,21 +302,24 @@ export function PigeonForm() {
   }
 
   const inputClass =
-    "w-full px-2 xl:px-3 py-2 xl:py-2.5 bg-bg-input border border-border rounded-md text-sm xl:text-lg text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none";
+    "w-full px-2 xl:px-2.5 2xl:px-3 py-2 xl:py-2.5 2xl:py-2.5 bg-bg-input border border-border rounded-md text-sm xl:text-base 2xl:text-lg text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none";
+
+  const colorInputClass =
+    "w-full px-2 py-1.5 2xl:px-3 2xl:py-2 bg-bg-input border border-border rounded-md text-sm 2xl:text-base text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none";
 
   const bandInputClass =
-    "px-1 xl:px-2 py-2 xl:py-2.5 bg-bg-input border border-border rounded-md text-sm xl:text-lg text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none text-center font-mono";
+    "px-1.5 py-1.5 2xl:px-3 2xl:py-2 bg-bg-input border border-border rounded-md text-xs 2xl:text-base text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none text-center font-mono";
 
   return (
-    <div className="card-redesign p-4 xl:p-6">
-      <p className="text-xs xl:text-sm uppercase tracking-widest text-text-tertiary font-medium mb-3 xl:mb-4">
+    <div className="card-redesign p-4 xl:p-5 2xl:p-6">
+      <p className="text-xs xl:text-xs 2xl:text-sm uppercase tracking-widest text-text-tertiary font-medium mb-3 xl:mb-3.5 2xl:mb-4">
         Podaci goluba
       </p>
 
-      <div className="mb-3 xl:mb-4">
+      <div className="mb-3 xl:mb-3.5 2xl:mb-4">
         <label
           htmlFor="pigeon-select"
-          className="block text-sm xl:text-base font-medium text-text-secondary mb-1.5"
+          className="block text-sm xl:text-sm 2xl:text-base font-medium text-text-secondary mb-1.5"
         >
           Golub
         </label>
@@ -427,8 +430,8 @@ export function PigeonForm() {
                           : "border-l-transparent text-text-tertiary hover:bg-bg-hover hover:text-text-primary"
                       )}
                     >
-                      <span className="font-mono font-medium text-sm xl:text-base whitespace-nowrap">{p.full_ring_number}</span>
-                      <span className="text-text-tertiary ml-2 text-xs xl:text-sm whitespace-nowrap">— {p.color}</span>
+                      <span className="font-mono font-medium text-sm xl:text-sm 2xl:text-base whitespace-nowrap">{p.full_ring_number}</span>
+                      <span className="text-text-tertiary ml-2 text-xs xl:text-xs 2xl:text-sm whitespace-nowrap">— {p.color}</span>
                     </div>
                   ))
                 )}
@@ -455,10 +458,10 @@ export function PigeonForm() {
 
       {showManualFields && (
         <>
-          <div className="mb-3 xl:mb-4">
+          <div className="mb-3 xl:mb-3.5 2xl:mb-4">
             <label
               htmlFor="pigeon-color"
-              className="block text-sm xl:text-base font-medium text-text-secondary mb-1.5"
+              className="block text-sm xl:text-sm 2xl:text-base font-medium text-text-secondary mb-1.5"
             >
               Boja goluba <span className="text-status-error">*</span>
             </label>
@@ -468,15 +471,15 @@ export function PigeonForm() {
               value={pigeonColor}
               onChange={(e) => setPigeonColor(e.target.value)}
               placeholder="npr. Arap"
-              className={inputClass}
+              className={colorInputClass}
             />
           </div>
 
-          <div className="mb-4 xl:mb-6">
-            <label className="block text-sm xl:text-base font-medium text-text-secondary mb-1.5">
+          <div className="mb-4 xl:mb-5 2xl:mb-6">
+            <label className="block text-sm xl:text-sm 2xl:text-base font-medium text-text-secondary mb-1.5">
               Broj savezne alke <span className="text-status-error">*</span>
             </label>
-            <div className="flex items-center gap-1 xl:gap-1.5 min-w-0">
+            <div className="flex items-center gap-1 2xl:gap-2 min-w-0">
               <input
                 ref={bandPrefixRef}
                 type="text"
@@ -489,9 +492,9 @@ export function PigeonForm() {
                 }}
                 onPaste={handleBandPaste}
                 placeholder="SRB"
-                className={cn(bandInputClass, "w-11 xl:w-16 min-w-0")}
+                className={cn(bandInputClass, "w-10 2xl:w-14 min-w-0")}
               />
-              <span className="text-text-disabled select-none font-mono text-xs xl:text-base">-</span>
+              <span className="text-text-disabled select-none font-mono text-xs xl:text-sm 2xl:text-base">-</span>
               <input
                 ref={bandMainRef}
                 type="text"
@@ -507,9 +510,9 @@ export function PigeonForm() {
                   if (e.key === "Backspace" && !bandMain) bandPrefixRef.current?.focus();
                 }}
                 placeholder="444"
-                className={cn(bandInputClass, "w-11 xl:w-16 min-w-0")}
+                className={cn(bandInputClass, "w-10 2xl:w-14 min-w-0")}
               />
-              <span className="text-text-disabled select-none font-mono text-xs xl:text-base">-</span>
+              <span className="text-text-disabled select-none font-mono text-xs xl:text-sm 2xl:text-base">-</span>
               <input
                 ref={bandBreederRef}
                 type="text"
@@ -525,9 +528,9 @@ export function PigeonForm() {
                   if (e.key === "Backspace" && !bandBreeder) bandMainRef.current?.focus();
                 }}
                 placeholder="11"
-                className={cn(bandInputClass, "w-8 xl:w-12 min-w-0")}
+                className={cn(bandInputClass, "w-10 2xl:w-14 min-w-0")}
               />
-              <span className="text-text-disabled select-none font-mono text-xs xl:text-base">-</span>
+              <span className="text-text-disabled select-none font-mono text-xs xl:text-sm 2xl:text-base">-</span>
               <input
                 ref={bandPigeonRef}
                 type="text"
@@ -543,9 +546,9 @@ export function PigeonForm() {
                   if (e.key === "Backspace" && !bandPigeon) bandBreederRef.current?.focus();
                 }}
                 placeholder="22"
-                className={cn(bandInputClass, "w-8 xl:w-12 min-w-0")}
+                className={cn(bandInputClass, "w-10 2xl:w-14 min-w-0")}
               />
-              <span className="text-text-disabled select-none font-mono text-xs xl:text-base">-</span>
+              <span className="text-text-disabled select-none font-mono text-xs xl:text-sm 2xl:text-base">-</span>
               <input
                 ref={bandYearRef}
                 type="text"
@@ -560,7 +563,7 @@ export function PigeonForm() {
                   if (e.key === "Backspace" && !bandYear) bandPigeonRef.current?.focus();
                 }}
                 placeholder="25"
-                className={cn(bandInputClass, "w-8 xl:w-12 min-w-0")}
+                className={cn(bandInputClass, "w-10 2xl:w-14 min-w-0")}
               />
             </div>
           </div>

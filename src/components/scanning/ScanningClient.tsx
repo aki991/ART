@@ -149,7 +149,7 @@ export function ScanningClient({ initialActiveRace }: ScanningClientProps) {
   const connected = status === "connected";
 
   return (
-    <div className="relative min-h-[calc(100vh-72px)] xl:h-[calc(100vh-72px)] xl:overflow-hidden px-4 xl:px-6 pt-4 xl:pt-6 pb-6 xl:pb-[88px]">
+    <div className="relative min-h-[calc(100vh-108px)] 2xl:h-[calc(100vh-120px)] 2xl:overflow-hidden px-4 xl:px-5 2xl:px-6 pt-4 xl:pt-5 2xl:pt-6 pb-6 xl:pb-6 2xl:pb-6">
       {connected ? <LiveFlightDashboard /> : <ConnectionHub />}
     </div>
   );
