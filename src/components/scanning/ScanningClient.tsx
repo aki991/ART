@@ -34,6 +34,9 @@ export function ScanningClient({ initialActiveRace }: ScanningClientProps) {
   const resumedRef = useRef(false);
 
   // ─── RESUME: ako server kaže da postoji aktivna trka, učitaj je u UI ───
+  // Router Cache može da nam servira stari `initialActiveRace` (sa završene
+  // trke) pri navigaciji nazad — zato pre beginRaceSession verifikujemo
+  // svežim pozivom getActiveRace().
   useEffect(() => {
     if (resumedRef.current) return;
     if (!initialActiveRace) return;
@@ -41,40 +44,66 @@ export function ScanningClient({ initialActiveRace }: ScanningClientProps) {
     if (raceActive) return;
     resumedRef.current = true;
 
-    const pigeons: ActiveRacePigeon[] = initialActiveRace.race_pigeons.map(
-      (rp, idx) => ({
-        id: rp.programmed_ring_id ?? rp.id,
-        pigeonId: rp.pigeon_id,
-        racePigeonId: rp.id,
-        name: rp.pigeon_full_ring_number,
-        color: PIGEON_COLOR_PALETTE[idx % PIGEON_COLOR_PALETTE.length],
-        pigeonColor: rp.pigeon_color,
-      })
-    );
+    void (async () => {
+      const fresh = await getActiveRace();
+      if (
+        !fresh.success ||
+        !fresh.data ||
+        fresh.data.id !== initialActiveRace.id
+      ) {
+        return;
+      }
 
-    const startedAtMs = new Date(initialActiveRace.started_at).getTime();
+      const pigeons: ActiveRacePigeon[] = initialActiveRace.race_pigeons.map(
+        (rp, idx) => ({
+          id: rp.programmed_ring_id ?? rp.id,
+          pigeonId: rp.pigeon_id,
+          racePigeonId: rp.id,
+          name: rp.pigeon_full_ring_number,
+          color: PIGEON_COLOR_PALETTE[idx % PIGEON_COLOR_PALETTE.length],
+          pigeonColor: rp.pigeon_color,
+        })
+      );
 
-    setStatus("connected");
-    setDeviceInfo({
-      deviceId: "ART-DEMO-001",
-      firmwareVersion: "1.0.0",
-      batteryPct: 87,
-    });
+      const startedAtMs = new Date(initialActiveRace.started_at).getTime();
 
-    beginRaceSession({
-      raceId: initialActiveRace.id,
-      name: initialActiveRace.name,
-      visibility: initialActiveRace.visibility,
-      pigeons,
-      startedAtMs,
-    });
-    // Note: we do NOT claim simulator role on resume — only the original
-    // starter writes to the DB. This tab will just poll readings (or, if it
-    // happens to be the same browser that started the race, the localStorage
-    // flag from start time still says "owner" and the simulator hook picks
-    // up automatically).
-    void isThisBrowserSimulator;
+      setStatus("connected");
+      setDeviceInfo({
+        deviceId: "ART-DEMO-001",
+        firmwareVersion: "1.0.0",
+        batteryPct: 87,
+      });
+
+      beginRaceSession({
+        raceId: initialActiveRace.id,
+        name: initialActiveRace.name,
+        visibility: initialActiveRace.visibility,
+        pigeons,
+        startedAtMs,
+      });
+      // Note: we do NOT claim simulator role on resume — only the original
+      // starter writes to the DB. This tab will just poll readings (or, if it
+      // happens to be the same browser that started the race, the localStorage
+      // flag from start time still says "owner" and the simulator hook picks
+      // up automatically).
+      void isThisBrowserSimulator;
+    })();
   }, [initialActiveRace, raceActive, setStatus, setDeviceInfo, beginRaceSession]);
+
+  // ─── MOUNT GUARD: ako je store nekim slučajem već "raceActive" ali baza
+  // kaže drugačije (npr. trka je u međuvremenu završena), očisti odmah.
+  useEffect(() => {
+    void (async () => {
+      const { raceActive: active, raceId: id } = useConnectionStore.getState();
+      if (!active || !id) return;
+      const fresh = await getActiveRace();
+      if (!fresh.success) return;
+      if (!fresh.data || fresh.data.id !== id) {
+        finishRaceSession();
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // ─── LIFECYCLE POLL: kad se trka završi u drugom prozoru, sinhronizuj ───
   useEffect(() => {
