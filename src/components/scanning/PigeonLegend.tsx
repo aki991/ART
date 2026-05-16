@@ -23,27 +23,27 @@ export function PigeonLegend() {
   }, [readings]);
 
   return (
-    <div className="card-redesign p-6">
-      <p className="text-sm uppercase tracking-widest text-text-tertiary mb-3">
+    <div className="card-redesign p-3 xl:p-6">
+      <p className="text-[10px] xl:text-sm uppercase tracking-widest text-text-tertiary mb-2 xl:mb-3">
         Golubovi
       </p>
-      <ul className="space-y-3">
+      <ul className="space-y-2 xl:space-y-3">
         {activeRacePigeons.map((pigeon) => {
           const last = latestByPigeonId.get(pigeon.pigeonId);
           const altDisplay =
             typeof last === "number" ? `${Math.round(last)} m` : "—";
 
           return (
-            <li key={pigeon.id} className="flex items-center gap-3">
+            <li key={pigeon.id} className="flex items-center gap-3 min-w-0">
               <span
                 className="w-4 h-4 rounded-full flex-shrink-0"
                 style={{ backgroundColor: pigeon.color }}
                 aria-hidden="true"
               />
-              <span className="text-base font-medium text-text-primary flex-1">
+              <span className="text-sm xl:text-base font-medium font-mono text-text-primary flex-1 whitespace-nowrap truncate min-w-0">
                 {pigeon.name}
               </span>
-              <span className="text-base font-medium font-mono text-text-tertiary">
+              <span className="text-sm xl:text-base font-medium font-mono text-text-tertiary whitespace-nowrap flex-shrink-0">
                 {altDisplay}
               </span>
             </li>

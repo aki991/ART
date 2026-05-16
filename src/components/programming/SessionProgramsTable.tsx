@@ -46,19 +46,19 @@ export function SessionProgramsTable() {
         <table className="w-full text-base">
           <thead>
             <tr className="table-header-gradient">
-              <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
                 ID Prstena
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
                 Golub
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
                 Boja goluba
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
                 Vreme
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-sm font-medium text-text-tertiary uppercase tracking-wider whitespace-nowrap">
                 Akcije
               </th>
             </tr>
@@ -82,7 +82,7 @@ export function SessionProgramsTable() {
                         className="w-4 h-4 rounded-full flex-shrink-0"
                         style={{ backgroundColor: ring.ringColor }}
                       />
-                      <span className="bg-accent-light text-accent font-mono font-semibold px-2 py-0.5 rounded text-base">
+                      <span className="bg-accent-light text-accent font-mono font-semibold px-2 py-0.5 rounded text-base whitespace-nowrap">
                         {ring.ringId}
                       </span>
                     </div>
@@ -91,7 +91,7 @@ export function SessionProgramsTable() {
                     {ring.pigeonIdentifier === "Drugi golub" ? (
                       <span className="text-text-disabled italic text-base">Drugi golub</span>
                     ) : (
-                      <span className="font-mono text-sm text-text-secondary">
+                      <span className="font-mono text-sm text-text-secondary whitespace-nowrap">
                         {ring.pigeonIdentifier}
                       </span>
                     )}

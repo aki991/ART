@@ -122,7 +122,7 @@ export function RaceAltitudeChart({
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={chartData}
-          margin={{ top: 4, right: 80, bottom: 4, left: 8 }}
+          margin={{ top: 4, right: 80, bottom: 40, left: 8 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.gridStroke} />
           <XAxis
@@ -181,7 +181,15 @@ export function RaceAltitudeChart({
             />
           ))}
           <Legend
-            wrapperStyle={{ fontSize: 14, fontWeight: 500, color: chartTheme.textColor }}
+            layout="horizontal"
+            verticalAlign="bottom"
+            align="center"
+            wrapperStyle={{
+              fontSize: 14,
+              fontWeight: 500,
+              color: chartTheme.textColor,
+              paddingTop: 16,
+            }}
           />
         </LineChart>
       </ResponsiveContainer>

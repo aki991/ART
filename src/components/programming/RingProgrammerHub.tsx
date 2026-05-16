@@ -7,7 +7,7 @@ import { SessionProgramsTable } from "./SessionProgramsTable";
 
 export function RingProgrammerHub() {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 xl:gap-6">
       <aside className="space-y-6">
         <ProgrammerSlot />
         <PigeonForm />

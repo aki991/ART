@@ -9,7 +9,6 @@ import {
 } from "@/lib/store/connection-store";
 import { ConnectionHub } from "./ConnectionHub";
 import { LiveFlightDashboard } from "./LiveFlightDashboard";
-import { DeviceHealthCards } from "./DeviceHealthCards";
 import { PIGEON_COLOR_PALETTE } from "@/lib/utils/pigeon-palette";
 import { getActiveRace } from "@/app/actions/races";
 import { isThisBrowserSimulator } from "@/lib/hooks/useRaceSimulator";
@@ -150,14 +149,8 @@ export function ScanningClient({ initialActiveRace }: ScanningClientProps) {
   const connected = status === "connected";
 
   return (
-    <div className="relative h-[calc(100vh-72px)] overflow-hidden px-6 pt-6 pb-[88px]">
+    <div className="relative min-h-[calc(100vh-72px)] xl:h-[calc(100vh-72px)] xl:overflow-hidden px-4 xl:px-6 pt-4 xl:pt-6 pb-6 xl:pb-[88px]">
       {connected ? <LiveFlightDashboard /> : <ConnectionHub />}
-
-      {connected && (
-        <div className="absolute bottom-6 left-6 z-10">
-          <DeviceHealthCards />
-        </div>
-      )}
     </div>
   );
 }

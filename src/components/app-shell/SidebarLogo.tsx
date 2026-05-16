@@ -25,21 +25,21 @@ export function SidebarLogo({ expanded, toggle }: SidebarLogoProps) {
   }
 
   return (
-    <div className="flex items-center justify-between h-[72px] px-4 flex-shrink-0 border-b border-border">
-      <div className="flex items-center gap-3 min-w-0">
+    <div className="flex items-center justify-between h-[72px] px-2 xl:px-4 flex-shrink-0 border-b border-border">
+      <div className="flex items-center gap-2 xl:gap-3 min-w-0">
         <Image
           src="/art-logo.png"
           alt="Aero Ring Tech"
           width={60}
           height={60}
-          className="flex-shrink-0"
+          className="flex-shrink-0 w-[40px] h-[40px] xl:w-[60px] xl:h-[60px]"
           priority
         />
         <div className="flex flex-col justify-center gap-0.5 min-w-0">
-          <span className="text-lg font-bold tracking-widest whitespace-nowrap font-rajdhani leading-none text-gradient-logo">
+          <span className="text-xs xl:text-lg font-bold tracking-tight xl:tracking-widest whitespace-nowrap font-rajdhani leading-none text-gradient-logo">
             AERO RING TECH
           </span>
-          <span className="text-[10px] font-medium tracking-[0.09em] text-text-tertiary whitespace-nowrap leading-none">
+          <span className="text-[8px] xl:text-[10px] font-medium tracking-[0.04em] xl:tracking-[0.09em] text-text-tertiary whitespace-nowrap leading-none">
             THE ART OF FLIGHT
           </span>
         </div>

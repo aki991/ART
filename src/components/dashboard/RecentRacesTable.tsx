@@ -37,49 +37,51 @@ export function RecentRacesTable({ races }: RecentRacesTableProps) {
           </Link>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-border">
-          <table className="w-full">
-            <thead className="bg-bg-hover text-xs uppercase text-text-tertiary font-medium">
-              <tr>
-                <th className="text-left py-3 px-4">Naziv</th>
-                <th className="text-left py-3 px-4">Datum</th>
-                <th className="text-left py-3 px-4">Trajanje</th>
-                <th className="text-left py-3 px-4">Golubova</th>
-                <th className="text-left py-3 px-4">Validna</th>
-              </tr>
-            </thead>
-            <tbody>
-              {races.map((race) => (
-                <tr
-                  key={race.id}
-                  onClick={() => router.push(`/races/${race.id}`)}
-                  className="border-t border-border hover:bg-bg-hover cursor-pointer transition-colors"
-                >
-                  <td className="py-3 px-4 text-text-primary font-medium text-sm">
-                    {race.name}
-                  </td>
-                  <td className="py-3 px-4 text-text-secondary font-mono text-sm">
-                    {formatDate(race.started_at)}
-                  </td>
-                  <td className="py-3 px-4 text-text-secondary font-mono text-sm">
-                    {race.duration_seconds != null
-                      ? formatDuration(race.duration_seconds)
-                      : "—"}
-                  </td>
-                  <td className="py-3 px-4 text-text-secondary font-mono text-sm">
-                    {race.pigeon_count}
-                  </td>
-                  <td className="py-3 px-4">
-                    {race.is_valid ? (
-                      <Check className="w-5 h-5 text-status-success" aria-hidden="true" />
-                    ) : (
-                      <X className="w-5 h-5 text-status-error" aria-hidden="true" />
-                    )}
-                  </td>
+        <div className="rounded-xl border border-border overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-bg-hover text-xs uppercase text-text-tertiary font-medium">
+                <tr>
+                  <th className="text-left py-3 px-4 whitespace-nowrap">Naziv</th>
+                  <th className="text-left py-3 px-4 whitespace-nowrap">Datum</th>
+                  <th className="text-left py-3 px-4 whitespace-nowrap">Trajanje</th>
+                  <th className="text-left py-3 px-4 whitespace-nowrap">Golubova</th>
+                  <th className="text-left py-3 px-4 whitespace-nowrap">Validna</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {races.map((race) => (
+                  <tr
+                    key={race.id}
+                    onClick={() => router.push(`/races/${race.id}`)}
+                    className="border-t border-border hover:bg-bg-hover cursor-pointer transition-colors"
+                  >
+                    <td className="py-3 px-4 text-text-primary font-medium text-sm whitespace-nowrap">
+                      {race.name}
+                    </td>
+                    <td className="py-3 px-4 text-text-secondary font-mono text-sm whitespace-nowrap">
+                      {formatDate(race.started_at)}
+                    </td>
+                    <td className="py-3 px-4 text-text-secondary font-mono text-sm whitespace-nowrap">
+                      {race.duration_seconds != null
+                        ? formatDuration(race.duration_seconds)
+                        : "—"}
+                    </td>
+                    <td className="py-3 px-4 text-text-secondary font-mono text-sm whitespace-nowrap">
+                      {race.pigeon_count}
+                    </td>
+                    <td className="py-3 px-4 whitespace-nowrap">
+                      {race.is_valid ? (
+                        <Check className="w-5 h-5 text-status-success" aria-hidden="true" />
+                      ) : (
+                        <X className="w-5 h-5 text-status-error" aria-hidden="true" />
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

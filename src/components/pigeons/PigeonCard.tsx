@@ -13,35 +13,35 @@ interface PigeonCardProps {
 export function PigeonCard({ pigeon, onOpen, onEdit, onDelete }: PigeonCardProps) {
   return (
     <div
-      className="card-redesign card-redesign-interactive p-6 cursor-pointer"
+      className="card-redesign card-redesign-interactive p-3 xl:p-5 cursor-pointer"
       onClick={onOpen}
     >
-      <div className="flex items-start justify-between mb-2">
-        <div className="text-2xl font-bold font-mono text-text-primary">
+      <div className="flex items-start justify-between mb-2 gap-2 min-w-0">
+        <div className="text-base xl:text-xl font-bold font-mono text-text-primary whitespace-nowrap min-w-0 truncate">
           {pigeon.full_ring_number}
         </div>
-        <div className="flex items-center gap-1 flex-shrink-0 ml-3">
+        <div className="flex items-center gap-0.5 xl:gap-1 flex-shrink-0">
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); onEdit(); }}
             aria-label="Izmeni goluba"
-            className="p-2 rounded hover:bg-bg-hover text-text-disabled transition-colors"
+            className="p-1.5 xl:p-2 rounded hover:bg-bg-hover text-text-disabled transition-colors"
           >
-            <Pencil className="w-5 h-5" aria-hidden="true" />
+            <Pencil className="w-4 h-4 xl:w-5 xl:h-5" aria-hidden="true" />
           </button>
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); onDelete(); }}
             aria-label="Obriši goluba"
-            className="p-2 rounded hover:bg-bg-error-light hover:text-status-error text-text-disabled transition-colors"
+            className="p-1.5 xl:p-2 rounded hover:bg-bg-error-light hover:text-status-error text-text-disabled transition-colors"
           >
-            <Trash2 className="w-5 h-5" aria-hidden="true" />
+            <Trash2 className="w-4 h-4 xl:w-5 xl:h-5" aria-hidden="true" />
           </button>
         </div>
       </div>
-      <p className="text-xl text-text-tertiary">{pigeon.color || "—"}</p>
+      <p className="text-base xl:text-xl text-text-tertiary truncate">{pigeon.color || "—"}</p>
       {pigeon.name && (
-        <p className="text-base text-text-secondary mt-1 truncate">{pigeon.name}</p>
+        <p className="text-xs xl:text-sm text-text-secondary mt-1 truncate">{pigeon.name}</p>
       )}
     </div>
   );

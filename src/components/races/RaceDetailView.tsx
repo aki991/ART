@@ -53,7 +53,7 @@ export function RaceDetailView({ race }: RaceDetailViewProps) {
   }
 
   return (
-    <div className="px-6 py-6 space-y-6">
+    <div className="px-4 xl:px-6 py-4 xl:py-6 space-y-4 xl:space-y-6">
       <RaceHeader race={race} />
       <RaceChartCard race={race} pigeonsWithColor={pigeonsWithColor} />
       <RaceStatisticsTable
@@ -88,17 +88,17 @@ function RaceHeader({ race }: { race: RaceWithDetails }) {
   const { Icon: VisIcon, label: visLabel } = VISIBILITY_META[race.visibility];
 
   return (
-    <div className="bg-bg-surface border border-accent/15 rounded-xl p-6">
-      <div className="flex items-start justify-between mb-4 gap-4">
-        <h1 className="text-3xl font-bold text-text-primary font-rajdhani">
+    <div className="bg-bg-surface border border-accent/15 rounded-xl p-4 xl:p-6">
+      <div className="flex items-start justify-between mb-3 xl:mb-4 gap-3 xl:gap-4 min-w-0">
+        <h1 className="text-2xl xl:text-3xl font-bold text-text-primary font-rajdhani truncate min-w-0">
           {race.name}
         </h1>
-        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-bg-input border border-border text-sm text-text-secondary">
+        <span className="inline-flex items-center gap-1.5 px-2 xl:px-3 py-1 xl:py-1.5 rounded-md bg-bg-input border border-border text-xs xl:text-sm text-text-secondary whitespace-nowrap flex-shrink-0">
           <VisIcon className="w-4 h-4" aria-hidden="true" />
           {visLabel}
         </span>
       </div>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 xl:gap-4">
         <InfoItem icon={<Trophy className="w-4 h-4" />} label="Golubar" value={ownerName} />
         <InfoItem icon={<MapPin className="w-4 h-4" />} label="Klub" value={clubLabel} />
         <InfoItem
@@ -270,12 +270,12 @@ function RaceStatisticsTable({
                       type="button"
                       onClick={() => onPigeonClick(rp.pigeon_id!)}
                       disabled={loading}
-                      className="text-text-primary font-mono font-medium hover:text-accent transition-colors disabled:opacity-60"
+                      className="text-text-primary font-mono font-medium hover:text-accent transition-colors disabled:opacity-60 whitespace-nowrap"
                     >
                       {rp.pigeon_full_ring_number}
                     </button>
                   ) : (
-                    <span className="text-text-primary font-mono font-medium cursor-default">
+                    <span className="text-text-primary font-mono font-medium cursor-default whitespace-nowrap">
                       {rp.pigeon_full_ring_number}
                     </span>
                   )}

@@ -32,7 +32,7 @@ export default async function DashboardPage() {
   const recentRaces = recentRes.success ? recentRes.data : [];
 
   return (
-    <div className="px-6 py-6 space-y-6">
+    <div className="px-4 xl:px-6 py-4 xl:py-6 space-y-4 xl:space-y-6">
       <DashboardStats stats={stats} />
       <LastRaceChart race={lastRace} />
       <TopPigeons pigeons={topPigeons} />

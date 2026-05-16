@@ -36,20 +36,20 @@ export function StatCard({ label, value, icon: Icon, accentColor, trend }: StatC
     : "text-text-tertiary";
 
   return (
-    <div className="card-redesign p-4">
-      <div className="flex items-center gap-3">
-        <div className={cn("w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0", iconBg)}>
+    <div className="card-redesign p-3 xl:p-4">
+      <div className="flex items-center gap-2 xl:gap-3 min-w-0">
+        <div className={cn("w-9 h-9 xl:w-10 xl:h-10 rounded-full flex items-center justify-center flex-shrink-0", iconBg)}>
           <Icon size={20} aria-hidden="true" />
         </div>
         <p className={cn(
-          "text-2xl font-bold font-mono",
+          "text-xl xl:text-2xl font-bold font-mono whitespace-nowrap flex-shrink-0",
           accentColor === "cyan" ? "text-gradient-cyan" : "text-text-primary"
         )}>
           {displayValue}
         </p>
-        <p className="text-sm text-text-tertiary truncate">{label}</p>
+        <p className="text-xs xl:text-sm text-text-tertiary truncate min-w-0">{label}</p>
         {trend && (
-          <p className={cn("flex items-center gap-1 text-xs ml-auto flex-shrink-0", trendStyle)}>
+          <p className={cn("flex items-center gap-1 text-xs ml-auto flex-shrink-0 whitespace-nowrap", trendStyle)}>
             <TrendIcon size={12} aria-hidden="true" />
             {trend.value}
           </p>

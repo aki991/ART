@@ -38,28 +38,28 @@ export function SessionStatsCard() {
   const minDisplay = min === Infinity ? "—" : `${Math.round(min)} m`;
 
   return (
-    <div className="card-redesign p-6">
-      <p className="text-sm uppercase tracking-widest text-text-tertiary mb-4">
-        Statistike (sesija)
+    <div className="card-redesign p-3 xl:p-6 min-w-0">
+      <p className="text-[10px] xl:text-sm uppercase tracking-widest text-text-tertiary mb-2 xl:mb-4 whitespace-nowrap">
+        Statistike
       </p>
 
-      <div className="mb-4">
-        <p className="text-xs uppercase tracking-wide text-text-disabled mb-1">
+      <div className="mb-2 xl:mb-4 min-w-0">
+        <p className="text-[10px] xl:text-xs uppercase tracking-wide text-text-disabled mb-1 whitespace-nowrap">
           Trajanje sesije
         </p>
-        <p className="text-2xl font-semibold font-mono text-accent">{elapsed}</p>
+        <p className="text-lg xl:text-2xl font-semibold font-mono text-accent whitespace-nowrap">{elapsed}</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div className="bg-bg-hover rounded p-3">
-          <p className="text-sm uppercase text-text-tertiary mb-1">Maksimum</p>
-          <p className="text-2xl font-semibold font-mono text-status-error">
+      <div className="grid grid-cols-2 gap-2 xl:gap-3">
+        <div className="bg-bg-hover rounded p-2 xl:p-3 min-w-0">
+          <p className="text-[10px] xl:text-sm uppercase text-text-tertiary mb-1 truncate">Maksimum</p>
+          <p className="text-base xl:text-2xl font-semibold font-mono text-status-error whitespace-nowrap">
             {maxDisplay}
           </p>
         </div>
-        <div className="bg-bg-hover rounded p-3">
-          <p className="text-sm uppercase text-text-tertiary mb-1">Minimum</p>
-          <p className="text-2xl font-semibold font-mono text-status-success">
+        <div className="bg-bg-hover rounded p-2 xl:p-3 min-w-0">
+          <p className="text-[10px] xl:text-sm uppercase text-text-tertiary mb-1 truncate">Minimum</p>
+          <p className="text-base xl:text-2xl font-semibold font-mono text-status-success whitespace-nowrap">
             {minDisplay}
           </p>
         </div>

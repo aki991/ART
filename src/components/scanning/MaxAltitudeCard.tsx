@@ -15,14 +15,14 @@ export function MaxAltitudeCard() {
   const display = max > 0 ? String(Math.round(max)) : "—";
 
   return (
-    <div className="card-redesign p-6 text-center">
-      <p className="text-sm uppercase tracking-widest text-text-tertiary mb-2">
+    <div className="card-redesign p-3 xl:p-6 text-center min-w-0">
+      <p className="text-[10px] xl:text-sm uppercase tracking-widest text-text-tertiary mb-1 xl:mb-2 whitespace-nowrap">
         Najviša visina
       </p>
-      <p className="text-5xl font-bold font-mono text-gradient-cyan leading-none">
+      <p className="text-3xl xl:text-5xl font-bold font-mono text-gradient-cyan leading-none whitespace-nowrap">
         {display}
       </p>
-      <p className="text-base uppercase tracking-wider text-text-disabled mt-1">Metri</p>
+      <p className="text-xs xl:text-base uppercase tracking-wider text-text-disabled mt-1">Metri</p>
     </div>
   );
 }
