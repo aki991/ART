@@ -12,8 +12,8 @@ interface PigeonHistoryModalProps {
   pigeon: Pigeon | null;
   isOpen: boolean;
   onClose: () => void;
-  onEdit: () => void;
-  onDelete: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
 
 function formatDate(iso: string): string {
@@ -228,14 +228,18 @@ export function PigeonHistoryModal({
         </div>
 
         <div className="px-8 py-5 border-t border-border flex items-center justify-between gap-3">
-          <button
-            type="button"
-            onClick={onDelete}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md text-base font-medium bg-bg-error-light border border-status-error/40 text-status-error hover:bg-status-error/20 transition-colors"
-          >
-            <Trash2 className="w-4 h-4" aria-hidden="true" />
-            Obriši
-          </button>
+          {onDelete ? (
+            <button
+              type="button"
+              onClick={onDelete}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md text-base font-medium bg-bg-error-light border border-status-error/40 text-status-error hover:bg-status-error/20 transition-colors"
+            >
+              <Trash2 className="w-4 h-4" aria-hidden="true" />
+              Obriši
+            </button>
+          ) : (
+            <span />
+          )}
           <div className="flex items-center gap-3">
             <button
               type="button"
@@ -244,14 +248,16 @@ export function PigeonHistoryModal({
             >
               Zatvori
             </button>
-            <button
-              type="button"
-              onClick={onEdit}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md text-base font-bold bg-accent text-text-on-accent hover:bg-accent-hover transition-colors"
-            >
-              <Pencil className="w-4 h-4" aria-hidden="true" />
-              Izmeni
-            </button>
+            {onEdit && (
+              <button
+                type="button"
+                onClick={onEdit}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md text-base font-bold bg-accent text-text-on-accent hover:bg-accent-hover transition-colors"
+              >
+                <Pencil className="w-4 h-4" aria-hidden="true" />
+                Izmeni
+              </button>
+            )}
           </div>
         </div>
       </div>

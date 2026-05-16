@@ -6,7 +6,7 @@ import type { ActionResponse } from "./club-types";
 import type { Pigeon, PigeonInput, PigeonPatch } from "@/lib/types/pigeon";
 
 const PIGEON_COLUMNS =
-  "id, owner_id, ring_country, ring_number, ring_segment_3, ring_segment_4, ring_year, full_ring_number, color, name, created_at, updated_at";
+  "id, owner_id, ring_country, ring_number, ring_segment_3, ring_segment_4, ring_year, full_ring_number, color, name, is_archived, created_at, updated_at";
 
 async function requireUser() {
   const supabase = await createClient();
@@ -88,6 +88,7 @@ export async function getMyPigeons(): Promise<ActionResponse<Pigeon[]>> {
     .from("pigeons")
     .select(PIGEON_COLUMNS)
     .eq("owner_id", user.id)
+    .eq("is_archived", false)
     .order("created_at", { ascending: false });
 
   if (error) return { success: false, error: error.message };
@@ -121,6 +122,7 @@ export async function searchMyPigeons(
     .from("pigeons")
     .select(PIGEON_COLUMNS)
     .eq("owner_id", user.id)
+    .eq("is_archived", false)
     .order("created_at", { ascending: false })
     .limit(20);
 
@@ -135,6 +137,70 @@ export async function searchMyPigeons(
 }
 
 // === CREATE ===
+
+export interface ArchivedPigeonInput {
+  ringCountry: string;
+  ringNumber: string;
+  ringSegment3: string;
+  ringSegment4: string;
+  ringYear: string;
+  color?: string;
+}
+
+export async function findOrCreateArchivedPigeon(
+  input: ArchivedPigeonInput
+): Promise<ActionResponse<{ pigeonId: string; fullRingNumber: string }>> {
+  const { supabase, user } = await requireUser();
+  if (!user) return { success: false, error: "Niste prijavljeni." };
+
+  const ring_country = input.ringCountry.trim().toUpperCase();
+  const ring_number = input.ringNumber.trim();
+  const ring_segment_3 = input.ringSegment3.trim();
+  const ring_segment_4 = input.ringSegment4.trim();
+  const ring_year = input.ringYear.trim();
+
+  if (!ring_country || !ring_number || !ring_segment_3 || !ring_segment_4 || !ring_year) {
+    return { success: false, error: "Broj alkice mora imati svih 5 segmenata." };
+  }
+
+  const fullRingNumber = `${ring_country}-${ring_number}-${ring_segment_3}-${ring_segment_4}-${ring_year}`;
+
+  const { data: existing, error: lookupErr } = await supabase
+    .from("pigeons")
+    .select("id")
+    .eq("owner_id", user.id)
+    .eq("ring_country", ring_country)
+    .eq("ring_number", ring_number)
+    .eq("ring_segment_3", ring_segment_3)
+    .eq("ring_segment_4", ring_segment_4)
+    .eq("ring_year", ring_year)
+    .maybeSingle();
+
+  if (lookupErr) return { success: false, error: lookupErr.message };
+
+  if (existing) {
+    return { success: true, data: { pigeonId: existing.id, fullRingNumber } };
+  }
+
+  const { data: created, error: insertErr } = await supabase
+    .from("pigeons")
+    .insert({
+      owner_id: user.id,
+      ring_country,
+      ring_number,
+      ring_segment_3,
+      ring_segment_4,
+      ring_year,
+      color: input.color?.trim() || "Nepoznata",
+      name: null,
+      is_archived: true,
+    })
+    .select("id")
+    .single();
+
+  if (insertErr) return { success: false, error: insertErr.message };
+  return { success: true, data: { pigeonId: created.id, fullRingNumber } };
+}
 
 export async function createPigeon(
   input: PigeonInput

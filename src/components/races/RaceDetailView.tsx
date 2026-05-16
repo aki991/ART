@@ -1,11 +1,15 @@
 "use client";
 
-import { useMemo, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
+import { toast } from "sonner";
 import { Calendar, Trophy, MapPin, Clock, Check, X, Lock, Users, Globe } from "lucide-react";
 import { computeYAxisConfig, buildXTicks } from "@/lib/utils/y-axis";
 import { RaceAltitudeChart } from "@/components/shared/RaceAltitudeChart";
 import { PIGEON_COLOR_PALETTE } from "@/lib/utils/pigeon-palette";
+import { PigeonHistoryModal } from "@/components/pigeons/PigeonHistoryModal";
+import { getPigeonById } from "@/app/actions/pigeons";
 import type { RaceWithDetails } from "@/lib/types/race";
+import type { Pigeon } from "@/lib/types/pigeon";
 
 interface RaceDetailViewProps {
   race: RaceWithDetails;
@@ -18,20 +22,51 @@ const VISIBILITY_META = {
 } as const;
 
 export function RaceDetailView({ race }: RaceDetailViewProps) {
+  const [openPigeon, setOpenPigeon] = useState<Pigeon | null>(null);
+  const [loadingPigeonId, setLoadingPigeonId] = useState<string | null>(null);
+
   const pigeonsWithColor = useMemo(
     () =>
       race.race_pigeons.map((rp, idx) => ({
         ...rp,
-        chartColor: PIGEON_COLOR_PALETTE[idx % PIGEON_COLOR_PALETTE.length],
+        // rp.color je server-side dodeljen pri startRace; fallback za
+        // stare trke (pre migracije 007) gde je color = NULL.
+        chartColor:
+          rp.color ?? PIGEON_COLOR_PALETTE[idx % PIGEON_COLOR_PALETTE.length],
       })),
     [race.race_pigeons]
   );
+
+  async function handlePigeonClick(pigeonId: string) {
+    setLoadingPigeonId(pigeonId);
+    const res = await getPigeonById(pigeonId);
+    setLoadingPigeonId(null);
+    if (!res.success) {
+      toast.error("Greška", { description: res.error });
+      return;
+    }
+    if (!res.data) {
+      toast.error("Golub nije pronađen");
+      return;
+    }
+    setOpenPigeon(res.data);
+  }
 
   return (
     <div className="px-6 py-6 space-y-6">
       <RaceHeader race={race} />
       <RaceChartCard race={race} pigeonsWithColor={pigeonsWithColor} />
-      <RaceStatisticsTable pigeonsWithColor={pigeonsWithColor} goalAltitude={race.goal_altitude} />
+      <RaceStatisticsTable
+        pigeonsWithColor={pigeonsWithColor}
+        goalAltitude={race.goal_altitude}
+        onPigeonClick={handlePigeonClick}
+        loadingPigeonId={loadingPigeonId}
+      />
+      <PigeonHistoryModal
+        pigeon={openPigeon}
+        isOpen={openPigeon !== null}
+        onClose={() => setOpenPigeon(null)}
+      />
     </div>
   );
 }
@@ -99,9 +134,11 @@ function InfoItem({ icon, label, value, mono }: { icon: ReactNode; label: string
 
 interface ChartPigeonRow {
   id: string;
-  pigeon_id: string;
+  pigeon_id: string | null;
   pigeon_full_ring_number: string;
   pigeon_color: string;
+  pigeon_name: string | null;
+  pigeon: { is_archived: boolean } | null;
   chartColor: string;
   readings: { altitude: number; elapsed_seconds: number }[];
   max_altitude: number | null;
@@ -189,9 +226,13 @@ function RaceChartCard({
 function RaceStatisticsTable({
   pigeonsWithColor,
   goalAltitude,
+  onPigeonClick,
+  loadingPigeonId,
 }: {
   pigeonsWithColor: ChartPigeonRow[];
   goalAltitude: number;
+  onPigeonClick: (pigeonId: string) => void;
+  loadingPigeonId: string | null;
 }) {
   return (
     <div className="bg-bg-surface border border-accent/15 rounded-xl overflow-hidden">
@@ -212,7 +253,11 @@ function RaceStatisticsTable({
           </tr>
         </thead>
         <tbody>
-          {pigeonsWithColor.map((rp) => (
+          {pigeonsWithColor.map((rp) => {
+            const clickable =
+              rp.pigeon_id !== null && rp.pigeon?.is_archived === false;
+            const loading = loadingPigeonId === rp.pigeon_id;
+            return (
             <tr key={rp.id} className="border-t border-border">
               <td className="py-4 px-6">
                 <div className="flex items-center gap-3">
@@ -220,9 +265,20 @@ function RaceStatisticsTable({
                     className="w-3 h-3 rounded-full flex-shrink-0"
                     style={{ backgroundColor: rp.chartColor }}
                   />
-                  <span className="text-text-primary font-mono font-medium">
-                    {rp.pigeon_full_ring_number}
-                  </span>
+                  {clickable ? (
+                    <button
+                      type="button"
+                      onClick={() => onPigeonClick(rp.pigeon_id!)}
+                      disabled={loading}
+                      className="text-text-primary font-mono font-medium hover:text-accent transition-colors disabled:opacity-60"
+                    >
+                      {rp.pigeon_full_ring_number}
+                    </button>
+                  ) : (
+                    <span className="text-text-primary font-mono font-medium cursor-default">
+                      {rp.pigeon_full_ring_number}
+                    </span>
+                  )}
                 </div>
               </td>
               <td className="py-4 px-4 text-text-secondary">{rp.pigeon_color}</td>
@@ -246,7 +302,8 @@ function RaceStatisticsTable({
                 )}
               </td>
             </tr>
-          ))}
+            );
+          })}
         </tbody>
       </table>
     </div>

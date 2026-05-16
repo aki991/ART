@@ -20,7 +20,10 @@ export function LastRaceChart({ race }: LastRaceChartProps) {
     if (!race) return [];
     return race.race_pigeons.map((rp, idx) => ({
       ...rp,
-      chartColor: PIGEON_COLOR_PALETTE[idx % PIGEON_COLOR_PALETTE.length],
+      // rp.color je server-side dodeljen pri startRace; fallback za
+      // stare trke (pre migracije 007) gde je color = NULL.
+      chartColor:
+        rp.color ?? PIGEON_COLOR_PALETTE[idx % PIGEON_COLOR_PALETTE.length],
     }));
   }, [race]);
 

@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useConnectionStore, type ActiveRacePigeon } from "@/lib/store/connection-store";
 import { useProgrammerStore } from "@/lib/store/programmer-store";
-import { searchMyPigeons } from "@/app/actions/pigeons";
 import { startRace, endRace } from "@/app/actions/races";
 import { getCurrentUserClub } from "@/app/actions/clubs";
 import {
@@ -90,41 +89,18 @@ export function SimulationControls() {
     clearLocalEnd();
     setStarting(true);
     try {
-      const resolved: Array<{
-        ringId: string;
-        slot: number | null;
-        pigeonId: string;
-        full_ring_number: string;
-        color: string;
-        ringColor: string;
-      }> = [];
-
-      for (const sp of sessionPrograms) {
-        const lookup = await searchMyPigeons(sp.pigeonIdentifier);
-        if (!lookup.success) {
-          toast.error("Greška pri učitavanju golubova", { description: lookup.error });
-          setStarting(false);
-          return;
-        }
-        const match = lookup.data.find(
-          (p) => p.full_ring_number === sp.pigeonIdentifier
-        );
-        if (!match) {
-          toast.error("Golub nije pronađen", {
-            description: `${sp.pigeonIdentifier} nije u bazi. Dodaj ga na stranici Golubovi.`,
-          });
-          setStarting(false);
-          return;
-        }
-        resolved.push({
-          ringId: sp.ringId,
-          slot: null,
-          pigeonId: match.id,
-          full_ring_number: match.full_ring_number,
-          color: match.color,
-          ringColor: sp.ringColor,
-        });
-      }
+      // PigeonForm upisuje pigeonId (DB UUID) direktno pri programiranju
+      // prstena — bilo iz dropdown-a (pravi golub), bilo iz findOrCreate-
+      // ArchivedPigeon (ručno unet broj alkice). Ovde više nije potrebno
+      // tražiti goluba po full_ring_number pre starta trke.
+      const resolved = sessionPrograms.map((sp) => ({
+        ringId: sp.ringId,
+        slot: null as number | null,
+        pigeonId: sp.pigeonId,
+        full_ring_number: sp.pigeonIdentifier,
+        color: sp.pigeonColor,
+        ringColor: sp.ringColor,
+      }));
 
       const res = await startRace({
         name: raceName.trim(),
@@ -149,7 +125,10 @@ export function SimulationControls() {
           pigeonId: r.pigeonId,
           racePigeonId: mapped?.racePigeonId ?? "",
           name: r.full_ring_number,
-          color: r.ringColor,
+          // Boja linije dolazi iz baze (race_pigeons.color, server-side
+          // dodeljena pri startRace) — tako svi browseri za istu trku
+          // prikazuju identične boje.
+          color: mapped?.color ?? r.ringColor,
           pigeonColor: r.color,
         };
       });

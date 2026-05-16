@@ -2,6 +2,7 @@
 
 import { revalidatePath, unstable_noStore as noStore } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { PIGEON_COLOR_PALETTE } from "@/lib/utils/pigeon-palette";
 import type { ActionResponse } from "./club-types";
 import type {
   AltitudeBatchEntry,
@@ -20,7 +21,7 @@ const RACE_COLUMNS =
   "id, owner_id, club_id, name, visibility, status, goal_altitude, started_at, ended_at, duration_seconds, max_altitude, avg_altitude, is_valid, created_at, updated_at";
 
 const RACE_PIGEON_COLUMNS =
-  "id, race_id, pigeon_id, programmed_ring_id, programmed_slot, pigeon_full_ring_number, pigeon_color, pigeon_name, max_altitude, avg_altitude, reached_goal, created_at";
+  "id, race_id, pigeon_id, programmed_ring_id, programmed_slot, pigeon_full_ring_number, pigeon_color, pigeon_name, color, max_altitude, avg_altitude, reached_goal, created_at";
 
 const READING_COLUMNS =
   "id, race_pigeon_id, altitude, elapsed_seconds, recorded_at, created_at";
@@ -47,7 +48,12 @@ export async function startRace(
 ): Promise<
   ActionResponse<{
     raceId: string;
-    ringPigeonMap: Array<{ ringId: string; pigeonId: string; racePigeonId: string }>;
+    ringPigeonMap: Array<{
+      ringId: string;
+      pigeonId: string;
+      racePigeonId: string;
+      color: string;
+    }>;
   }>
 > {
   const { supabase, user } = await requireUser();
@@ -130,7 +136,7 @@ export async function startRace(
 
   const raceId = (race as Race).id;
 
-  const racePigeonRows = input.programmedRings.map((r) => {
+  const racePigeonRows = input.programmedRings.map((r, idx) => {
     const p = pigeonsByid.get(r.pigeonId)!;
     return {
       race_id: raceId,
@@ -140,13 +146,14 @@ export async function startRace(
       pigeon_full_ring_number: p.full_ring_number,
       pigeon_color: p.color,
       pigeon_name: p.name,
+      color: PIGEON_COLOR_PALETTE[idx % PIGEON_COLOR_PALETTE.length],
     };
   });
 
   const { data: insertedRP, error: rpError } = await supabase
     .from("race_pigeons")
     .insert(racePigeonRows)
-    .select("id, pigeon_id, programmed_ring_id");
+    .select("id, pigeon_id, programmed_ring_id, color");
 
   if (rpError) {
     await supabase.from("races").delete().eq("id", raceId);
@@ -157,6 +164,7 @@ export async function startRace(
     ringId: rp.programmed_ring_id as string,
     pigeonId: rp.pigeon_id as string,
     racePigeonId: rp.id as string,
+    color: rp.color as string,
   }));
 
   refresh();
@@ -407,15 +415,17 @@ export async function getRaceReadings(
     altitude: number;
     elapsed_seconds: number;
     recorded_at: string;
-    race_pigeon: { pigeon_id: string; race_id: string } | null;
+    race_pigeon: { pigeon_id: string | null; race_id: string } | null;
   };
 
   const list: LiveAltitudeReading[] = ((data ?? []) as unknown as Row[])
-    .filter((r) => r.race_pigeon !== null)
+    .filter((r): r is Row & { race_pigeon: { pigeon_id: string; race_id: string } } =>
+      r.race_pigeon !== null && r.race_pigeon.pigeon_id !== null
+    )
     .map((r) => ({
       id: r.id,
       race_pigeon_id: r.race_pigeon_id,
-      pigeon_id: r.race_pigeon!.pigeon_id,
+      pigeon_id: r.race_pigeon.pigeon_id,
       altitude: r.altitude,
       elapsed_seconds: r.elapsed_seconds,
       recorded_at: r.recorded_at,
@@ -511,7 +521,7 @@ export async function getRaceById(
   const { data, error } = await supabase
     .from("races")
     .select(
-      `${RACE_COLUMNS}, owner_profile:profiles!races_owner_id_fkey(username, first_name, last_name), club:clubs(id, name, city), race_pigeons(${RACE_PIGEON_COLUMNS}, readings:altitude_readings(${READING_COLUMNS}))`
+      `${RACE_COLUMNS}, owner_profile:profiles!races_owner_id_fkey(username, first_name, last_name), club:clubs(id, name, city), race_pigeons(${RACE_PIGEON_COLUMNS}, pigeon:pigeons(is_archived), readings:altitude_readings(${READING_COLUMNS}))`
     )
     .eq("id", id)
     .maybeSingle();
@@ -572,10 +582,12 @@ export async function getTopPigeons(
   const { data, error } = await supabase
     .from("race_pigeons")
     .select(
-      `pigeon_id, pigeon_full_ring_number, pigeon_color, pigeon_name, max_altitude, reached_goal, race:races!inner(owner_id, status)`
+      `pigeon_id, pigeon_full_ring_number, pigeon_color, pigeon_name, max_altitude, reached_goal, race:races!inner(owner_id, status), pigeon:pigeons!inner(is_archived)`
     )
     .eq("race.owner_id", user.id)
-    .eq("race.status", "completed");
+    .eq("race.status", "completed")
+    .eq("pigeon.is_archived", false)
+    .not("pigeon_id", "is", null);
 
   if (error) return { success: false, error: error.message };
 

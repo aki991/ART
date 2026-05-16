@@ -54,16 +54,18 @@ export function ScanningClient({ initialActiveRace }: ScanningClientProps) {
         return;
       }
 
-      const pigeons: ActiveRacePigeon[] = initialActiveRace.race_pigeons.map(
-        (rp, idx) => ({
+      const pigeons: ActiveRacePigeon[] = initialActiveRace.race_pigeons
+        .filter((rp): rp is typeof rp & { pigeon_id: string } => rp.pigeon_id !== null)
+        .map((rp, idx) => ({
           id: rp.programmed_ring_id ?? rp.id,
           pigeonId: rp.pigeon_id,
           racePigeonId: rp.id,
           name: rp.pigeon_full_ring_number,
-          color: PIGEON_COLOR_PALETTE[idx % PIGEON_COLOR_PALETTE.length],
+          // rp.color je server-side dodeljen u startRace; fallback za stare
+          // trke pre migracije 007 koje imaju color = NULL.
+          color: rp.color ?? PIGEON_COLOR_PALETTE[idx % PIGEON_COLOR_PALETTE.length],
           pigeonColor: rp.pigeon_color,
-        })
-      );
+        }));
 
       const startedAtMs = new Date(initialActiveRace.started_at).getTime();
 

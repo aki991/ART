@@ -9,6 +9,7 @@ export interface Pigeon {
   full_ring_number: string;
   color: string;
   name: string | null;
+  is_archived: boolean;
   created_at: string;
   updated_at: string;
 }

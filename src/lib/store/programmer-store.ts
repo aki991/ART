@@ -7,6 +7,7 @@ export interface ProgrammedRing {
   id: string;
   ringId: string;
   ringColor: string;
+  pigeonId: string;
   pigeonIdentifier: string;
   pigeonColor: string;
   programmedAt: Date;
@@ -20,6 +21,7 @@ interface ProgrammerState {
 
   programRing: (data: {
     ringId: string;
+    pigeonId: string;
     pigeonIdentifier: string;
     pigeonColor: string;
   }) => Promise<{ success: boolean; error?: string }>;
@@ -31,7 +33,9 @@ interface ProgrammerState {
 
 const delay = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
-const STORAGE_KEY = "art-session-programs";
+// v2: stored entries now include pigeonId (DB UUID). Bumping the key drops
+// any pre-migration entries that lack it instead of failing at race start.
+const STORAGE_KEY = "art-session-programs-v2";
 
 function reviveRings(rings: ProgrammedRing[]): ProgrammedRing[] {
   return rings.map((r) => ({ ...r, programmedAt: new Date(r.programmedAt) }));
@@ -47,11 +51,14 @@ export const useProgrammerStore = create<ProgrammerState>()(
       selectedRingId: null,
       selectedSlotIndex: null,
 
-      programRing: async ({ ringId, pigeonIdentifier, pigeonColor }) => {
+      programRing: async ({ ringId, pigeonId, pigeonIdentifier, pigeonColor }) => {
         const { sessionPrograms } = get();
 
         if (!pigeonColor.trim()) {
           return { success: false, error: "Boja goluba je obavezna" };
+        }
+        if (!pigeonId) {
+          return { success: false, error: "pigeonId je obavezan" };
         }
         if (sessionPrograms.some((p) => p.ringId === ringId)) {
           return { success: false, error: "Prsten je već programiran u ovoj sesiji" };
@@ -68,6 +75,7 @@ export const useProgrammerStore = create<ProgrammerState>()(
           id: crypto.randomUUID(),
           ringId,
           ringColor,
+          pigeonId,
           pigeonIdentifier: pigeonIdentifier.trim() || "—",
           pigeonColor: pigeonColor.trim(),
           programmedAt: new Date(),

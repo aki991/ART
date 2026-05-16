@@ -22,12 +22,13 @@ export interface Race {
 export interface RacePigeon {
   id: string;
   race_id: string;
-  pigeon_id: string;
+  pigeon_id: string | null;
   programmed_ring_id: string | null;
   programmed_slot: number | null;
   pigeon_full_ring_number: string;
   pigeon_color: string;
   pigeon_name: string | null;
+  color: string | null;
   max_altitude: number | null;
   avg_altitude: number | null;
   reached_goal: boolean;
@@ -64,6 +65,7 @@ export interface RaceWithDetails extends Race {
     city: string;
   } | null;
   race_pigeons: (RacePigeon & {
+    pigeon: { is_archived: boolean } | null;
     readings: AltitudeReading[];
   })[];
 }

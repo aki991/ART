@@ -7,7 +7,11 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useProgrammerStore } from "@/lib/store/programmer-store";
 import { useEmulatorStore } from "@/lib/store/emulator-store";
-import { getMyPigeons, searchMyPigeons } from "@/app/actions/pigeons";
+import {
+  getMyPigeons,
+  searchMyPigeons,
+  findOrCreateArchivedPigeon,
+} from "@/app/actions/pigeons";
 import type { Pigeon } from "@/lib/types/pigeon";
 
 export function PigeonForm() {
@@ -243,19 +247,37 @@ export function PigeonForm() {
       return;
     }
 
+    let pigeonId: string;
     let pigeonIdentifier: string;
     let finalPigeonColor: string;
 
     if (selectedPigeon) {
+      pigeonId = selectedPigeon.id;
       pigeonIdentifier = selectedPigeon.full_ring_number;
       finalPigeonColor = selectedPigeon.color;
     } else {
-      pigeonIdentifier = federationBandNumber.trim();
+      // Ručno unet broj alkice — upiši (ili nađi) goluba kao archived
+      // da pri startu trke pigeon_id pokazuje na realan red u bazi.
+      const archived = await findOrCreateArchivedPigeon({
+        ringCountry: bandPrefix,
+        ringNumber: bandMain,
+        ringSegment3: bandBreeder,
+        ringSegment4: bandPigeon,
+        ringYear: bandYear,
+        color: pigeonColor,
+      });
+      if (!archived.success) {
+        toast.error("Programiranje neuspešno", { description: archived.error });
+        return;
+      }
+      pigeonId = archived.data.pigeonId;
+      pigeonIdentifier = archived.data.fullRingNumber;
       finalPigeonColor = pigeonColor.trim();
     }
 
     const result = await programRing({
       ringId: selectedRingId,
+      pigeonId,
       pigeonIdentifier,
       pigeonColor: finalPigeonColor,
     });
