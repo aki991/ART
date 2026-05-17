@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 import { cn } from "@/lib/utils";
@@ -10,6 +11,21 @@ interface ThemeToggleProps {
 
 export function ThemeToggle({ className }: ThemeToggleProps) {
   const { theme, toggleTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div
+        className={cn("w-9 h-9", className)}
+        aria-hidden="true"
+      />
+    );
+  }
+
   const next = theme === "light" ? "tamnu" : "svetlu";
   const label = `Prebaci na ${next} temu`;
 

@@ -433,10 +433,10 @@ export function ClubAdminSections({
       </div>
 
       {/* d) Leave club */}
-      <div className="rounded-xl border border-status-error bg-bg-error-light p-6 flex items-center justify-between gap-4">
+      <div className="rounded-xl border border-status-error bg-bg-error-light p-6 flex items-center justify-between gap-4 max-lg:flex-col max-lg:items-stretch max-lg:gap-3 max-lg:p-4">
         <div>
           <h3 className="text-base font-semibold text-status-error">Napusti klub</h3>
-          <p className="text-sm text-text-tertiary mt-0.5">
+          <p className="text-sm text-text-tertiary mt-0.5 max-lg:text-xs">
             {blockLeave
               ? "Prvo promovišite drugog člana u admina pre nego što napustite klub."
               : "Vaše trke i golubovi ostaju, ali nećete više pripadati klubu."}
@@ -451,7 +451,7 @@ export function ClubAdminSections({
               ? "Prvo promovišite drugog člana u admina"
               : undefined
           }
-          className="flex-shrink-0"
+          className="flex-shrink-0 max-lg:w-full max-lg:!py-2 max-lg:!text-sm"
         >
           Napusti klub
         </Button>

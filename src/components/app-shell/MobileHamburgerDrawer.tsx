@@ -39,6 +39,11 @@ export function MobileHamburgerDrawer({
   const user = useCurrentUser();
   const [pending, startTransition] = useTransition();
   const [signingOut, setSigningOut] = useState(false);
+  const [themeMounted, setThemeMounted] = useState(false);
+
+  useEffect(() => {
+    setThemeMounted(true);
+  }, []);
 
   const profile = user.profile;
   const displayName = profile?.firstName || profile?.username || user.email;
@@ -171,18 +176,29 @@ export function MobileHamburgerDrawer({
 
           <div role="separator" className="my-2 mx-4 h-px bg-border" />
 
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className={cn(itemClass, "w-full text-left")}
-          >
-            {theme === "dark" ? (
-              <Sun className="w-5 h-5" aria-hidden="true" />
-            ) : (
-              <Moon className="w-5 h-5" aria-hidden="true" />
-            )}
-            <span>{theme === "dark" ? "Svetla tema" : "Tamna tema"}</span>
-          </button>
+          {themeMounted ? (
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className={cn(itemClass, "w-full text-left")}
+            >
+              {theme === "dark" ? (
+                <Sun className="w-5 h-5" aria-hidden="true" />
+              ) : (
+                <Moon className="w-5 h-5" aria-hidden="true" />
+              )}
+              <span>{theme === "dark" ? "Svetla tema" : "Tamna tema"}</span>
+            </button>
+          ) : (
+            <div
+              className={cn(itemClass, "w-full")}
+              aria-hidden="true"
+              style={{ visibility: "hidden" }}
+            >
+              <Moon className="w-5 h-5" />
+              <span>Tamna tema</span>
+            </div>
+          )}
 
           <button
             type="button"

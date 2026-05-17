@@ -202,17 +202,17 @@ export function ProfileTab({ value, onChange }: ProfileTabProps) {
       </div>
 
       {/* Password */}
-      <div className="card-redesign p-6 flex items-center justify-between gap-4">
+      <div className="card-redesign p-6 flex items-center justify-between gap-4 max-lg:flex-col max-lg:items-stretch max-lg:gap-3 max-lg:p-4">
         <div>
           <h3 className="text-base font-semibold text-text-primary">Lozinka</h3>
-          <p className="text-sm text-text-disabled mt-0.5">
+          <p className="text-sm text-text-disabled mt-0.5 max-lg:text-xs">
             Promenite lozinku za pristup nalogu.
           </p>
         </div>
         <Button
           variant="secondary"
           onClick={() => setPasswordOpen(true)}
-          className="flex-shrink-0"
+          className="flex-shrink-0 max-lg:w-full max-lg:!py-2 max-lg:!text-sm"
         >
           <KeyRound className="w-4 h-4" aria-hidden="true" />
           Promeni lozinku
@@ -220,7 +220,7 @@ export function ProfileTab({ value, onChange }: ProfileTabProps) {
       </div>
 
       {/* Danger zone */}
-      <div className="rounded-xl border border-status-error bg-bg-error-light p-6">
+      <div className="rounded-xl border border-status-error bg-bg-error-light p-6 max-lg:p-4">
         <div className="flex items-center gap-2 mb-3">
           <TriangleAlert
             className="w-4 h-4 text-status-error"
@@ -228,14 +228,14 @@ export function ProfileTab({ value, onChange }: ProfileTabProps) {
           />
           <h3 className="text-base font-semibold text-status-error">Opasna zona</h3>
         </div>
-        <div className="flex items-center justify-between gap-4">
-          <p className="text-sm text-text-tertiary">
+        <div className="flex items-center justify-between gap-4 max-lg:flex-col max-lg:items-stretch max-lg:gap-3">
+          <p className="text-sm text-text-tertiary max-lg:text-xs">
             Brisanje naloga je trajno i ne može se opozvati.
           </p>
           <Button
             variant="danger"
             onClick={() => setDeleteOpen(true)}
-            className="flex-shrink-0"
+            className="flex-shrink-0 max-lg:w-full max-lg:!py-2 max-lg:!text-sm"
           >
             <Trash2 className="w-4 h-4" aria-hidden="true" />
             Obriši nalog

@@ -15,7 +15,7 @@ interface PigeonModalProps {
 }
 
 const FIELD_WRAP =
-  "px-2 py-2.5 bg-bg-input border border-border rounded-md text-lg text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none text-center font-mono";
+  "px-2 py-2.5 bg-bg-input border border-border rounded-md text-lg text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none text-center font-mono max-lg:px-1 max-lg:py-1.5 max-lg:text-sm";
 
 export function PigeonModal({ isOpen, onClose, editingPigeon, onSaved }: PigeonModalProps) {
   const [mounted, setMounted] = useState(false);
@@ -163,14 +163,14 @@ export function PigeonModal({ isOpen, onClose, editingPigeon, onSaved }: PigeonM
 
       <div
         className={cn(
-          "relative bg-bg-surface-elevated rounded-xl shadow-lg border border-border max-w-2xl w-full mx-4 transition-all duration-200",
+          "relative bg-bg-surface-elevated rounded-xl shadow-lg border border-border max-w-2xl w-full mx-4 transition-all duration-200 max-lg:mx-2",
           mounted ? "opacity-100 scale-100" : "opacity-0 scale-95"
         )}
       >
-        <div className="px-8 py-5 border-b border-border flex items-center justify-between">
+        <div className="px-8 py-5 border-b border-border flex items-center justify-between max-lg:px-4 max-lg:py-3">
           <h2
             id="pigeon-modal-title"
-            className="text-2xl font-semibold font-rajdhani text-text-primary"
+            className="text-2xl font-semibold font-rajdhani text-text-primary max-lg:text-base"
           >
             {editingPigeon ? "Izmeni goluba" : "Dodaj novog goluba"}
           </h2>
@@ -181,16 +181,16 @@ export function PigeonModal({ isOpen, onClose, editingPigeon, onSaved }: PigeonM
             aria-label="Zatvori"
             className="text-text-disabled hover:text-text-primary transition-colors disabled:opacity-40"
           >
-            <X className="w-6 h-6" aria-hidden="true" />
+            <X className="w-6 h-6 max-lg:w-5 max-lg:h-5" aria-hidden="true" />
           </button>
         </div>
 
-        <div className="p-8 space-y-5">
+        <div className="p-8 space-y-5 max-lg:p-4 max-lg:space-y-3">
           <div>
-            <label className="block text-base font-medium text-text-secondary mb-1.5">
+            <label className="block text-base font-medium text-text-secondary mb-1.5 max-lg:text-xs max-lg:mb-1">
               Broj savezne alke <span className="text-status-error">*</span>
             </label>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 max-lg:gap-1">
               <input
                 ref={ringCountryRef}
                 type="text"
@@ -204,9 +204,9 @@ export function PigeonModal({ isOpen, onClose, editingPigeon, onSaved }: PigeonM
                 onPaste={handlePaste}
                 placeholder="SRB"
                 aria-label="Prefiks države"
-                className={cn(FIELD_WRAP, "w-20")}
+                className={cn(FIELD_WRAP, "w-20 max-lg:w-12")}
               />
-              <span className="text-text-disabled select-none font-mono">-</span>
+              <span className="text-text-disabled select-none font-mono max-lg:text-xs">-</span>
               <input
                 ref={ringNumberRef}
                 type="text"
@@ -223,9 +223,9 @@ export function PigeonModal({ isOpen, onClose, editingPigeon, onSaved }: PigeonM
                 }}
                 placeholder="444"
                 aria-label="Broj kluba"
-                className={cn(FIELD_WRAP, "w-20")}
+                className={cn(FIELD_WRAP, "w-20 max-lg:w-12")}
               />
-              <span className="text-text-disabled select-none font-mono">-</span>
+              <span className="text-text-disabled select-none font-mono max-lg:text-xs">-</span>
               <input
                 ref={ringSegment3Ref}
                 type="text"
@@ -242,9 +242,9 @@ export function PigeonModal({ isOpen, onClose, editingPigeon, onSaved }: PigeonM
                 }}
                 placeholder="11"
                 aria-label="Treći segment"
-                className={cn(FIELD_WRAP, "w-14")}
+                className={cn(FIELD_WRAP, "w-14 max-lg:w-9")}
               />
-              <span className="text-text-disabled select-none font-mono">-</span>
+              <span className="text-text-disabled select-none font-mono max-lg:text-xs">-</span>
               <input
                 ref={ringSegment4Ref}
                 type="text"
@@ -261,9 +261,9 @@ export function PigeonModal({ isOpen, onClose, editingPigeon, onSaved }: PigeonM
                 }}
                 placeholder="22"
                 aria-label="Četvrti segment"
-                className={cn(FIELD_WRAP, "w-14")}
+                className={cn(FIELD_WRAP, "w-14 max-lg:w-9")}
               />
-              <span className="text-text-disabled select-none font-mono">-</span>
+              <span className="text-text-disabled select-none font-mono max-lg:text-xs">-</span>
               <input
                 ref={ringYearRef}
                 type="text"
@@ -279,17 +279,17 @@ export function PigeonModal({ isOpen, onClose, editingPigeon, onSaved }: PigeonM
                 }}
                 placeholder="25"
                 aria-label="Godina"
-                className={cn(FIELD_WRAP, "w-14")}
+                className={cn(FIELD_WRAP, "w-14 max-lg:w-9")}
               />
             </div>
-            <p className="text-sm text-text-tertiary mt-1.5">
+            <p className="text-sm text-text-tertiary mt-1.5 max-lg:text-xs max-lg:mt-1">
               Pun broj alke:{" "}
               <span className="font-mono font-semibold text-text-primary">{previewId}</span>
             </p>
           </div>
 
           <div>
-            <label htmlFor="modal-pigeon-color" className="block text-base font-medium text-text-secondary mb-1.5">
+            <label htmlFor="modal-pigeon-color" className="block text-base font-medium text-text-secondary mb-1.5 max-lg:text-xs max-lg:mb-1">
               Boja goluba <span className="text-status-error">*</span>
             </label>
             <input
@@ -300,12 +300,12 @@ export function PigeonModal({ isOpen, onClose, editingPigeon, onSaved }: PigeonM
               onChange={(e) => setColor(e.target.value)}
               placeholder="npr. Arap, Mavijan, Tekir..."
               maxLength={50}
-              className="w-full px-5 py-3 bg-bg-input border border-border rounded-md text-lg text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none"
+              className="w-full px-5 py-3 bg-bg-input border border-border rounded-md text-lg text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none max-lg:px-3 max-lg:py-2 max-lg:text-sm"
             />
           </div>
 
           <div>
-            <label htmlFor="modal-pigeon-name" className="block text-base font-medium text-text-secondary mb-1.5">
+            <label htmlFor="modal-pigeon-name" className="block text-base font-medium text-text-secondary mb-1.5 max-lg:text-xs max-lg:mb-1">
               Ime goluba
             </label>
             <input
@@ -315,26 +315,26 @@ export function PigeonModal({ isOpen, onClose, editingPigeon, onSaved }: PigeonM
               onChange={(e) => setName(e.target.value)}
               placeholder="Opciono"
               maxLength={50}
-              className="w-full px-5 py-3 bg-bg-input border border-border rounded-md text-lg text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none"
+              className="w-full px-5 py-3 bg-bg-input border border-border rounded-md text-lg text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none max-lg:px-3 max-lg:py-2 max-lg:text-sm"
             />
           </div>
 
           {error && (
             <div
               role="alert"
-              className="text-sm text-status-error bg-bg-error-light border border-status-error/30 rounded-md px-3 py-2"
+              className="text-sm text-status-error bg-bg-error-light border border-status-error/30 rounded-md px-3 py-2 max-lg:text-xs"
             >
               {error}
             </div>
           )}
         </div>
 
-        <div className="px-8 py-5 border-t border-border flex justify-end gap-3">
+        <div className="px-8 py-5 border-t border-border flex justify-end gap-3 max-lg:px-4 max-lg:py-3 max-lg:gap-2">
           <button
             type="button"
             onClick={onClose}
             disabled={submitting}
-            className="px-5 py-3 rounded-md text-base font-medium bg-bg-input border border-border text-text-secondary hover:bg-bg-hover transition-colors disabled:opacity-40"
+            className="px-5 py-3 rounded-md text-base font-medium bg-bg-input border border-border text-text-secondary hover:bg-bg-hover transition-colors disabled:opacity-40 max-lg:px-3 max-lg:py-2 max-lg:text-sm"
           >
             Otkaži
           </button>
@@ -342,7 +342,7 @@ export function PigeonModal({ isOpen, onClose, editingPigeon, onSaved }: PigeonM
             type="button"
             disabled={!isValid || submitting}
             onClick={handleSubmit}
-            className="btn-shine-redesign px-5 py-3 rounded-md text-base font-bold bg-accent text-text-on-accent hover:bg-accent-hover transition-colors disabled:bg-bg-hover disabled:text-text-disabled disabled:cursor-not-allowed inline-flex items-center gap-2"
+            className="btn-shine-redesign px-5 py-3 rounded-md text-base font-bold bg-accent text-text-on-accent hover:bg-accent-hover transition-colors disabled:bg-bg-hover disabled:text-text-disabled disabled:cursor-not-allowed inline-flex items-center gap-2 max-lg:px-3 max-lg:py-2 max-lg:text-sm"
           >
             {submitting && <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />}
             {editingPigeon ? "Sačuvaj izmene" : "Dodaj goluba"}

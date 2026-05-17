@@ -246,7 +246,7 @@ export function SettingsClient({
         role="tabpanel"
         id={`settings-panel-${activeTab}`}
         aria-labelledby={`settings-tab-${activeTab}`}
-        className="pb-4"
+        className="pb-4 max-lg:pb-[120px]"
       >
         {activeTab === "profil" && (
           <ProfileTab value={draftProfile} onChange={setDraftProfile} />
