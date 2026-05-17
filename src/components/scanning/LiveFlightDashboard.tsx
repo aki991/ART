@@ -20,7 +20,7 @@ export function LiveFlightDashboard() {
         <SimulationControls />
       </div>
 
-      <main className="order-2 lg:order-none lg:col-start-4 lg:col-span-7 lg:row-start-1 lg:row-span-4 2xl:h-full min-w-0 min-h-[300px] lg:min-h-[500px]">
+      <main className="order-2 lg:order-none lg:col-start-4 lg:col-span-7 lg:row-start-1 lg:row-span-4 2xl:h-full min-w-0 lg:min-h-[500px]">
         <AltitudeChart />
       </main>
 

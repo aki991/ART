@@ -103,7 +103,7 @@ export function LastRaceChart({ race }: LastRaceChartProps) {
   return (
     <div
       onClick={() => router.push(`/races/${race.id}`)}
-      className="card-redesign p-6 cursor-pointer hover:shadow-lg transition-shadow"
+      className="card-redesign p-3 lg:p-6 cursor-pointer hover:shadow-lg transition-shadow"
     >
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
@@ -119,19 +119,19 @@ export function LastRaceChart({ race }: LastRaceChartProps) {
           </div>
         </div>
 
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-text-primary">{race.name}</h2>
-          <div className="flex items-center gap-5 text-base text-text-secondary">
-            <div className="flex items-center gap-1.5">
-              <User className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
+        <div className="flex items-center justify-between max-lg:flex-col max-lg:items-start max-lg:gap-1.5">
+          <h2 className="text-2xl font-bold text-text-primary max-lg:text-base max-lg:truncate">{race.name}</h2>
+          <div className="flex items-center gap-5 text-base text-text-secondary max-lg:gap-2 max-lg:text-[11px] max-lg:shrink-0">
+            <div className="flex items-center gap-1.5 max-lg:gap-1">
+              <User className="w-4 h-4 text-text-tertiary max-lg:w-3 max-lg:h-3" aria-hidden="true" />
               {ownerName}
             </div>
-            <div className="flex items-center gap-1.5">
-              <Calendar className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
+            <div className="flex items-center gap-1.5 max-lg:gap-1">
+              <Calendar className="w-4 h-4 text-text-tertiary max-lg:w-3 max-lg:h-3" aria-hidden="true" />
               {formatDate(race.started_at)}
             </div>
-            <div className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
+            <div className="flex items-center gap-1.5 max-lg:gap-1">
+              <Clock className="w-4 h-4 text-text-tertiary max-lg:w-3 max-lg:h-3" aria-hidden="true" />
               {durationSeconds > 0 ? formatDuration(durationSeconds) : "—"}
             </div>
           </div>

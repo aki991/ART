@@ -13,7 +13,7 @@ export default function AuthApp() {
   const [lang, setLang] = useState<Lang>("sr");
 
   return (
-    <div className="auth-page minimal">
+    <div className="auth-page minimal" data-mode={mode}>
       <main className="auth-main">
         <section className="auth-left">
           <BrandingPanel />

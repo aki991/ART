@@ -174,9 +174,42 @@ body {
 
 .brand-center {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 18px;
+  gap: 12px;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.brand-title {
+  font-size: 14px;
+}
+
+.brand-slogan {
+  font-size: 10px;
+  margin-top: 4px;
+}
+
+@media (min-width: 1024px) {
+  .brand-center {
+    flex-direction: column;
+    gap: 18px;
+  }
+  .brand-text {
+    align-items: center;
+  }
+  .brand-title {
+    font-size: 1.875rem;
+    line-height: 1;
+  }
+  .brand-slogan {
+    font-size: 0.875rem;
+    margin-top: 6px;
+  }
 }
 
 .logo-wrap {
@@ -691,13 +724,60 @@ body {
 }
 
 /* responsive */
-@media (max-width: 900px) {
-  .auth-main { grid-template-columns: 1fr; }
-  .auth-left { padding: 40px 20px; min-height: 280px; }
-  .auth-right { padding: 30px 20px; }
-  .form-panel-outer { padding-bottom: 20px; }
+@media (max-width: 1023px) {
+  .auth-main { grid-template-columns: 1fr; min-height: 100vh; }
+  .auth-left {
+    padding: 6px 16px;
+    min-height: 10vh;
+    max-height: 10vh;
+    justify-content: flex-start;
+    border-bottom: 1px solid var(--border-default);
+  }
+  .dark .auth-left { border-bottom-color: rgba(255, 255, 255, 0.05); }
+  .auth-right {
+    padding: 14px 16px 30vh;
+    border-left: none;
+    justify-content: center;
+    min-height: 90vh;
+  }
+  .mform { gap: 14px; }
+  [data-mode="register"] .mform { gap: 11px; }
+  .branding-panel {
+    width: 100%;
+    align-items: flex-start;
+  }
+  .form-panel-outer {
+    flex: 0 1 auto;
+    padding-bottom: 0;
+    justify-content: flex-start;
+  }
+  .lang-bar {
+    position: absolute;
+    bottom: 24px;
+    left: 0;
+    right: 0;
+    padding: 6px 0;
+  }
 }
 @media (max-width: 480px) {
   .mfield-grid-2 { grid-template-columns: 1fr; }
-  .mform-title { font-size: 26px; }
+
+  /* Compact form for iPhone-class viewports — fit login & register without scroll */
+  .mform-title { font-size: 22px; margin-bottom: 2px; }
+  .mform-sub { font-size: 13px; margin-bottom: 14px; }
+  .mfield-wrap { height: 44px; border-radius: 7px; }
+  .mfield input, .mfield select { font-size: 14px; padding: 0 12px; }
+  .mfield-icon { width: 40px; }
+  .mbtn { height: 44px; margin-top: 4px; font-size: 14px; }
+  .mform-row { margin-top: 0; margin-bottom: 0; }
+  .mform-bottom { margin-top: 10px; font-size: 13px; }
+  .lang-flag { font-size: 16px; padding: 2px 4px; }
+
+  /* Register has 6 fields — tighter to fit without scroll on 360x748 */
+  [data-mode="register"] .mform { gap: 9px; }
+  [data-mode="register"] .mfield-wrap { height: 38px; }
+  [data-mode="register"] .mform-title { font-size: 20px; }
+  [data-mode="register"] .mform-sub { font-size: 12px; margin-bottom: 8px; }
+  [data-mode="register"] .mbtn { height: 42px; margin-top: 2px; }
+  [data-mode="register"] .mform-bottom { margin-top: 6px; font-size: 12px; }
 }

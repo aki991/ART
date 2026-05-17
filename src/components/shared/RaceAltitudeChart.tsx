@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useChartTheme } from "@/lib/hooks/useChartTheme";
+import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 
 interface ChartPigeon {
   id: string;
@@ -108,21 +109,25 @@ export function RaceAltitudeChart({
   height = 400,
 }: RaceAltitudeChartProps) {
   const chartTheme = useChartTheme();
+  const isMobile = useMediaQuery("(max-width: 1023px)");
 
   const tickStyle = {
     fill: chartTheme.textColor,
-    fontSize: 14,
+    fontSize: isMobile ? 10 : 14,
     fontWeight: 600,
     fontFamily: "var(--font-geist-mono), 'SF Mono', Menlo, monospace",
   };
   const axisLine = { stroke: chartTheme.gridStroke };
 
+  const plotHeight = isMobile ? 240 : height;
+
   return (
-    <div style={{ height }}>
+    <div>
+      <div style={{ height: plotHeight }}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={chartData}
-          margin={{ top: 4, right: 80, bottom: 40, left: 8 }}
+          margin={{ top: 4, right: isMobile ? 8 : 80, bottom: isMobile ? 8 : 40, left: isMobile ? 0 : 8 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.gridStroke} />
           <XAxis
@@ -142,7 +147,7 @@ export function RaceAltitudeChart({
             tick={tickStyle}
             axisLine={axisLine}
             tickLine={axisLine}
-            width={52}
+            width={isMobile ? 36 : 52}
           />
           <Tooltip
             content={
@@ -159,13 +164,17 @@ export function RaceAltitudeChart({
             stroke={chartTheme.goalLineColor}
             strokeWidth={2}
             strokeDasharray="6 4"
-            label={{
-              value: "Cilj: 800m",
-              position: "right",
-              fill: chartTheme.goalLineColor,
-              fontSize: 13,
-              fontWeight: 600,
-            }}
+            label={
+              isMobile
+                ? undefined
+                : {
+                    value: "Cilj: 800m",
+                    position: "right",
+                    fill: chartTheme.goalLineColor,
+                    fontSize: 13,
+                    fontWeight: 600,
+                  }
+            }
           />
           {pigeons.map((pigeon) => (
             <Line
@@ -180,19 +189,43 @@ export function RaceAltitudeChart({
               isAnimationActive={false}
             />
           ))}
-          <Legend
-            layout="horizontal"
-            verticalAlign="bottom"
-            align="center"
-            wrapperStyle={{
-              fontSize: 14,
-              fontWeight: 500,
-              color: chartTheme.textColor,
-              paddingTop: 16,
-            }}
-          />
+          {!isMobile && (
+            <Legend
+              layout="horizontal"
+              verticalAlign="bottom"
+              align="center"
+              wrapperStyle={{
+                fontSize: 14,
+                fontWeight: 500,
+                color: chartTheme.textColor,
+                paddingTop: 16,
+              }}
+            />
+          )}
         </LineChart>
       </ResponsiveContainer>
+      </div>
+      {isMobile && (
+        <div
+          className="flex flex-wrap justify-center gap-x-3 gap-y-1.5 pt-2"
+          style={{ fontSize: 11, fontWeight: 500, color: chartTheme.textColor }}
+        >
+          {pigeons.map((pigeon) => (
+            <div key={pigeon.id} className="flex items-center gap-1.5">
+              <span
+                style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: "50%",
+                  backgroundColor: pigeon.color,
+                  display: "inline-block",
+                }}
+              />
+              <span>{pigeon.name}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

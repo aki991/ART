@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E '\\\\.\\(ts|tsx|js|jsx|css|scss|html|json|md|prisma|sql\\)$')",
+      "Bash(xargs wc -l)",
+      "Bash(grep -E '\\\\.\\(ts|tsx\\)$')",
+      "Bash(grep -E '\\\\.\\(css|scss\\)$')",
+      "Bash(grep -E '\\\\.sql$')",
+      "Bash(grep -E '\\\\.prisma$')",
+      "Bash(grep -E '\\\\.\\(js|jsx\\)$')",
+      "Bash(grep -E '\\\\.json$')",
+      "Bash(grep -E '\\\\.md$')",
+      "Bash(npm run *)"
+    ]
+  }
+}

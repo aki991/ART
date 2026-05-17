@@ -55,7 +55,7 @@ export function AltitudeChart() {
   const hasData = chartData.length > 0;
 
   return (
-    <div className="bg-bg-surface border border-accent/15 rounded-xl overflow-hidden p-4 xl:p-5 2xl:p-6 h-full min-h-[500px] flex flex-col">
+    <div className="bg-bg-surface border border-accent/15 rounded-xl overflow-hidden p-4 xl:p-5 2xl:p-6 flex flex-col lg:h-full lg:min-h-[500px]">
       <div className="flex-shrink-0 mb-4 xl:mb-5 2xl:mb-6">
         <h2 className="text-2xl xl:text-2xl 2xl:text-3xl font-bold font-rajdhani text-text-primary">
           Visina kroz vreme
@@ -64,10 +64,10 @@ export function AltitudeChart() {
       </div>
 
       {!raceActive ? (
-        <div className="flex-1 relative flex items-start justify-center pt-6">
+        <div className="relative flex items-start justify-center pt-2 lg:pt-6 h-[200px] lg:h-auto lg:flex-1">
           <div className="absolute inset-0 bg-[url('/Grafikon.png')] bg-no-repeat bg-[center_20%] bg-contain opacity-60" />
-          <div className="relative z-10 bg-black/60 backdrop-blur-sm rounded-lg px-6 py-4 border border-border">
-            <p className="text-text-primary text-base font-medium text-center">
+          <div className="relative z-10 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-3 lg:px-6 lg:py-4 border border-border">
+            <p className="text-text-primary text-sm lg:text-base font-medium text-center">
               Pritisni{" "}
               <span className="text-accent font-bold">Start trke</span>{" "}
               da pokreneš simulaciju
@@ -76,7 +76,7 @@ export function AltitudeChart() {
         </div>
       ) : !hasData ? (
         <div
-          className="flex-1 flex items-center justify-center"
+          className="flex items-center justify-center h-[120px] lg:h-auto lg:flex-1"
           aria-label="Čekamo prve podatke sa bazne stanice"
         >
           <p className="text-text-disabled text-base font-rajdhani animate-pulse">
@@ -84,7 +84,7 @@ export function AltitudeChart() {
           </p>
         </div>
       ) : (
-        <div className="relative flex-1 min-h-[200px]">
+        <div className="relative lg:flex-1 lg:min-h-[200px]">
           <RaceAltitudeChart
             chartData={chartData}
             pigeons={activeRacePigeons}
