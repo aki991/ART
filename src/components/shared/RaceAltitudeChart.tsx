@@ -122,12 +122,12 @@ export function RaceAltitudeChart({
   const plotHeight = isMobile ? 240 : height;
 
   return (
-    <div>
+    <div style={isMobile ? undefined : { height }}>
       <div style={{ height: plotHeight }}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={chartData}
-          margin={{ top: 4, right: isMobile ? 8 : 80, bottom: isMobile ? 8 : 40, left: isMobile ? 0 : 8 }}
+          margin={{ top: 16, right: isMobile ? 8 : 80, bottom: isMobile ? 8 : 24, left: isMobile ? 0 : 8 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.gridStroke} />
           <XAxis
@@ -148,6 +148,7 @@ export function RaceAltitudeChart({
             axisLine={axisLine}
             tickLine={axisLine}
             width={isMobile ? 36 : 52}
+            interval={0}
           />
           <Tooltip
             content={
@@ -168,7 +169,7 @@ export function RaceAltitudeChart({
               isMobile
                 ? undefined
                 : {
-                    value: "Cilj: 800m",
+                    value: "VIS",
                     position: "right",
                     fill: chartTheme.goalLineColor,
                     fontSize: 13,
@@ -198,7 +199,7 @@ export function RaceAltitudeChart({
                 fontSize: 14,
                 fontWeight: 500,
                 color: chartTheme.textColor,
-                paddingTop: 16,
+                paddingTop: 2,
               }}
             />
           )}

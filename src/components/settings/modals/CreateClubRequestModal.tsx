@@ -59,7 +59,7 @@ export function CreateClubRequestModal({
       }
       onClose();
       toast.success("Zahtev poslat", {
-        description: `Vaš zahtev za kreiranje kluba "${clubName}" čeka odobrenje Super Admina.`,
+        description: `Vaš zahtev za kreiranje društva "${clubName}" čeka odobrenje Super Admina.`,
       });
       router.refresh();
     });
@@ -69,7 +69,7 @@ export function CreateClubRequestModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Zahtev za kreiranje kluba"
+      title="Zahtev za kreiranje društva"
       footer={
         <>
           <Button variant="secondary" onClick={onClose} disabled={pending}>
@@ -89,13 +89,13 @@ export function CreateClubRequestModal({
       <div className="space-y-5">
         <p className="text-sm text-text-tertiary">
           Vaš zahtev će biti prosleđen Super Adminu na odobrenje. Po odobrenju
-          postajete administrator novog kluba.
+          postajete administrator novog društva.
         </p>
         <div className="flex items-center gap-4">
           <button
             type="button"
             onClick={() => fileRef.current?.click()}
-            aria-label="Dodaj logo kluba"
+            aria-label="Dodaj logo društva"
             className="rounded-full focus:outline-none focus:ring-2 focus:ring-accent/40 group relative"
           >
             <Avatar src={logo} name={name || "K"} size="lg" />
@@ -136,7 +136,7 @@ export function CreateClubRequestModal({
         </div>
 
         <Input
-          label="Naziv kluba"
+          label="Naziv društva"
           required
           value={name}
           onChange={(e) => setName(e.target.value)}

@@ -15,7 +15,7 @@ export const CHANGELOG: ChangelogEntry[] = [
       "Programiranje prstenova sa sinhronizovanim statusima detektovanih i programiranih prstenova",
       "Upravljanje listom golubova sa pretragom po broju",
       "Pregled rezultata svih trka sa detaljnim izveštajima",
-      "Stranica Postavke sa upravljanjem profilom, klubom i golubarnikom",
+      "Stranica Postavke sa upravljanjem profilom, društvom i golubarnikom",
     ],
   },
 ];

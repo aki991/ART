@@ -39,7 +39,7 @@ export const translations: Record<Lang, Record<TranslationKey, string>> = {
     registerTitle: "Registracija",
     loginSub: "Pristup vašem nalogu",
     registerSub: "Otvorite novi nalog",
-    klub: "Klub",
+    klub: "Društvo",
     ime: "Ime",
     prezime: "Prezime",
     username: "Korisničko ime",

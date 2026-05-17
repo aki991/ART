@@ -26,7 +26,7 @@ export function ProgrammerSlot() {
 
       {selectedRingId ? (
         <div className="bg-accent-light border border-accent/30 rounded-lg p-4 text-center">
-          <div className="text-3xl font-mono font-bold text-accent mb-1">
+          <div className="text-3xl font-bold text-accent mb-1">
             {selectedRingId}
           </div>
           <div className="text-base text-text-tertiary">Slot {selectedSlotIndex}</div>

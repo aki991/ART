@@ -103,7 +103,7 @@ export function LastRaceChart({ race }: LastRaceChartProps) {
   return (
     <div
       onClick={() => router.push(`/races/${race.id}`)}
-      className="card-redesign p-3 lg:p-6 cursor-pointer hover:shadow-lg transition-shadow"
+      className="card-redesign p-3 lg:px-6 lg:pt-6 lg:pb-2 cursor-pointer hover:shadow-lg transition-shadow"
     >
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
@@ -149,7 +149,7 @@ export function LastRaceChart({ race }: LastRaceChartProps) {
           xMaxMinutes={xMaxMinutes}
           xTicks={xTicks}
           yAxisConfig={yAxisConfig}
-          height={400}
+          height={450}
         />
       )}
     </div>

@@ -155,7 +155,7 @@ export async function sendJoinRequest(
     .eq("user_id", user.id)
     .maybeSingle();
   if (existingMembership) {
-    return { success: false, error: "Već ste član nekog kluba." };
+    return { success: false, error: "Već ste član nekog društva." };
   }
 
   const { data: existingPending } = await supabase
@@ -239,7 +239,7 @@ export async function approveJoinRequest(
   }
 
   const isAdmin = await assertClubAdmin(user.id, req.club_id);
-  if (!isAdmin) return { success: false, error: "Niste admin ovog kluba." };
+  if (!isAdmin) return { success: false, error: "Niste admin ovog društva." };
 
   const { data: alreadyMember } = await svc
     .from("club_members")
@@ -256,7 +256,7 @@ export async function approveJoinRequest(
         rejection_reason: null,
       })
       .eq("id", requestId);
-    return { success: false, error: "Korisnik je već član nekog kluba." };
+    return { success: false, error: "Korisnik je već član nekog društva." };
   }
 
   const { error: insertErr } = await svc.from("club_members").insert({
@@ -296,7 +296,7 @@ export async function rejectJoinRequest(
     return { success: false, error: "Zahtev nije aktivan." };
   }
   const isAdmin = await assertClubAdmin(user.id, req.club_id);
-  if (!isAdmin) return { success: false, error: "Niste admin ovog kluba." };
+  if (!isAdmin) return { success: false, error: "Niste admin ovog društva." };
 
   const { error } = await svc
     .from("club_join_requests")
@@ -332,7 +332,7 @@ export async function leaveClub(): Promise<ActionResponse> {
     .select("id, club_id, role")
     .eq("user_id", user.id)
     .maybeSingle();
-  if (!membership) return { success: false, error: "Niste član kluba." };
+  if (!membership) return { success: false, error: "Niste član društva." };
 
   if (membership.role === "admin") {
     const adminCount = await countAdminsInClub(membership.club_id);
@@ -340,7 +340,7 @@ export async function leaveClub(): Promise<ActionResponse> {
       return {
         success: false,
         error:
-          "Vi ste jedini admin ovog kluba — promovišite drugog člana pre nego što napustite klub.",
+          "Vi ste jedini admin ovog društva — promovišite drugog člana pre nego što napustite društvo.",
       };
     }
   }
@@ -369,10 +369,10 @@ export async function removeClubMember(
   if (!target) return { success: false, error: "Član nije pronađen." };
 
   const isAdmin = await assertClubAdmin(user.id, target.club_id);
-  if (!isAdmin) return { success: false, error: "Niste admin ovog kluba." };
+  if (!isAdmin) return { success: false, error: "Niste admin ovog društva." };
 
   if (target.user_id === user.id) {
-    return { success: false, error: "Ne možete da uklonite samog sebe — koristite 'Napusti klub'." };
+    return { success: false, error: "Ne možete da uklonite samog sebe — koristite 'Napusti društvo'." };
   }
 
   if (target.role === "admin") {
@@ -403,7 +403,7 @@ export async function promoteToAdmin(
   if (!target) return { success: false, error: "Član nije pronađen." };
 
   const isAdmin = await assertClubAdmin(user.id, target.club_id);
-  if (!isAdmin) return { success: false, error: "Niste admin ovog kluba." };
+  if (!isAdmin) return { success: false, error: "Niste admin ovog društva." };
 
   if (target.role === "admin") {
     return { success: false, error: "Član je već admin." };
@@ -433,7 +433,7 @@ export async function demoteFromAdmin(
   if (!target) return { success: false, error: "Član nije pronađen." };
 
   const isAdmin = await assertClubAdmin(user.id, target.club_id);
-  if (!isAdmin) return { success: false, error: "Niste admin ovog kluba." };
+  if (!isAdmin) return { success: false, error: "Niste admin ovog društva." };
 
   if (target.role !== "admin") {
     return { success: false, error: "Član nije admin." };
@@ -444,7 +444,7 @@ export async function demoteFromAdmin(
     return {
       success: false,
       error:
-        "Ovo je jedini admin kluba — promovišite drugog člana pre nego što ovome skinete ulogu.",
+        "Ovo je jedini admin društva — promovišite drugog člana pre nego što ovome skinete ulogu.",
     };
   }
 
@@ -467,7 +467,7 @@ export async function updateClubInfo(
   if (!user) return { success: false, error: "Niste prijavljeni." };
 
   const isAdmin = await assertClubAdmin(user.id, clubId);
-  if (!isAdmin) return { success: false, error: "Niste admin ovog kluba." };
+  if (!isAdmin) return { success: false, error: "Niste admin ovog društva." };
 
   const update: Record<string, unknown> = {};
   if (patch.name !== undefined) update.name = patch.name.trim();
@@ -490,7 +490,7 @@ export async function uploadClubLogo(
   if (!user) return { success: false, error: "Niste prijavljeni." };
 
   const isAdmin = await assertClubAdmin(user.id, clubId);
-  if (!isAdmin) return { success: false, error: "Niste admin ovog kluba." };
+  if (!isAdmin) return { success: false, error: "Niste admin ovog društva." };
 
   const parsed = parseDataUrl(dataUrl);
   if (!parsed) return { success: false, error: "Neispravan format slike." };
@@ -549,7 +549,7 @@ export async function requestClubCreation(
     .eq("status", "pending")
     .maybeSingle();
   if (existing) {
-    return { success: false, error: "Već imate aktivan zahtev za kreiranje kluba." };
+    return { success: false, error: "Već imate aktivan zahtev za kreiranje društva." };
   }
 
   let logoUrl: string | null = null;
@@ -659,7 +659,7 @@ export async function approveClubCreation(
     return {
       success: false,
       error:
-        "Korisnik je već član kluba — ne može osnovati novi dok ne napusti trenutni.",
+        "Korisnik je već član društva — ne može osnovati novo dok ne napusti trenutno.",
     };
   }
 
@@ -674,7 +674,7 @@ export async function approveClubCreation(
     .select("id")
     .single();
   if (insertErr || !newClub) {
-    return { success: false, error: insertErr?.message ?? "Greška pri kreiranju kluba." };
+    return { success: false, error: insertErr?.message ?? "Greška pri kreiranju društva." };
   }
 
   const { error: memberErr } = await svc.from("club_members").insert({

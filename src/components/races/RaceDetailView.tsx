@@ -17,7 +17,7 @@ interface RaceDetailViewProps {
 
 const VISIBILITY_META = {
   private: { Icon: Lock, label: "Privatno" },
-  club: { Icon: Users, label: "Klub" },
+  club: { Icon: Users, label: "Društvo" },
   public: { Icon: Globe, label: "Javno" },
 } as const;
 
@@ -100,14 +100,13 @@ function RaceHeader({ race }: { race: RaceWithDetails }) {
       </div>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 xl:gap-3.5 2xl:gap-4">
         <InfoItem icon={<Trophy className="w-4 h-4" />} label="Golubar" value={ownerName} />
-        <InfoItem icon={<MapPin className="w-4 h-4" />} label="Klub" value={clubLabel} />
+        <InfoItem icon={<MapPin className="w-4 h-4" />} label="Društvo" value={clubLabel} />
         <InfoItem
           icon={<Clock className="w-4 h-4" />}
           label="Trajanje"
           value={durationSec > 0 ? formatDuration(durationSec) : "—"}
-          mono
         />
-        <InfoItem icon={<Calendar className="w-4 h-4" />} label="Datum" value={dateStr} mono />
+        <InfoItem icon={<Calendar className="w-4 h-4" />} label="Datum" value={dateStr} />
       </div>
       {race.status !== "completed" && (
         <p className="mt-4 text-sm text-status-warning">
@@ -120,14 +119,14 @@ function RaceHeader({ race }: { race: RaceWithDetails }) {
   );
 }
 
-function InfoItem({ icon, label, value, mono }: { icon: ReactNode; label: string; value: string; mono?: boolean }) {
+function InfoItem({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
   return (
     <div>
       <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-text-tertiary font-medium mb-1">
         {icon}
         {label}
       </div>
-      <div className={`text-text-primary font-medium${mono ? " font-mono" : ""}`}>{value}</div>
+      <div className="text-text-primary font-medium">{value}</div>
     </div>
   );
 }
@@ -223,6 +222,33 @@ function RaceChartCard({
   );
 }
 
+const VIS_THRESHOLD_M = 800;
+const READING_INTERVAL_S = 5;
+
+function computeFlightStats(
+  readings: { altitude: number; elapsed_seconds: number }[]
+) {
+  if (readings.length === 0) {
+    return { totalSec: 0, aboveSec: 0, pctAbove: 0 };
+  }
+  const totalSec = readings.length * READING_INTERVAL_S;
+  const aboveSec =
+    readings.filter((r) => r.altitude >= VIS_THRESHOLD_M).length *
+    READING_INTERVAL_S;
+  const pctAbove = totalSec > 0 ? (aboveSec / totalSec) * 100 : 0;
+  return { totalSec, aboveSec, pctAbove };
+}
+
+function formatTimeShort(totalSeconds: number): string {
+  if (totalSeconds <= 0) return "—";
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  const s = totalSeconds % 60;
+  if (h > 0) return `${h}h ${m}m`;
+  if (m > 0) return `${m}m ${s}s`;
+  return `${s}s`;
+}
+
 function RaceStatisticsTable({
   pigeonsWithColor,
   goalAltitude,
@@ -234,22 +260,37 @@ function RaceStatisticsTable({
   onPigeonClick: (pigeonId: string) => void;
   loadingPigeonId: string | null;
 }) {
+  void goalAltitude;
+  const aggregateTime = useMemo(() => {
+    const totals = pigeonsWithColor.map(
+      (p) => computeFlightStats(p.readings).totalSec
+    );
+    const sumSec = totals.reduce((a, b) => a + b, 0);
+    const avgSec = totals.length > 0 ? Math.round(sumSec / totals.length) : 0;
+    return { sumSec, avgSec };
+  }, [pigeonsWithColor]);
+
   return (
     <div className="bg-bg-surface border border-accent/15 rounded-xl overflow-hidden">
       <div className="p-4 xl:p-5 2xl:p-6 pb-3 xl:pb-3.5 2xl:pb-4">
         <h2 className="text-xl xl:text-xl 2xl:text-2xl font-bold text-text-primary font-rajdhani">
           Izveštaj po golubu
         </h2>
-        <p className="text-sm xl:text-sm 2xl:text-base text-text-tertiary">Cilj: {goalAltitude}m</p>
+        <p className="text-sm xl:text-sm 2xl:text-base text-text-tertiary">
+          Let je validan ako je golub više od 50% trajanja trke proveo iznad {VIS_THRESHOLD_M}m.
+        </p>
       </div>
+      <div className="overflow-x-auto">
       <table className="w-full">
         <thead className="table-header-gradient text-xs uppercase text-text-tertiary font-medium">
           <tr>
             <th className="text-left py-3 px-6">Golub</th>
-            <th className="text-left py-3 px-4">Boja</th>
-            <th className="text-left py-3 px-4">Prosečna visina</th>
+            <th className="text-left py-3 pl-0 pr-4">Boja</th>
+            <th className="text-left py-3 px-4">Ukupno vreme</th>
+            <th className="text-left py-3 px-4">Vreme iznad {VIS_THRESHOLD_M}m</th>
             <th className="text-left py-3 px-4">Max visina</th>
-            <th className="text-left py-3 px-4">Prešao cilj</th>
+            <th className="text-left py-3 px-4">Postigao VIS</th>
+            <th className="text-left py-3 px-4">Validan let</th>
           </tr>
         </thead>
         <tbody>
@@ -257,6 +298,9 @@ function RaceStatisticsTable({
             const clickable =
               rp.pigeon_id !== null && rp.pigeon?.is_archived === false;
             const loading = loadingPigeonId === rp.pigeon_id;
+            const stats = computeFlightStats(rp.readings);
+            const reachedVis = (rp.max_altitude ?? 0) >= VIS_THRESHOLD_M;
+            const validFlight = stats.pctAbove > 50;
             return (
             <tr key={rp.id} className="border-t border-border">
               <td className="py-4 px-6">
@@ -270,26 +314,51 @@ function RaceStatisticsTable({
                       type="button"
                       onClick={() => onPigeonClick(rp.pigeon_id!)}
                       disabled={loading}
-                      className="text-text-primary font-mono font-medium hover:text-accent transition-colors disabled:opacity-60 whitespace-nowrap"
+                      className="text-text-primary font-medium hover:text-accent transition-colors disabled:opacity-60 whitespace-nowrap"
                     >
                       {rp.pigeon_full_ring_number}
                     </button>
                   ) : (
-                    <span className="text-text-primary font-mono font-medium cursor-default whitespace-nowrap">
+                    <span className="text-text-primary font-medium cursor-default whitespace-nowrap">
                       {rp.pigeon_full_ring_number}
                     </span>
                   )}
                 </div>
               </td>
-              <td className="py-4 px-4 text-text-secondary">{rp.pigeon_color}</td>
-              <td className="py-4 px-4 text-text-secondary font-mono">
-                {rp.avg_altitude != null ? `${rp.avg_altitude}m` : "—"}
+              <td className="py-4 pl-0 pr-4 text-text-secondary whitespace-nowrap">{rp.pigeon_color}</td>
+              <td className="py-4 px-4 text-text-secondary whitespace-nowrap">
+                {formatTimeShort(stats.totalSec)}
               </td>
-              <td className="py-4 px-4 text-accent font-mono font-semibold">
+              <td className="py-4 px-4 text-text-secondary whitespace-nowrap">
+                {stats.totalSec > 0 ? (
+                  <>
+                    {formatTimeShort(stats.aboveSec)}
+                    <span className="text-text-tertiary ml-1">
+                      ({stats.pctAbove.toFixed(0)}%)
+                    </span>
+                  </>
+                ) : (
+                  "—"
+                )}
+              </td>
+              <td className="py-4 px-4 text-accent font-semibold whitespace-nowrap">
                 {rp.max_altitude != null ? `${rp.max_altitude}m` : "—"}
               </td>
               <td className="py-4 px-4">
-                {rp.reached_goal ? (
+                {reachedVis ? (
+                  <div className="flex items-center gap-2 text-status-success">
+                    <Check className="w-5 h-5" aria-hidden="true" />
+                    <span className="text-sm font-medium">Da</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 text-status-error">
+                    <X className="w-5 h-5" aria-hidden="true" />
+                    <span className="text-sm font-medium">Ne</span>
+                  </div>
+                )}
+              </td>
+              <td className="py-4 px-4">
+                {validFlight ? (
                   <div className="flex items-center gap-2 text-status-success">
                     <Check className="w-5 h-5" aria-hidden="true" />
                     <span className="text-sm font-medium">Da</span>
@@ -305,7 +374,29 @@ function RaceStatisticsTable({
             );
           })}
         </tbody>
+        {pigeonsWithColor.length > 0 && (
+          <tfoot>
+            <tr className="border-t-4 border-border-strong bg-bg-hover/40">
+              <td colSpan={2} className="py-3 px-6 whitespace-nowrap align-top text-text-primary font-semibold">
+                <div>
+                  <span className="text-accent mr-2" aria-hidden="true">Σ</span>
+                  Zbirno
+                </div>
+                <div className="mt-1">
+                  <span className="text-accent mr-2" aria-hidden="true">ø</span>
+                  Prosečno
+                </div>
+              </td>
+              <td className="py-3 px-4 whitespace-nowrap align-top text-text-primary font-semibold">
+                <div>{formatTimeShort(aggregateTime.sumSec)}</div>
+                <div className="mt-1">{formatTimeShort(aggregateTime.avgSec)}</div>
+              </td>
+              <td colSpan={4}></td>
+            </tr>
+          </tfoot>
+        )}
       </table>
+      </div>
     </div>
   );
 }

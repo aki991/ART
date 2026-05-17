@@ -42,7 +42,7 @@ export function StatCard({ label, value, icon: Icon, accentColor, trend }: StatC
           <Icon size={20} aria-hidden="true" />
         </div>
         <p className={cn(
-          "text-xl xl:text-xl 2xl:text-2xl font-bold font-mono whitespace-nowrap flex-shrink-0",
+          "text-xl xl:text-xl 2xl:text-2xl font-bold whitespace-nowrap flex-shrink-0",
           accentColor === "cyan" ? "text-gradient-cyan" : "text-text-primary"
         )}>
           {displayValue}

@@ -112,7 +112,7 @@ export function ClubAdminSections({
         return;
       }
       setLogoChanged(false);
-      toast.success("Podaci o klubu sačuvani");
+      toast.success("Podaci o društvu sačuvani");
       router.refresh();
     });
   }
@@ -124,7 +124,7 @@ export function ClubAdminSections({
         toast.error(result.error);
         return;
       }
-      toast.success(`${fullName} je sada član kluba`);
+      toast.success(`${fullName} je sada član društva`);
       router.refresh();
     });
   }
@@ -159,9 +159,9 @@ export function ClubAdminSections({
       }
       const msg =
         type === "remove"
-          ? `${name} je uklonjen iz kluba`
+          ? `${name} je uklonjen iz društva`
           : type === "promote"
-            ? `${name} je sada admin kluba`
+            ? `${name} je sada admin društva`
             : `${name} više nije admin`;
       toast.success(msg);
       setPendingAction(null);
@@ -175,7 +175,7 @@ export function ClubAdminSections({
       <div className="card-redesign p-6 space-y-5 max-w-2xl">
         <div className="flex items-center justify-between gap-3">
           <h2 className="text-lg font-semibold text-text-primary font-rajdhani">
-            Podaci o klubu
+            Podaci o društvu
           </h2>
           <Button
             variant="primary"
@@ -192,7 +192,7 @@ export function ClubAdminSections({
           <button
             type="button"
             onClick={() => fileRef.current?.click()}
-            aria-label="Promeni logo kluba"
+            aria-label="Promeni logo društva"
             className="rounded-full focus:outline-none focus:ring-2 focus:ring-accent/40 group relative"
           >
             <Avatar src={logo} name={name || "K"} size="lg" />
@@ -229,7 +229,7 @@ export function ClubAdminSections({
         </div>
 
         <Input
-          label="Naziv kluba"
+          label="Naziv društva"
           required
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -300,7 +300,7 @@ export function ClubAdminSections({
       <div className="card-redesign">
         <div className="px-6 py-4 border-b border-border flex items-center gap-2">
           <h2 className="text-lg font-semibold text-text-primary font-rajdhani">
-            Članovi kluba
+            Članovi društva
           </h2>
           <span className="bg-bg-hover text-text-tertiary rounded-full px-2 py-0.5 text-sm">
             {members.length}
@@ -348,7 +348,7 @@ export function ClubAdminSections({
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-3 font-mono text-sm text-text-tertiary">
+                    <td className="px-6 py-3 text-sm text-text-tertiary">
                       @{m.profile.username}
                     </td>
                     <td className="px-6 py-3 text-text-tertiary">
@@ -435,11 +435,11 @@ export function ClubAdminSections({
       {/* d) Leave club */}
       <div className="rounded-xl border border-status-error bg-bg-error-light p-6 flex items-center justify-between gap-4 max-lg:flex-col max-lg:items-stretch max-lg:gap-3 max-lg:p-4">
         <div>
-          <h3 className="text-base font-semibold text-status-error">Napusti klub</h3>
+          <h3 className="text-base font-semibold text-status-error">Napusti društvo</h3>
           <p className="text-sm text-text-tertiary mt-0.5 max-lg:text-xs">
             {blockLeave
-              ? "Prvo promovišite drugog člana u admina pre nego što napustite klub."
-              : "Vaše trke i golubovi ostaju, ali nećete više pripadati klubu."}
+              ? "Prvo promovišite drugog člana u admina pre nego što napustite društvo."
+              : "Vaše trke i golubovi ostaju, ali nećete više pripadati društvu."}
           </p>
         </div>
         <Button
@@ -453,7 +453,7 @@ export function ClubAdminSections({
           }
           className="flex-shrink-0 max-lg:w-full max-lg:!py-2 max-lg:!text-sm"
         >
-          Napusti klub
+          Napusti društvo
         </Button>
       </div>
 
@@ -476,7 +476,7 @@ export function ClubAdminSections({
                 {pendingAction.member.profile.first_name}{" "}
                 {pendingAction.member.profile.last_name}
               </span>{" "}
-              u administratora kluba?
+              u administratora društva?
             </>
           ) : pendingAction?.type === "demote" ? (
             <>
@@ -494,7 +494,7 @@ export function ClubAdminSections({
                 {pendingAction.member.profile.first_name}{" "}
                 {pendingAction.member.profile.last_name}
               </span>{" "}
-              iz kluba?
+              iz društva?
             </>
           ) : (
             ""
@@ -505,7 +505,7 @@ export function ClubAdminSections({
             ? "Promoviši"
             : pendingAction?.type === "demote"
               ? "Skini ulogu"
-              : "Ukloni iz kluba"
+              : "Ukloni iz društva"
         }
         variant={pendingAction?.type === "remove" ? "danger" : "default"}
         loading={actionPending}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Play, Square, Unplug, Lock, Users, Globe, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -19,6 +19,20 @@ import {
 } from "@/lib/utils/local-race-end-flag";
 import type { RaceVisibility } from "@/lib/types/race";
 
+const MIN_PIGEONS_FOR_COMPETITION = 5;
+const COMPETITION_TYPE_STORAGE_KEY = "art-race-competition-type";
+
+const COMPETITION_TYPES: Array<{
+  value: string;
+  label: string;
+  requiresMinimum: boolean;
+}> = [
+  { value: "drustveno_seniori", label: "Društveno seniori", requiresMinimum: true },
+  { value: "kup_drustva", label: "Kup društva", requiresMinimum: true },
+  { value: "drustveno_juniori", label: "Društveno juniori", requiresMinimum: true },
+  { value: "trening", label: "Trening", requiresMinimum: false },
+];
+
 const VISIBILITY_OPTIONS: Array<{
   value: RaceVisibility;
   label: string;
@@ -33,9 +47,9 @@ const VISIBILITY_OPTIONS: Array<{
   },
   {
     value: "club",
-    label: "Klub",
+    label: "Društvo",
     Icon: Users,
-    description: "Članovi vašeg kluba mogu da vide rezultate.",
+    description: "Članovi vašeg društva mogu da vide rezultate.",
   },
   {
     value: "public",
@@ -48,7 +62,6 @@ const VISIBILITY_OPTIONS: Array<{
 export function SimulationControls() {
   const router = useRouter();
   const raceActive = useConnectionStore((s) => s.raceActive);
-  const raceName = useConnectionStore((s) => s.raceName);
   const raceVisibility = useConnectionStore((s) => s.raceVisibility);
   const raceId = useConnectionStore((s) => s.raceId);
   const setRaceName = useConnectionStore((s) => s.setRaceName);
@@ -65,6 +78,28 @@ export function SimulationControls() {
   const [hasClub, setHasClub] = useState<boolean | null>(null);
   const [starting, setStarting] = useState(false);
   const [ending, setEnding] = useState(false);
+  const [competitionType, setCompetitionTypeState] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem(COMPETITION_TYPE_STORAGE_KEY);
+      if (stored && COMPETITION_TYPES.some((t) => t.value === stored)) {
+        setCompetitionTypeState(stored);
+      }
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const setCompetitionType = (val: string | null) => {
+    setCompetitionTypeState(val);
+    try {
+      if (val) window.localStorage.setItem(COMPETITION_TYPE_STORAGE_KEY, val);
+      else window.localStorage.removeItem(COMPETITION_TYPE_STORAGE_KEY);
+    } catch {
+      /* ignore */
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -78,12 +113,34 @@ export function SimulationControls() {
     };
   }, []);
 
-  const hasPigeons = sessionPrograms.length > 0;
-  const hasName = raceName.trim().length > 0;
-  const canStart = hasPigeons && hasName && !starting;
+  const visibleVisibilityOptions = useMemo(
+    () =>
+      VISIBILITY_OPTIONS.filter(
+        (opt) => !(opt.value === "club" && hasClub === false)
+      ),
+    [hasClub]
+  );
+
+  useEffect(() => {
+    if (hasClub === false && raceVisibility === "club") {
+      setRaceVisibility("private");
+    }
+  }, [hasClub, raceVisibility, setRaceVisibility]);
+
+  const selectedCompetition = COMPETITION_TYPES.find(
+    (c) => c.value === competitionType
+  );
+  const pigeonCount = sessionPrograms.length;
+  const hasPigeons = pigeonCount > 0;
+  const hasEnoughPigeons = selectedCompetition
+    ? selectedCompetition.requiresMinimum
+      ? pigeonCount >= MIN_PIGEONS_FOR_COMPETITION
+      : hasPigeons
+    : false;
+  const canStart = !!selectedCompetition && hasEnoughPigeons && !starting;
 
   async function handleStartRace() {
-    if (!canStart) return;
+    if (!canStart || !selectedCompetition) return;
     // Reset stale "I just ended a race" flag from a previous lifecycle so the
     // new race's lifecycle poll behaves normally.
     clearLocalEnd();
@@ -102,8 +159,11 @@ export function SimulationControls() {
         ringColor: sp.ringColor,
       }));
 
+      const raceLabel = selectedCompetition.label;
+      setRaceName(raceLabel);
+
       const res = await startRace({
-        name: raceName.trim(),
+        name: raceLabel,
         visibility: raceVisibility,
         programmedRings: resolved.map((r) => ({
           ringId: r.ringId,
@@ -139,7 +199,7 @@ export function SimulationControls() {
 
       beginRaceSession({
         raceId: res.data.raceId,
-        name: raceName.trim(),
+        name: raceLabel,
         visibility: raceVisibility,
         pigeons,
         startedAtMs: Date.now(),
@@ -205,27 +265,26 @@ export function SimulationControls() {
               <label className="block text-xs uppercase tracking-widest text-text-tertiary font-medium mb-1.5">
                 Vidljivost trke
               </label>
-              <div className="grid grid-cols-3 gap-1.5">
-                {VISIBILITY_OPTIONS.map(({ value, label, Icon }) => {
+              <div
+                className={cn(
+                  "grid gap-1.5",
+                  visibleVisibilityOptions.length === 2
+                    ? "grid-cols-2"
+                    : "grid-cols-3"
+                )}
+              >
+                {visibleVisibilityOptions.map(({ value, label, Icon }) => {
                   const isActive = raceVisibility === value;
-                  const isClubDisabled = value === "club" && hasClub === false;
                   return (
                     <button
                       key={value}
                       type="button"
-                      disabled={isClubDisabled}
                       onClick={() => setRaceVisibility(value)}
-                      title={
-                        isClubDisabled
-                          ? "Pristupite klubu u Postavkama da omogućite ovu opciju"
-                          : undefined
-                      }
                       className={cn(
                         "flex flex-col items-center gap-1 px-2 py-2.5 rounded-md text-xs font-medium border transition-colors",
                         isActive
                           ? "bg-accent-light border-accent text-accent"
-                          : "bg-bg-input border-border text-text-secondary hover:bg-bg-hover",
-                        isClubDisabled && "opacity-40 cursor-not-allowed hover:bg-bg-input"
+                          : "bg-bg-input border-border text-text-secondary hover:bg-bg-hover"
                       )}
                     >
                       <Icon className="w-4 h-4" aria-hidden="true" />
@@ -235,26 +294,40 @@ export function SimulationControls() {
                 })}
               </div>
               <p className="text-xs text-text-tertiary mt-1.5">
-                {VISIBILITY_OPTIONS.find((o) => o.value === raceVisibility)?.description}
+                {visibleVisibilityOptions.find((o) => o.value === raceVisibility)?.description}
               </p>
             </div>
 
             <div>
-              <label
-                htmlFor="race-name-input"
-                className="block text-xs uppercase tracking-widest text-text-tertiary font-medium mb-1.5"
-              >
-                Naziv trke *
-              </label>
-              <input
-                id="race-name-input"
-                type="text"
-                value={raceName}
-                onChange={(e) => setRaceName(e.target.value)}
-                maxLength={50}
-                placeholder="npr. Subotica - Beograd"
-                className="w-full px-3 py-2 bg-bg-input border border-border rounded-md text-sm text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none"
-              />
+              <span className="block text-xs uppercase tracking-widest text-text-tertiary font-medium mb-1.5">
+                Vrsta takmičenja *
+              </span>
+              <div className="grid grid-cols-2 gap-1.5">
+                {COMPETITION_TYPES.map(({ value, label }) => {
+                  const isActive = competitionType === value;
+                  return (
+                    <label
+                      key={value}
+                      className={cn(
+                        "flex items-center gap-2 px-3 py-2 rounded-md border text-sm cursor-pointer transition-colors",
+                        isActive
+                          ? "bg-accent-light border-accent text-accent"
+                          : "bg-bg-input border-border text-text-secondary hover:bg-bg-hover"
+                      )}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isActive}
+                        onChange={() =>
+                          setCompetitionType(isActive ? null : value)
+                        }
+                        className="w-4 h-4 accent-accent cursor-pointer flex-shrink-0"
+                      />
+                      <span className="flex-1 truncate">{label}</span>
+                    </label>
+                  );
+                })}
+              </div>
             </div>
 
             <button
@@ -273,9 +346,11 @@ export function SimulationControls() {
 
             {!canStart && !starting && (
               <p className="text-xs text-text-disabled text-center">
-                {!hasPigeons
-                  ? "Programiraj bar 1 prsten da bi pokrenuo trku"
-                  : "Unesi naziv trke da pokreneš"}
+                {!selectedCompetition
+                  ? "Izaberi vrstu takmičenja da pokreneš trku"
+                  : selectedCompetition.requiresMinimum && !hasEnoughPigeons
+                    ? `Za "${selectedCompetition.label}" potrebno je najmanje ${MIN_PIGEONS_FOR_COMPETITION} golubova (programirano ${pigeonCount})`
+                    : "Programiraj bar 1 prsten da bi pokrenuo trku"}
               </p>
             )}
           </>

@@ -32,7 +32,7 @@ import { AboutTab } from "./tabs/AboutTab";
 
 const TABS: SettingsTab[] = [
   { id: "profil", label: "Profil" },
-  { id: "klub", label: "Klub" },
+  { id: "klub", label: "Društvo" },
   { id: "golubarnik", label: "Golubarnik" },
   { id: "notifikacije", label: "Notifikacije" },
   { id: "izgled", label: "Izgled" },

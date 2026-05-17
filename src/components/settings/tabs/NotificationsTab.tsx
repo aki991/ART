@@ -40,7 +40,7 @@ const EVENTS: EventDef[] = [
     key: "membershipRequest",
     name: "Zahtev za članstvo čeka odobrenje",
     description:
-      "Obaveštenje kada neki golubar pošalje zahtev za pridruživanje vašem klubu.",
+      "Obaveštenje kada neki golubar pošalje zahtev za pridruživanje vašem društvu.",
     adminOnly: true,
   },
 ];

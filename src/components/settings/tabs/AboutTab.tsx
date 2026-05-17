@@ -20,10 +20,10 @@ export function AboutTab() {
             <h2 className="text-lg font-semibold text-text-primary font-rajdhani">
               {APP_NAME}
             </h2>
-            <p className="text-3xl font-mono font-bold text-accent mt-1">
+            <p className="text-3xl font-bold text-accent mt-1">
               v{APP_VERSION}
             </p>
-            <p className="text-sm text-text-disabled mt-1 font-mono">
+            <p className="text-sm text-text-disabled mt-1">
               Build {APP_BUILD}
             </p>
           </div>
@@ -47,7 +47,7 @@ export function AboutTab() {
               className="rounded-lg border border-border bg-bg-hover p-4"
             >
               <div className="flex items-baseline gap-2 mb-2">
-                <span className="text-base font-mono font-bold text-accent">
+                <span className="text-base font-bold text-accent">
                   v{release.version}
                 </span>
                 <span className="text-sm text-text-disabled">— {release.date}</span>

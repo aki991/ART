@@ -40,10 +40,10 @@ export function PigeonLegend() {
                 style={{ backgroundColor: pigeon.color }}
                 aria-hidden="true"
               />
-              <span className="text-sm xl:text-sm 2xl:text-base font-medium font-mono text-text-primary flex-1 whitespace-nowrap truncate min-w-0">
+              <span className="text-sm xl:text-sm 2xl:text-base font-medium text-text-primary flex-1 whitespace-nowrap truncate min-w-0">
                 {pigeon.name}
               </span>
-              <span className="text-sm xl:text-sm 2xl:text-base font-medium font-mono text-text-tertiary whitespace-nowrap flex-shrink-0">
+              <span className="text-sm xl:text-sm 2xl:text-base font-medium text-text-tertiary whitespace-nowrap flex-shrink-0">
                 {altDisplay}
               </span>
             </li>

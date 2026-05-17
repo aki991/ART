@@ -100,7 +100,7 @@ export default function EmulatorPage() {
                         className="w-6 h-6 rounded-full ring-2 ring-border-strong flex-shrink-0"
                         style={{ backgroundColor: slot.ringColor }}
                       />
-                      <span className="text-2xl font-mono font-bold text-status-warning">
+                      <span className="text-2xl font-bold text-status-warning">
                         {slot.ringId}
                       </span>
                     </div>
@@ -121,7 +121,7 @@ export default function EmulatorPage() {
                         className="w-6 h-6 rounded-full ring-2 ring-border-strong flex-shrink-0"
                         style={{ backgroundColor: slot.ringColor }}
                       />
-                      <span className="text-2xl font-mono font-bold text-status-success">
+                      <span className="text-2xl font-bold text-status-success">
                         {slot.ringId}
                       </span>
                     </div>

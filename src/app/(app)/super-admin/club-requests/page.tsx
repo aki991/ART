@@ -7,7 +7,7 @@ import { getAllClubCreationRequests } from "@/app/actions/clubs";
 import { SuperAdminClubRequestsClient } from "@/components/super-admin/SuperAdminClubRequestsClient";
 
 export const metadata: Metadata = {
-  title: "Super Admin · Zahtevi za klubove",
+  title: "Super Admin · Zahtevi za društva",
 };
 
 export const dynamic = "force-dynamic";
@@ -48,8 +48,8 @@ export default async function SuperAdminClubRequestsPage({
   return (
     <PageContainer>
       <PageHeader
-        title="Zahtevi za kreiranje klubova"
-        description="Pregled zahteva korisnika za osnivanje novih klubova."
+        title="Zahtevi za kreiranje društava"
+        description="Pregled zahteva korisnika za osnivanje novih društava."
       />
       <SuperAdminClubRequestsClient activeStatus={status} requests={requests} />
     </PageContainer>

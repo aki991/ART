@@ -1,6 +1,6 @@
 const TAKEOFF_DURATION_S = 120;
-const CRUISE_MIN = 1850;
-const CRUISE_MAX = 2050;
+const CRUISE_MIN = 2900;
+const CRUISE_MAX = 3100;
 
 let activeCruiseTargets: Record<string, number> = {};
 let pigeonOffsets: Record<string, number> = {};

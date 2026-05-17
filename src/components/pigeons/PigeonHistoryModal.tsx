@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { X, Trophy, Pencil, Trash2, Check, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -24,13 +25,16 @@ function formatDate(iso: string): string {
   });
 }
 
-function formatDuration(totalSeconds: number | null): string {
-  if (totalSeconds == null) return "—";
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-  if (hours > 0) return `${hours}h ${minutes}m`;
-  return `${minutes}m ${seconds}s`;
+const VIS_THRESHOLD_M = 800;
+
+function formatTimeShort(totalSeconds: number | null): string {
+  if (totalSeconds == null || totalSeconds <= 0) return "—";
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  const s = totalSeconds % 60;
+  if (h > 0) return `${h}h ${m}m`;
+  if (m > 0) return `${m}m ${s}s`;
+  return `${s}s`;
 }
 
 export function PigeonHistoryModal({
@@ -80,8 +84,9 @@ export function PigeonHistoryModal({
   }, [isOpen, onClose]);
 
   if (!isOpen || !pigeon) return null;
+  if (typeof document === "undefined") return null;
 
-  return (
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
@@ -106,7 +111,7 @@ export function PigeonHistoryModal({
           <div className="min-w-0">
             <div
               id="pigeon-details-title"
-              className="text-2xl font-bold font-mono text-text-primary mb-1 truncate"
+              className="text-2xl font-bold text-text-primary mb-1 truncate"
             >
               {pigeon.full_ring_number}
             </div>
@@ -174,14 +179,17 @@ export function PigeonHistoryModal({
             </div>
           ) : (
             <div className="overflow-hidden rounded-xl border border-border">
+              <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="table-header-gradient text-xs uppercase text-text-tertiary font-medium">
                   <tr>
                     <th className="text-left py-3 px-4">Datum</th>
-                    <th className="text-left py-3 px-4">Naziv trke</th>
-                    <th className="text-left py-3 px-4">Trajanje</th>
+                    <th className="text-left py-3 px-4">Vrsta takmičenja</th>
+                    <th className="text-left py-3 px-4">Ukupno vreme</th>
+                    <th className="text-left py-3 px-4">Vreme iznad {VIS_THRESHOLD_M}m</th>
                     <th className="text-left py-3 px-4">Max visina</th>
-                    <th className="text-left py-3 px-4">Prešao cilj</th>
+                    <th className="text-left py-3 px-4">Postigao VIS</th>
+                    <th className="text-left py-3 px-4">Validan let</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -194,20 +202,45 @@ export function PigeonHistoryModal({
                       }}
                       className="border-t border-border hover:bg-bg-hover cursor-pointer transition-colors"
                     >
-                      <td className="py-4 px-4 text-text-tertiary font-mono text-sm">
+                      <td className="py-4 px-4 text-text-tertiary text-sm whitespace-nowrap">
                         {formatDate(item.started_at)}
                       </td>
-                      <td className="py-4 px-4 text-text-primary font-medium">
+                      <td className="py-4 px-4 text-text-primary font-medium whitespace-nowrap">
                         {item.race_name}
                       </td>
-                      <td className="py-4 px-4 text-text-secondary font-mono">
-                        {formatDuration(item.duration_seconds)}
+                      <td className="py-4 px-4 text-text-secondary whitespace-nowrap">
+                        {formatTimeShort(item.total_time_sec)}
                       </td>
-                      <td className="py-4 px-4 text-accent font-mono font-semibold">
+                      <td className="py-4 px-4 text-text-secondary whitespace-nowrap">
+                        {item.total_time_sec > 0 ? (
+                          <>
+                            {formatTimeShort(item.above_vis_sec)}
+                            <span className="text-text-tertiary ml-1">
+                              ({item.above_vis_pct.toFixed(0)}%)
+                            </span>
+                          </>
+                        ) : (
+                          "—"
+                        )}
+                      </td>
+                      <td className="py-4 px-4 text-accent font-semibold whitespace-nowrap">
                         {item.max_altitude != null ? `${item.max_altitude}m` : "—"}
                       </td>
                       <td className="py-4 px-4">
-                        {item.reached_goal ? (
+                        {item.reached_vis ? (
+                          <div className="flex items-center gap-2 text-status-success">
+                            <Check className="w-5 h-5" aria-hidden="true" />
+                            <span className="text-sm font-medium">Da</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2 text-status-error">
+                            <X className="w-5 h-5" aria-hidden="true" />
+                            <span className="text-sm font-medium">Ne</span>
+                          </div>
+                        )}
+                      </td>
+                      <td className="py-4 px-4">
+                        {item.valid_flight ? (
                           <div className="flex items-center gap-2 text-status-success">
                             <Check className="w-5 h-5" aria-hidden="true" />
                             <span className="text-sm font-medium">Da</span>
@@ -223,6 +256,7 @@ export function PigeonHistoryModal({
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           )}
         </div>
@@ -261,6 +295,7 @@ export function PigeonHistoryModal({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

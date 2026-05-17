@@ -39,7 +39,7 @@ export function ClubBrowser({ clubs }: ClubBrowserProps) {
         return;
       }
       toast.success("Zahtev za članstvo poslat", {
-        description: `Zahtev je poslat administratoru kluba ${selected.name}.`,
+        description: `Zahtev je poslat administratoru društva ${selected.name}.`,
       });
       router.refresh();
     });
@@ -49,21 +49,21 @@ export function ClubBrowser({ clubs }: ClubBrowserProps) {
     <div className="card-redesign p-6 space-y-5 max-w-2xl">
       <div>
         <h2 className="text-lg font-semibold text-text-primary font-rajdhani">
-          Niste član nijednog kluba
+          Niste član nijednog društva
         </h2>
         <p className="text-sm text-text-tertiary mt-0.5">
-          Pronađite svoj klub i pošaljite zahtev za članstvo, ili kreirajte
-          novi.
+          Pronađite svoje društvo i pošaljite zahtev za članstvo, ili kreirajte
+          novo.
         </p>
       </div>
 
       <SearchableSelect
-        label="Pretraži klubove"
+        label="Pretraži društva"
         options={options}
         value={selectedId}
         onChange={setSelectedId}
-        placeholder="Ukucajte naziv kluba..."
-        emptyText="Nema klubova za tu pretragu"
+        placeholder="Ukucajte naziv društva..."
+        emptyText="Nema društava za tu pretragu"
       />
 
       {selected && (
@@ -100,7 +100,7 @@ export function ClubBrowser({ clubs }: ClubBrowserProps) {
           className="inline-flex items-center gap-1.5 text-sm text-accent hover:text-cyan-bright transition-colors"
         >
           <Plus className="w-4 h-4" aria-hidden="true" />
-          Ili kreiraj novi klub
+          Ili kreiraj novo društvo
         </button>
       </div>
 

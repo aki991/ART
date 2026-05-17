@@ -47,19 +47,19 @@ export function SessionStatsCard() {
         <p className="text-[10px] xl:text-[11px] 2xl:text-xs uppercase tracking-wide text-text-disabled mb-1 whitespace-nowrap">
           Trajanje sesije
         </p>
-        <p className="text-lg xl:text-xl 2xl:text-2xl font-semibold font-mono text-accent whitespace-nowrap">{elapsed}</p>
+        <p className="text-lg xl:text-xl 2xl:text-2xl font-semibold text-accent whitespace-nowrap">{elapsed}</p>
       </div>
 
       <div className="grid grid-cols-2 gap-2 xl:gap-2.5 2xl:gap-3">
         <div className="bg-bg-hover rounded p-2 xl:p-2.5 2xl:p-3 min-w-0">
           <p className="text-[10px] xl:text-xs 2xl:text-sm uppercase text-text-tertiary mb-1 truncate">Maksimum</p>
-          <p className="text-base xl:text-lg 2xl:text-2xl font-semibold font-mono text-status-error whitespace-nowrap">
+          <p className="text-base xl:text-lg 2xl:text-2xl font-semibold text-status-error whitespace-nowrap">
             {maxDisplay}
           </p>
         </div>
         <div className="bg-bg-hover rounded p-2 xl:p-2.5 2xl:p-3 min-w-0">
           <p className="text-[10px] xl:text-xs 2xl:text-sm uppercase text-text-tertiary mb-1 truncate">Minimum</p>
-          <p className="text-base xl:text-lg 2xl:text-2xl font-semibold font-mono text-status-success whitespace-nowrap">
+          <p className="text-base xl:text-lg 2xl:text-2xl font-semibold text-status-success whitespace-nowrap">
             {minDisplay}
           </p>
         </div>

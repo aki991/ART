@@ -15,17 +15,16 @@ interface PigeonModalProps {
 }
 
 const FIELD_WRAP =
-  "px-2 py-2.5 bg-bg-input border border-border rounded-md text-lg text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none text-center font-mono max-lg:px-1 max-lg:py-1.5 max-lg:text-sm";
+  "px-2 py-2.5 bg-bg-input border border-border rounded-md text-lg text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none text-center max-lg:px-1 max-lg:py-1.5 max-lg:text-sm";
 
 export function PigeonModal({ isOpen, onClose, editingPigeon, onSaved }: PigeonModalProps) {
   const [mounted, setMounted] = useState(false);
-  const [ringCountry, setRingCountry] = useState("SRB");
+  const [ringCountry, setRingCountry] = useState("");
   const [ringNumber, setRingNumber] = useState("");
   const [ringSegment3, setRingSegment3] = useState("");
   const [ringSegment4, setRingSegment4] = useState("");
   const [ringYear, setRingYear] = useState("");
   const [color, setColor] = useState("");
-  const [name, setName] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -55,15 +54,13 @@ export function PigeonModal({ isOpen, onClose, editingPigeon, onSaved }: PigeonM
       setRingSegment4(editingPigeon.ring_segment_4);
       setRingYear(editingPigeon.ring_year);
       setColor(editingPigeon.color);
-      setName(editingPigeon.name ?? "");
     } else {
-      setRingCountry("SRB");
+      setRingCountry("");
       setRingNumber("");
       setRingSegment3("");
       setRingSegment4("");
       setRingYear("");
       setColor("");
-      setName("");
     }
   }, [isOpen, editingPigeon]);
 
@@ -71,7 +68,7 @@ export function PigeonModal({ isOpen, onClose, editingPigeon, onSaved }: PigeonM
     if (!isOpen) return;
     const t = setTimeout(() => {
       if (editingPigeon) colorRef.current?.focus();
-      else ringNumberRef.current?.focus();
+      else ringCountryRef.current?.focus();
     }, 60);
     return () => clearTimeout(t);
   }, [isOpen, editingPigeon]);
@@ -101,7 +98,7 @@ export function PigeonModal({ isOpen, onClose, editingPigeon, onSaved }: PigeonM
 
   function handlePaste(e: React.ClipboardEvent<HTMLInputElement>) {
     const text = e.clipboardData.getData("text").trim();
-    const match = text.match(/^([A-Za-z]{1,3})[\-·](\d{1,4})[\-·](\d{1,2})[\-·](\d{1,2})[\-·](\d{2})$/);
+    const match = text.match(/^([A-Za-z]{1,3})[\-·](\d{1,3})[\-·](\d{1,2})[\-·](\d{1,2})[\-·](\d{2})$/);
     if (match) {
       e.preventDefault();
       setRingCountry(match[1].toUpperCase());
@@ -125,7 +122,6 @@ export function PigeonModal({ isOpen, onClose, editingPigeon, onSaved }: PigeonM
       ringSegment4: ringSegment4.trim(),
       ringYear: ringYear.trim(),
       color: color.trim(),
-      name: name.trim() || undefined,
     };
 
     const res = editingPigeon
@@ -206,26 +202,26 @@ export function PigeonModal({ isOpen, onClose, editingPigeon, onSaved }: PigeonM
                 aria-label="Prefiks države"
                 className={cn(FIELD_WRAP, "w-20 max-lg:w-12")}
               />
-              <span className="text-text-disabled select-none font-mono max-lg:text-xs">-</span>
+              <span className="text-text-disabled select-none max-lg:text-xs">-</span>
               <input
                 ref={ringNumberRef}
                 type="text"
                 inputMode="numeric"
-                maxLength={4}
+                maxLength={3}
                 value={ringNumber}
                 onChange={(e) => {
-                  const v = e.target.value.replace(/\D/g, "").slice(0, 4);
+                  const v = e.target.value.replace(/\D/g, "").slice(0, 3);
                   setRingNumber(v);
-                  if (v.length === 4) ringSegment3Ref.current?.focus();
+                  if (v.length === 3) ringSegment3Ref.current?.focus();
                 }}
                 onKeyDown={(e) => {
                   if (e.key === "Backspace" && !ringNumber) ringCountryRef.current?.focus();
                 }}
                 placeholder="444"
-                aria-label="Broj kluba"
-                className={cn(FIELD_WRAP, "w-20 max-lg:w-12")}
+                aria-label="Broj društva"
+                className={cn(FIELD_WRAP, "w-16 max-lg:w-10")}
               />
-              <span className="text-text-disabled select-none font-mono max-lg:text-xs">-</span>
+              <span className="text-text-disabled select-none max-lg:text-xs">-</span>
               <input
                 ref={ringSegment3Ref}
                 type="text"
@@ -244,7 +240,7 @@ export function PigeonModal({ isOpen, onClose, editingPigeon, onSaved }: PigeonM
                 aria-label="Treći segment"
                 className={cn(FIELD_WRAP, "w-14 max-lg:w-9")}
               />
-              <span className="text-text-disabled select-none font-mono max-lg:text-xs">-</span>
+              <span className="text-text-disabled select-none max-lg:text-xs">-</span>
               <input
                 ref={ringSegment4Ref}
                 type="text"
@@ -263,7 +259,7 @@ export function PigeonModal({ isOpen, onClose, editingPigeon, onSaved }: PigeonM
                 aria-label="Četvrti segment"
                 className={cn(FIELD_WRAP, "w-14 max-lg:w-9")}
               />
-              <span className="text-text-disabled select-none font-mono max-lg:text-xs">-</span>
+              <span className="text-text-disabled select-none max-lg:text-xs">-</span>
               <input
                 ref={ringYearRef}
                 type="text"
@@ -284,7 +280,7 @@ export function PigeonModal({ isOpen, onClose, editingPigeon, onSaved }: PigeonM
             </div>
             <p className="text-sm text-text-tertiary mt-1.5 max-lg:text-xs max-lg:mt-1">
               Pun broj alke:{" "}
-              <span className="font-mono font-semibold text-text-primary">{previewId}</span>
+              <span className="font-semibold text-text-primary">{previewId}</span>
             </p>
           </div>
 
@@ -299,21 +295,6 @@ export function PigeonModal({ isOpen, onClose, editingPigeon, onSaved }: PigeonM
               value={color}
               onChange={(e) => setColor(e.target.value)}
               placeholder="npr. Arap, Mavijan, Tekir..."
-              maxLength={50}
-              className="w-full px-5 py-3 bg-bg-input border border-border rounded-md text-lg text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none max-lg:px-3 max-lg:py-2 max-lg:text-sm"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="modal-pigeon-name" className="block text-base font-medium text-text-secondary mb-1.5 max-lg:text-xs max-lg:mb-1">
-              Ime goluba
-            </label>
-            <input
-              id="modal-pigeon-name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Opciono"
               maxLength={50}
               className="w-full px-5 py-3 bg-bg-input border border-border rounded-md text-lg text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none max-lg:px-3 max-lg:py-2 max-lg:text-sm"
             />

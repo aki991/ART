@@ -257,7 +257,7 @@ export function ProfileTab({ value, onChange }: ProfileTabProps) {
           <>
             Ova akcija trajno briše vaš nalog i sve povezane postavke. Da biste
             potvrdili, ukucajte svoje korisničko ime{" "}
-            <span className="font-mono text-text-primary">{savedUsername}</span> ispod.
+            <span className="text-text-primary">{savedUsername}</span> ispod.
           </>
         }
         confirmLabel={deleting ? "Brisanje…" : "Trajno obriši nalog"}

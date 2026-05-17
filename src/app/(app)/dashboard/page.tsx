@@ -21,7 +21,7 @@ export default async function DashboardPage() {
     getRaceStats(),
     getLastRace(),
     getTopPigeons(3),
-    getMyRaces({ limit: 5, status: "completed" }),
+    getMyRaces({ limit: 3, status: "completed" }),
   ]);
 
   const stats = statsRes.success

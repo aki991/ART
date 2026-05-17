@@ -42,7 +42,7 @@ export function RecentRacesTable({ races }: RecentRacesTableProps) {
             <table className="w-full">
               <thead className="bg-bg-hover text-xs uppercase text-text-tertiary font-medium">
                 <tr>
-                  <th className="text-left py-3 px-4 whitespace-nowrap">Naziv</th>
+                  <th className="text-left py-3 px-4 whitespace-nowrap">Vrsta takmičenja</th>
                   <th className="text-left py-3 px-4 whitespace-nowrap">Datum</th>
                   <th className="text-left py-3 px-4 whitespace-nowrap">Trajanje</th>
                   <th className="text-left py-3 px-4 whitespace-nowrap">Golubova</th>
@@ -59,15 +59,15 @@ export function RecentRacesTable({ races }: RecentRacesTableProps) {
                     <td className="py-3 px-4 text-text-primary font-medium text-sm whitespace-nowrap">
                       {race.name}
                     </td>
-                    <td className="py-3 px-4 text-text-secondary font-mono text-sm whitespace-nowrap">
+                    <td className="py-3 px-4 text-text-secondary text-sm whitespace-nowrap">
                       {formatDate(race.started_at)}
                     </td>
-                    <td className="py-3 px-4 text-text-secondary font-mono text-sm whitespace-nowrap">
+                    <td className="py-3 px-4 text-text-secondary text-sm whitespace-nowrap">
                       {race.duration_seconds != null
                         ? formatDuration(race.duration_seconds)
                         : "—"}
                     </td>
-                    <td className="py-3 px-4 text-text-secondary font-mono text-sm whitespace-nowrap">
+                    <td className="py-3 px-4 text-text-secondary text-sm whitespace-nowrap">
                       {race.pigeon_count}
                     </td>
                     <td className="py-3 px-4 whitespace-nowrap">

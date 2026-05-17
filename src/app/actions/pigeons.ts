@@ -50,7 +50,7 @@ function normalizeInput(input: PigeonInput | PigeonPatch) {
 
 function validateRequired(input: PigeonInput): string | null {
   if (!input.ringCountry?.trim()) return "Prefiks alkice je obavezan (npr. SRB).";
-  if (!input.ringNumber?.trim()) return "Broj kluba je obavezan.";
+  if (!input.ringNumber?.trim()) return "Broj društva je obavezan.";
   if (!input.ringSegment3?.trim()) return "Treći segment alkice je obavezan.";
   if (!input.ringSegment4?.trim()) return "Četvrti segment alkice je obavezan.";
   if (!input.ringYear?.trim()) return "Godina je obavezna.";
@@ -60,7 +60,7 @@ function validateRequired(input: PigeonInput): string | null {
     return "Prefiks sme da sadrži samo slova (do 3 karaktera).";
   }
   if (!/^\d+$/.test(input.ringNumber.trim())) {
-    return "Broj kluba sme da sadrži samo cifre.";
+    return "Broj društva sme da sadrži samo cifre.";
   }
   if (!/^\d+$/.test(input.ringSegment3.trim())) {
     return "Treći segment sme da sadrži samo cifre.";
@@ -147,7 +147,7 @@ export interface ArchivedPigeonInput {
   color?: string;
 }
 
-export async function findOrCreateArchivedPigeon(
+export async function findOrCreateOwnedPigeon(
   input: ArchivedPigeonInput
 ): Promise<ActionResponse<{ pigeonId: string; fullRingNumber: string }>> {
   const { supabase, user } = await requireUser();
@@ -158,16 +158,20 @@ export async function findOrCreateArchivedPigeon(
   const ring_segment_3 = input.ringSegment3.trim();
   const ring_segment_4 = input.ringSegment4.trim();
   const ring_year = input.ringYear.trim();
+  const color = input.color?.trim() || "";
 
   if (!ring_country || !ring_number || !ring_segment_3 || !ring_segment_4 || !ring_year) {
     return { success: false, error: "Broj alkice mora imati svih 5 segmenata." };
+  }
+  if (!color) {
+    return { success: false, error: "Boja goluba je obavezna." };
   }
 
   const fullRingNumber = `${ring_country}-${ring_number}-${ring_segment_3}-${ring_segment_4}-${ring_year}`;
 
   const { data: existing, error: lookupErr } = await supabase
     .from("pigeons")
-    .select("id")
+    .select("id, is_archived")
     .eq("owner_id", user.id)
     .eq("ring_country", ring_country)
     .eq("ring_number", ring_number)
@@ -179,6 +183,18 @@ export async function findOrCreateArchivedPigeon(
   if (lookupErr) return { success: false, error: lookupErr.message };
 
   if (existing) {
+    // If the pigeon was previously created as archived (e.g., legacy
+    // programming flow), restore it into the user's active list so its
+    // history continues to be tracked alongside other pigeons.
+    if (existing.is_archived) {
+      const { error: updateErr } = await supabase
+        .from("pigeons")
+        .update({ is_archived: false, color })
+        .eq("id", existing.id)
+        .eq("owner_id", user.id);
+      if (updateErr) return { success: false, error: updateErr.message };
+      refresh();
+    }
     return { success: true, data: { pigeonId: existing.id, fullRingNumber } };
   }
 
@@ -191,14 +207,15 @@ export async function findOrCreateArchivedPigeon(
       ring_segment_3,
       ring_segment_4,
       ring_year,
-      color: input.color?.trim() || "Nepoznata",
+      color,
       name: null,
-      is_archived: true,
+      is_archived: false,
     })
     .select("id")
     .single();
 
   if (insertErr) return { success: false, error: insertErr.message };
+  refresh();
   return { success: true, data: { pigeonId: created.id, fullRingNumber } };
 }
 

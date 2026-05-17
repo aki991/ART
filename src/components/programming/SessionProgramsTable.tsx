@@ -82,7 +82,7 @@ export function SessionProgramsTable() {
                         className="w-4 h-4 rounded-full flex-shrink-0"
                         style={{ backgroundColor: ring.ringColor }}
                       />
-                      <span className="bg-accent-light text-accent font-mono font-semibold px-2 py-0.5 rounded text-base whitespace-nowrap">
+                      <span className="bg-accent-light text-accent font-semibold px-2 py-0.5 rounded text-base whitespace-nowrap">
                         {ring.ringId}
                       </span>
                     </div>
@@ -91,7 +91,7 @@ export function SessionProgramsTable() {
                     {ring.pigeonIdentifier === "Drugi golub" ? (
                       <span className="text-text-disabled italic text-base">Drugi golub</span>
                     ) : (
-                      <span className="font-mono text-sm text-text-secondary whitespace-nowrap">
+                      <span className="text-sm text-text-secondary whitespace-nowrap">
                         {ring.pigeonIdentifier}
                       </span>
                     )}

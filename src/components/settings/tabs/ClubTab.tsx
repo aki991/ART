@@ -61,7 +61,7 @@ export function ClubTab({
           return;
         }
         setLeaveOpen(false);
-        toast.success("Napustili ste klub");
+        toast.success("Napustili ste društvo");
         router.refresh();
       });
     }
@@ -89,14 +89,14 @@ export function ClubTab({
           isOpen={leaveOpen}
           onClose={() => setLeaveOpen(false)}
           onConfirm={handleLeave}
-          title="Napusti klub"
+          title="Napusti društvo"
           message={
             <>
-              Da li ste sigurni da želite da napustite klub{" "}
+              Da li ste sigurni da želite da napustite društvo{" "}
               <span className="text-text-primary font-medium">{membership.club.name}</span>?
             </>
           }
-          confirmLabel="Napusti klub"
+          confirmLabel="Napusti društvo"
           variant="danger"
           loading={pending}
         />
@@ -128,7 +128,7 @@ export function ClubTab({
               Zahtev na čekanju
             </h2>
             <p className="text-sm text-text-tertiary mt-0.5">
-              Zahtev za pridruživanje klubu{" "}
+              Zahtev za pridruživanje društvu{" "}
               <span className="text-text-primary font-medium">
                 {pendingJoinRequest.club.name}
               </span>{" "}
@@ -166,10 +166,10 @@ export function ClubTab({
             </div>
             <div>
               <h2 className="text-lg font-semibold text-text-primary font-rajdhani">
-                Zahtev za kreiranje kluba na čekanju
+                Zahtev za kreiranje društva na čekanju
               </h2>
               <p className="text-sm text-text-tertiary mt-0.5">
-                Vaš zahtev za kreiranje kluba{" "}
+                Vaš zahtev za kreiranje društva{" "}
                 <span className="text-text-primary font-medium">
                   &quot;{creationRequest.proposed_name}&quot;
                 </span>{" "}
@@ -204,7 +204,7 @@ export function ClubTab({
                 Zahtev odbijen
               </h2>
               <p className="text-sm text-text-tertiary mt-0.5">
-                Vaš zahtev za kreiranje kluba{" "}
+                Vaš zahtev za kreiranje društva{" "}
                 <span className="text-text-primary font-medium">
                   &quot;{creationRequest.proposed_name}&quot;
                 </span>{" "}

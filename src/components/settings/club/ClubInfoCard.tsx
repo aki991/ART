@@ -72,7 +72,7 @@ export function ClubInfoCard({
         return;
       }
       setLeaveOpen(false);
-      toast.success("Napustili ste klub");
+      toast.success("Napustili ste društvo");
       router.refresh();
     });
   }
@@ -86,7 +86,7 @@ export function ClubInfoCard({
             <h2 className="text-lg font-semibold text-text-primary font-rajdhani truncate">
               {club.name}
             </h2>
-            <p className="text-sm text-text-tertiary">Vaš klub</p>
+            <p className="text-sm text-text-tertiary">Vaše društvo</p>
           </div>
         </div>
 
@@ -103,7 +103,7 @@ export function ClubInfoCard({
           />
           <InfoRow
             icon={<ShieldCheck className="w-4 h-4" aria-hidden="true" />}
-            label={admins.length > 1 ? "Admini kluba" : "Admin kluba"}
+            label={admins.length > 1 ? "Admini društva" : "Admin društva"}
             value={adminsLabel}
           />
           <InfoRow
@@ -116,11 +116,11 @@ export function ClubInfoCard({
 
       <div className="rounded-xl border border-status-error bg-bg-error-light p-6 flex items-center justify-between gap-4 max-lg:flex-col max-lg:items-stretch max-lg:gap-3 max-lg:p-4">
         <div>
-          <h3 className="text-base font-semibold text-status-error">Napusti klub</h3>
+          <h3 className="text-base font-semibold text-status-error">Napusti društvo</h3>
           <p className="text-sm text-text-tertiary mt-0.5 max-lg:text-xs">
             {blockLeave
-              ? "Prvo promovišite drugog člana u admina pre nego što napustite klub."
-              : "Vaše trke i golubovi ostaju, ali nećete više pripadati klubu."}
+              ? "Prvo promovišite drugog člana u admina pre nego što napustite društvo."
+              : "Vaše trke i golubovi ostaju, ali nećete više pripadati društvu."}
           </p>
         </div>
         <Button
@@ -135,7 +135,7 @@ export function ClubInfoCard({
           className="flex-shrink-0 max-lg:w-full max-lg:!py-2 max-lg:!text-sm"
         >
           <LogOut className="w-4 h-4" aria-hidden="true" />
-          Napusti klub
+          Napusti društvo
         </Button>
       </div>
 
@@ -143,15 +143,15 @@ export function ClubInfoCard({
         isOpen={leaveOpen}
         onClose={() => setLeaveOpen(false)}
         onConfirm={handleLeave}
-        title="Napusti klub"
+        title="Napusti društvo"
         message={
           <>
-            Da li ste sigurni da želite da napustite klub? Vaše trke i golubovi
-            ostaju, ali nećete više pripadati klubu{" "}
+            Da li ste sigurni da želite da napustite društvo? Vaše trke i golubovi
+            ostaju, ali nećete više pripadati društvu{" "}
             <span className="text-text-primary font-medium">{club.name}</span>.
           </>
         }
-        confirmLabel="Napusti klub"
+        confirmLabel="Napusti društvo"
         variant="danger"
         loading={pending}
       />

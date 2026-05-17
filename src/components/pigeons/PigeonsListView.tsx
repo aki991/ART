@@ -19,7 +19,6 @@ export function PigeonsListView({ initialPigeons }: PigeonsListViewProps) {
   const router = useRouter();
   const [pigeons, setPigeons] = useState<Pigeon[]>(initialPigeons);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingPigeon, setEditingPigeon] = useState<Pigeon | null>(null);
   const [detailsPigeon, setDetailsPigeon] = useState<Pigeon | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Pigeon | null>(null);
   const [, startTransition] = useTransition();
@@ -31,19 +30,11 @@ export function PigeonsListView({ initialPigeons }: PigeonsListViewProps) {
   }
 
   function openCreateModal() {
-    setEditingPigeon(null);
-    setIsFormOpen(true);
-  }
-
-  function openEditModal(pigeon: Pigeon) {
-    setDetailsPigeon(null);
-    setEditingPigeon(pigeon);
     setIsFormOpen(true);
   }
 
   function closeFormModal() {
     setIsFormOpen(false);
-    setEditingPigeon(null);
   }
 
   function handleSaved(pigeon: Pigeon, mode: "create" | "update") {
@@ -105,7 +96,6 @@ export function PigeonsListView({ initialPigeons }: PigeonsListViewProps) {
               key={pigeon.id}
               pigeon={pigeon}
               onOpen={() => setDetailsPigeon(pigeon)}
-              onEdit={() => openEditModal(pigeon)}
               onDelete={() => requestDelete(pigeon)}
             />
           ))}
@@ -115,7 +105,6 @@ export function PigeonsListView({ initialPigeons }: PigeonsListViewProps) {
       <PigeonModal
         isOpen={isFormOpen}
         onClose={closeFormModal}
-        editingPigeon={editingPigeon}
         onSaved={handleSaved}
       />
 
@@ -123,7 +112,6 @@ export function PigeonsListView({ initialPigeons }: PigeonsListViewProps) {
         pigeon={detailsPigeon}
         isOpen={detailsPigeon !== null}
         onClose={() => setDetailsPigeon(null)}
-        onEdit={() => detailsPigeon && openEditModal(detailsPigeon)}
         onDelete={() => detailsPigeon && requestDelete(detailsPigeon)}
       />
 
@@ -140,7 +128,7 @@ export function PigeonsListView({ initialPigeons }: PigeonsListViewProps) {
           deleteTarget ? (
             <>
               Da li ste sigurni da želite da obrišete goluba{" "}
-              <span className="font-mono font-semibold text-text-primary">
+              <span className="font-semibold text-text-primary">
                 {deleteTarget.full_ring_number}
               </span>
               ? Ova akcija se ne može opozvati.

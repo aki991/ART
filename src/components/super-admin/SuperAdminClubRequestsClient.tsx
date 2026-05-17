@@ -60,7 +60,7 @@ export function SuperAdminClubRequestsClient({
         toast.error(result.error);
         return;
       }
-      toast.success(`Klub "${approving.proposed_name}" je osnovan.`);
+      toast.success(`Društvo "${approving.proposed_name}" je osnovano.`);
       setApproving(null);
       router.refresh();
     });
@@ -240,7 +240,7 @@ export function SuperAdminClubRequestsClient({
                     : "—"}
                 </p>
                 {viewing.requester && (
-                  <p className="text-xs text-text-tertiary font-mono">
+                  <p className="text-xs text-text-tertiary">
                     @{viewing.requester.username}
                   </p>
                 )}
@@ -293,7 +293,7 @@ export function SuperAdminClubRequestsClient({
         message={
           approving ? (
             <>
-              Odobravanjem zahteva kreira se klub{" "}
+              Odobravanjem zahteva kreira se društvo{" "}
               <span className="text-text-primary font-medium">
                 &quot;{approving.proposed_name}&quot;
               </span>
@@ -305,7 +305,7 @@ export function SuperAdminClubRequestsClient({
             </>
           ) : null
         }
-        confirmLabel="Odobri i osnuj klub"
+        confirmLabel="Odobri i osnuj društvo"
         loading={pending}
       />
 
@@ -343,7 +343,7 @@ export function SuperAdminClubRequestsClient({
         {rejecting && (
           <div className="space-y-3">
             <p className="text-sm text-text-secondary">
-              Unesite razlog odbijanja zahteva za klub{" "}
+              Unesite razlog odbijanja zahteva za društvo{" "}
               <span className="text-text-primary font-medium">
                 &quot;{rejecting.proposed_name}&quot;
               </span>
@@ -354,7 +354,7 @@ export function SuperAdminClubRequestsClient({
               required
               value={rejectReason}
               onChange={(e) => setRejectReason(e.target.value)}
-              placeholder="npr. Klub sa sličnim imenom već postoji u istom gradu."
+              placeholder="npr. Društvo sa sličnim imenom već postoji u istom gradu."
               rows={4}
             />
           </div>

@@ -86,7 +86,7 @@ export function DetectedRingTable() {
                           className="w-4 h-4 rounded-full flex-shrink-0 max-lg:w-3 max-lg:h-3"
                           style={{ backgroundColor: slot.ringColor }}
                         />
-                        <span className="bg-accent-light text-accent font-mono font-semibold px-2 py-0.5 rounded text-base whitespace-nowrap max-lg:text-[11px] max-lg:px-1.5">
+                        <span className="bg-accent-light text-accent font-semibold px-2 py-0.5 rounded text-base whitespace-nowrap max-lg:text-[11px] max-lg:px-1.5">
                           {slot.ringId}
                         </span>
                       </div>

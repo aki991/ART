@@ -112,6 +112,11 @@ export interface PigeonRaceHistoryItem {
   avg_altitude: number | null;
   reached_goal: boolean;
   goal_altitude: number;
+  total_time_sec: number;
+  above_vis_sec: number;
+  above_vis_pct: number;
+  reached_vis: boolean;
+  valid_flight: boolean;
 }
 
 export interface StartRaceInput {

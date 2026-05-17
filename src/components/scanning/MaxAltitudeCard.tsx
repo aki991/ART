@@ -19,7 +19,7 @@ export function MaxAltitudeCard() {
       <p className="text-[10px] xl:text-xs 2xl:text-sm uppercase tracking-widest text-text-tertiary mb-1 xl:mb-1.5 2xl:mb-2 whitespace-nowrap">
         Najviša visina
       </p>
-      <p className="text-3xl xl:text-4xl 2xl:text-5xl font-bold font-mono text-gradient-cyan leading-none whitespace-nowrap">
+      <p className="text-3xl xl:text-4xl 2xl:text-5xl font-bold text-gradient-cyan leading-none whitespace-nowrap">
         {display}
       </p>
       <p className="text-xs xl:text-sm 2xl:text-base uppercase tracking-wider text-text-disabled mt-1">Metri</p>

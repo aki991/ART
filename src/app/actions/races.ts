@@ -60,7 +60,7 @@ export async function startRace(
   if (!user) return { success: false, error: "Niste prijavljeni." };
 
   if (!input.name?.trim()) {
-    return { success: false, error: "Naziv trke je obavezan." };
+    return { success: false, error: "Vrsta takmičenja je obavezna." };
   }
   if (!input.programmedRings || input.programmedRings.length === 0) {
     return { success: false, error: "Programiraj barem jedan prsten pre starta." };
@@ -684,6 +684,9 @@ export async function getPigeonRaceHistory(
   const { supabase, user } = await requireUser();
   if (!user) return { success: false, error: "Niste prijavljeni." };
 
+  const VIS_THRESHOLD_M = 800;
+  const READING_INTERVAL_S = 5;
+
   const { data, error } = await supabase
     .from("race_pigeons")
     .select(
@@ -711,20 +714,55 @@ export async function getPigeonRaceHistory(
     } | null;
   };
 
-  const list: PigeonRaceHistoryItem[] = ((data ?? []) as unknown as Row[])
-    .filter((row) => row.race !== null && row.race.status === "completed")
-    .map((row) => ({
-      race_pigeon_id: row.id,
-      race_id: row.race!.id,
-      race_name: row.race!.name,
-      started_at: row.race!.started_at,
-      ended_at: row.race!.ended_at,
-      duration_seconds: row.race!.duration_seconds,
-      max_altitude: row.max_altitude,
-      avg_altitude: row.avg_altitude,
-      reached_goal: row.reached_goal,
-      goal_altitude: row.race!.goal_altitude,
-    }))
+  const completedRows = ((data ?? []) as unknown as Row[]).filter(
+    (row) => row.race !== null && row.race.status === "completed"
+  );
+
+  const racePigeonIds = completedRows.map((r) => r.id);
+  const readingsByRacePigeon = new Map<string, { total: number; above: number }>();
+  for (const id of racePigeonIds) readingsByRacePigeon.set(id, { total: 0, above: 0 });
+
+  if (racePigeonIds.length > 0) {
+    const { data: readings, error: readingsErr } = await supabase
+      .from("altitude_readings")
+      .select("race_pigeon_id, altitude")
+      .in("race_pigeon_id", racePigeonIds);
+    if (readingsErr) return { success: false, error: readingsErr.message };
+    for (const r of (readings ?? []) as { race_pigeon_id: string; altitude: number }[]) {
+      const bucket = readingsByRacePigeon.get(r.race_pigeon_id);
+      if (!bucket) continue;
+      bucket.total += 1;
+      if (r.altitude >= VIS_THRESHOLD_M) bucket.above += 1;
+    }
+  }
+
+  const list: PigeonRaceHistoryItem[] = completedRows
+    .map((row) => {
+      const counts = readingsByRacePigeon.get(row.id) ?? { total: 0, above: 0 };
+      const total_time_sec = counts.total * READING_INTERVAL_S;
+      const above_vis_sec = counts.above * READING_INTERVAL_S;
+      const above_vis_pct =
+        total_time_sec > 0 ? (above_vis_sec / total_time_sec) * 100 : 0;
+      const reached_vis = (row.max_altitude ?? 0) >= VIS_THRESHOLD_M;
+      const valid_flight = above_vis_pct > 50;
+      return {
+        race_pigeon_id: row.id,
+        race_id: row.race!.id,
+        race_name: row.race!.name,
+        started_at: row.race!.started_at,
+        ended_at: row.race!.ended_at,
+        duration_seconds: row.race!.duration_seconds,
+        max_altitude: row.max_altitude,
+        avg_altitude: row.avg_altitude,
+        reached_goal: row.reached_goal,
+        goal_altitude: row.race!.goal_altitude,
+        total_time_sec,
+        above_vis_sec,
+        above_vis_pct,
+        reached_vis,
+        valid_flight,
+      };
+    })
     .sort((a, b) =>
       new Date(b.started_at).getTime() - new Date(a.started_at).getTime()
     );

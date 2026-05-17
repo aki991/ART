@@ -11,14 +11,14 @@ type Filter = "mine" | "club" | "public" | "all";
 
 const FILTERS: Array<{ value: Filter; label: string }> = [
   { value: "mine", label: "Moje" },
-  { value: "club", label: "Klub" },
+  { value: "club", label: "Društvo" },
   { value: "public", label: "Javne" },
   { value: "all", label: "Sve" },
 ];
 
 const VISIBILITY_META: Record<RaceVisibility, { Icon: typeof Lock; label: string }> = {
   private: { Icon: Lock, label: "Privatno" },
-  club: { Icon: Users, label: "Klub" },
+  club: { Icon: Users, label: "Društvo" },
   public: { Icon: Globe, label: "Javno" },
 };
 
@@ -96,9 +96,9 @@ function ResultsTable({ races }: { races: RaceListItem[] }) {
         <table className="w-full">
           <thead className="table-header-gradient text-[10px] 2xl:text-xs uppercase text-text-tertiary font-medium">
             <tr>
-              <th className="text-left py-3 px-2 2xl:px-4 whitespace-nowrap">Naziv</th>
+              <th className="text-left py-3 px-2 2xl:px-4 whitespace-nowrap">Vrsta takmičenja</th>
               <th className="text-left py-3 px-2 2xl:px-4 whitespace-nowrap">Golubar</th>
-              <th className="text-left py-3 px-2 2xl:px-4 whitespace-nowrap">Klub</th>
+              <th className="text-left py-3 px-2 2xl:px-4 whitespace-nowrap">Društvo</th>
               <th className="text-left py-3 px-2 2xl:px-4 whitespace-nowrap">Trajanje</th>
               <th className="text-left py-3 px-2 2xl:px-4 whitespace-nowrap">Prosečna visina</th>
               <th className="text-left py-3 px-2 2xl:px-4 whitespace-nowrap">Max visina</th>
@@ -145,7 +145,7 @@ function ResultRow({ race }: { race: RaceListItem }) {
       <td className="py-3 px-2 2xl:py-4 2xl:px-4 text-text-primary font-medium whitespace-nowrap">{race.name}</td>
       <td className="py-3 px-2 2xl:py-4 2xl:px-4 text-text-secondary whitespace-nowrap">{ownerName}</td>
       <td className="py-3 px-2 2xl:py-4 2xl:px-4 text-text-secondary whitespace-nowrap">{clubLabel}</td>
-      <td className="py-3 px-2 2xl:py-4 2xl:px-4 text-text-secondary font-mono whitespace-nowrap">
+      <td className="py-3 px-2 2xl:py-4 2xl:px-4 text-text-secondary whitespace-nowrap">
         {race.duration_seconds != null ? formatDuration(race.duration_seconds) : "—"}
       </td>
       <td className="py-3 px-2 2xl:py-4 2xl:px-4 text-accent font-semibold whitespace-nowrap">

@@ -10,7 +10,7 @@ import { useEmulatorStore } from "@/lib/store/emulator-store";
 import {
   getMyPigeons,
   searchMyPigeons,
-  findOrCreateArchivedPigeon,
+  findOrCreateOwnedPigeon,
 } from "@/app/actions/pigeons";
 import type { Pigeon } from "@/lib/types/pigeon";
 
@@ -224,7 +224,7 @@ export function PigeonForm() {
 
   function handleBandPaste(e: React.ClipboardEvent<HTMLInputElement>) {
     const text = e.clipboardData.getData("text").trim();
-    const match = text.match(/^([A-Za-z]{1,3})(\d{1,4})[·\-](\d{1,2})[·\-](\d{1,2})[·\-](\d{2})$/);
+    const match = text.match(/^([A-Za-z]{1,3})(\d{1,3})[·\-](\d{1,2})[·\-](\d{1,2})[·\-](\d{2})$/);
     if (match) {
       e.preventDefault();
       setBandPrefix(match[1].toUpperCase());
@@ -256,9 +256,10 @@ export function PigeonForm() {
       pigeonIdentifier = selectedPigeon.full_ring_number;
       finalPigeonColor = selectedPigeon.color;
     } else {
-      // Ručno unet broj alkice — upiši (ili nađi) goluba kao archived
-      // da pri startu trke pigeon_id pokazuje na realan red u bazi.
-      const archived = await findOrCreateArchivedPigeon({
+      // Ručno unet broj alkice — odmah upiši (ili pronađi) goluba kao
+      // korisničkog (ne-arhiviranog) tako da se pojavi na stranici Golubovi
+      // i njegova istorija se prati zajedno sa ostalim golubovima.
+      const created = await findOrCreateOwnedPigeon({
         ringCountry: bandPrefix,
         ringNumber: bandMain,
         ringSegment3: bandBreeder,
@@ -266,12 +267,12 @@ export function PigeonForm() {
         ringYear: bandYear,
         color: pigeonColor,
       });
-      if (!archived.success) {
-        toast.error("Programiranje neuspešno", { description: archived.error });
+      if (!created.success) {
+        toast.error("Programiranje neuspešno", { description: created.error });
         return;
       }
-      pigeonId = archived.data.pigeonId;
-      pigeonIdentifier = archived.data.fullRingNumber;
+      pigeonId = created.data.pigeonId;
+      pigeonIdentifier = created.data.fullRingNumber;
       finalPigeonColor = pigeonColor.trim();
     }
 
@@ -308,7 +309,7 @@ export function PigeonForm() {
     "w-full px-2 py-1.5 2xl:px-3 2xl:py-2 bg-bg-input border border-border rounded-md text-sm 2xl:text-base text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none";
 
   const bandInputClass =
-    "px-1.5 py-1.5 2xl:px-3 2xl:py-2 bg-bg-input border border-border rounded-md text-xs 2xl:text-base text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none text-center font-mono";
+    "px-1.5 py-1.5 2xl:px-3 2xl:py-2 bg-bg-input border border-border rounded-md text-xs 2xl:text-base text-text-primary placeholder:text-text-disabled focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none text-center";
 
   return (
     <div className="card-redesign p-4 xl:p-5 2xl:p-6">
@@ -430,7 +431,7 @@ export function PigeonForm() {
                           : "border-l-transparent text-text-tertiary hover:bg-bg-hover hover:text-text-primary"
                       )}
                     >
-                      <span className="font-mono font-medium text-sm xl:text-sm 2xl:text-base whitespace-nowrap">{p.full_ring_number}</span>
+                      <span className="font-medium text-sm xl:text-sm 2xl:text-base whitespace-nowrap">{p.full_ring_number}</span>
                       <span className="text-text-tertiary ml-2 text-xs xl:text-xs 2xl:text-sm whitespace-nowrap">— {p.color}</span>
                     </div>
                   ))
@@ -459,23 +460,6 @@ export function PigeonForm() {
       {showManualFields && (
         <>
           <div className="mb-3 xl:mb-3.5 2xl:mb-4">
-            <label
-              htmlFor="pigeon-color"
-              className="block text-sm xl:text-sm 2xl:text-base font-medium text-text-secondary mb-1.5"
-            >
-              Boja goluba <span className="text-status-error">*</span>
-            </label>
-            <input
-              id="pigeon-color"
-              type="text"
-              value={pigeonColor}
-              onChange={(e) => setPigeonColor(e.target.value)}
-              placeholder="npr. Arap"
-              className={colorInputClass}
-            />
-          </div>
-
-          <div className="mb-4 xl:mb-5 2xl:mb-6">
             <label className="block text-sm xl:text-sm 2xl:text-base font-medium text-text-secondary mb-1.5">
               Broj savezne alke <span className="text-status-error">*</span>
             </label>
@@ -494,17 +478,17 @@ export function PigeonForm() {
                 placeholder="SRB"
                 className={cn(bandInputClass, "w-10 2xl:w-14 min-w-0")}
               />
-              <span className="text-text-disabled select-none font-mono text-xs xl:text-sm 2xl:text-base">-</span>
+              <span className="text-text-disabled select-none text-xs xl:text-sm 2xl:text-base">-</span>
               <input
                 ref={bandMainRef}
                 type="text"
                 inputMode="numeric"
-                maxLength={4}
+                maxLength={3}
                 value={bandMain}
                 onChange={(e) => {
-                  const val = e.target.value.replace(/\D/g, "").slice(0, 4);
+                  const val = e.target.value.replace(/\D/g, "").slice(0, 3);
                   setBandMain(val);
-                  if (val.length === 4) bandBreederRef.current?.focus();
+                  if (val.length === 3) bandBreederRef.current?.focus();
                 }}
                 onKeyDown={(e) => {
                   if (e.key === "Backspace" && !bandMain) bandPrefixRef.current?.focus();
@@ -512,7 +496,7 @@ export function PigeonForm() {
                 placeholder="444"
                 className={cn(bandInputClass, "w-10 2xl:w-14 min-w-0")}
               />
-              <span className="text-text-disabled select-none font-mono text-xs xl:text-sm 2xl:text-base">-</span>
+              <span className="text-text-disabled select-none text-xs xl:text-sm 2xl:text-base">-</span>
               <input
                 ref={bandBreederRef}
                 type="text"
@@ -530,7 +514,7 @@ export function PigeonForm() {
                 placeholder="11"
                 className={cn(bandInputClass, "w-10 2xl:w-14 min-w-0")}
               />
-              <span className="text-text-disabled select-none font-mono text-xs xl:text-sm 2xl:text-base">-</span>
+              <span className="text-text-disabled select-none text-xs xl:text-sm 2xl:text-base">-</span>
               <input
                 ref={bandPigeonRef}
                 type="text"
@@ -548,7 +532,7 @@ export function PigeonForm() {
                 placeholder="22"
                 className={cn(bandInputClass, "w-10 2xl:w-14 min-w-0")}
               />
-              <span className="text-text-disabled select-none font-mono text-xs xl:text-sm 2xl:text-base">-</span>
+              <span className="text-text-disabled select-none text-xs xl:text-sm 2xl:text-base">-</span>
               <input
                 ref={bandYearRef}
                 type="text"
@@ -566,6 +550,23 @@ export function PigeonForm() {
                 className={cn(bandInputClass, "w-10 2xl:w-14 min-w-0")}
               />
             </div>
+          </div>
+
+          <div className="mb-4 xl:mb-5 2xl:mb-6">
+            <label
+              htmlFor="pigeon-color"
+              className="block text-sm xl:text-sm 2xl:text-base font-medium text-text-secondary mb-1.5"
+            >
+              Boja goluba <span className="text-status-error">*</span>
+            </label>
+            <input
+              id="pigeon-color"
+              type="text"
+              value={pigeonColor}
+              onChange={(e) => setPigeonColor(e.target.value)}
+              placeholder="npr. Arap"
+              className={colorInputClass}
+            />
           </div>
         </>
       )}
