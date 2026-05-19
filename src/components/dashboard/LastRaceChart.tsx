@@ -78,16 +78,16 @@ export function LastRaceChart({ race }: LastRaceChartProps) {
       <div className="card-redesign p-12 text-center">
         <Trophy className="w-16 h-16 text-text-disabled mx-auto mb-4" aria-hidden="true" />
         <h3 className="text-lg font-semibold text-text-secondary mb-2">
-          Još nema snimljenih trka
+          Još nema snimljenih letova
         </h3>
         <p className="text-text-tertiary mb-4">
-          Pokreni prvu trku da vidiš grafik ovde.
+          Pokreni prvi let da vidiš grafik ovde.
         </p>
         <Link
           href="/scanning"
           className="inline-flex items-center gap-2 text-accent hover:text-accent-hover font-medium transition-colors"
         >
-          Pokreni prvu trku
+          Pokreni prvi let
           <ArrowRight className="w-4 h-4" aria-hidden="true" />
         </Link>
       </div>
@@ -110,7 +110,7 @@ export function LastRaceChart({ race }: LastRaceChartProps) {
           <div className="flex items-center gap-2">
             <Trophy className="w-5 h-5 text-accent" aria-hidden="true" />
             <span className="text-xs uppercase tracking-wide text-text-tertiary font-medium">
-              Poslednja trka
+              Poslednji let
             </span>
           </div>
           <div className="flex items-center gap-1 text-accent text-sm font-medium">
@@ -140,7 +140,7 @@ export function LastRaceChart({ race }: LastRaceChartProps) {
 
       {chartData.length === 0 ? (
         <div className="text-center py-12 text-text-tertiary">
-          Nema snimljenih merenja za ovu trku.
+          Nema snimljenih merenja za ovaj let.
         </div>
       ) : (
         <RaceAltitudeChart

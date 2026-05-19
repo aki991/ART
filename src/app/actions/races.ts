@@ -76,7 +76,7 @@ export async function startRace(
   if (existing) {
     return {
       success: false,
-      error: `Već imate aktivnu trku "${existing.name}". Završite je pre nego što pokrenete novu.`,
+      error: `Već imate aktivni let "${existing.name}". Završite ga pre nego što pokrenete novi.`,
     };
   }
 
@@ -128,7 +128,7 @@ export async function startRace(
     if (raceError.code === "23505") {
       return {
         success: false,
-        error: "Već imate aktivnu trku. Završite je pre nego što pokrenete novu.",
+        error: "Već imate aktivni let. Završite ga pre nego što pokrenete novi.",
       };
     }
     return { success: false, error: raceError.message };
@@ -185,9 +185,9 @@ export async function endRace(
     .maybeSingle();
 
   if (fetchErr) return { success: false, error: fetchErr.message };
-  if (!race) return { success: false, error: "Trka nije pronađena." };
+  if (!race) return { success: false, error: "Let nije pronađen." };
   if ((race as Race).status !== "in_progress") {
-    return { success: false, error: "Trka je već završena." };
+    return { success: false, error: "Let je već završen." };
   }
 
   const goalAltitude = (race as Race).goal_altitude;
@@ -330,9 +330,9 @@ export async function recordAltitudeBatch(
     .eq("owner_id", user.id)
     .maybeSingle();
 
-  if (!race) return { success: false, error: "Trka nije pronađena." };
+  if (!race) return { success: false, error: "Let nije pronađen." };
   if (race.status !== "in_progress") {
-    return { success: false, error: "Trka više nije aktivna." };
+    return { success: false, error: "Let više nije aktivan." };
   }
 
   const pigeonIds = Array.from(new Set(readings.map((r) => r.pigeonId)));

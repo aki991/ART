@@ -17,7 +17,7 @@ export function RecentRacesTable({ races }: RecentRacesTableProps) {
       <div className="flex items-center justify-between mb-3 xl:mb-3.5 2xl:mb-4 gap-2">
         <h2 className="text-base xl:text-base 2xl:text-lg font-semibold text-text-secondary flex items-center gap-2 min-w-0">
           <Trophy className="w-5 h-5 text-accent flex-shrink-0" aria-hidden="true" />
-          <span className="truncate">Poslednje trke</span>
+          <span className="truncate">Poslednji letovi</span>
         </h2>
         <Link
           href="/races"
@@ -31,9 +31,9 @@ export function RecentRacesTable({ races }: RecentRacesTableProps) {
       {races.length === 0 ? (
         <div className="text-center py-12">
           <Trophy className="w-16 h-16 text-text-disabled mx-auto mb-4" aria-hidden="true" />
-          <p className="text-text-tertiary mb-1">Još nema trka.</p>
+          <p className="text-text-tertiary mb-1">Još nema letova.</p>
           <Link href="/scanning" className="text-sm text-accent hover:underline">
-            Pokreni prvu trku →
+            Pokreni prvi let →
           </Link>
         </div>
       ) : (

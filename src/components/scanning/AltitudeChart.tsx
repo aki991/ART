@@ -69,7 +69,7 @@ export function AltitudeChart() {
           <div className="relative z-10 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-3 lg:px-6 lg:py-4 border border-border">
             <p className="text-text-primary text-sm lg:text-base font-medium text-center">
               Pritisni{" "}
-              <span className="text-accent font-bold">Start trke</span>{" "}
+              <span className="text-accent font-bold">Start leta</span>{" "}
               da pokreneš simulaciju
             </p>
           </div>

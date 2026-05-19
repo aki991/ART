@@ -7,7 +7,7 @@ import { ChevronRight } from "lucide-react";
 const ROUTE_LABELS: Record<string, string> = {
   dashboard: "Početna",
   pigeons: "Golubovi",
-  races: "Rezultati",
+  races: "Letovi",
   scanning: "Povezivanje uređaja",
   programming: "Programiranje prstenova",
   settings: "Postavke",

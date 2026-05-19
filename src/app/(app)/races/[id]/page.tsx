@@ -4,7 +4,7 @@ import { getRaceById } from "@/app/actions/races";
 import { RaceDetailView } from "@/components/races/RaceDetailView";
 
 export const metadata: Metadata = {
-  title: "Detalji trke — Aero Ring Tech",
+  title: "Detalji leta — Aero Ring Tech",
 };
 
 export const dynamic = "force-dynamic";
@@ -23,7 +23,7 @@ export default async function RaceDetailPage({
       <div className="px-6 py-6">
         <div className="bg-bg-surface border border-accent/15 rounded-xl p-12 text-center">
           <h2 className="text-2xl font-bold text-text-primary mb-2 font-rajdhani">
-            Trka nije pronađena
+            Let nije pronađen
           </h2>
           <p className="text-text-tertiary mb-4">
             Možda je obrisana ili nemate dozvolu za pregled.

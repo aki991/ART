@@ -3,7 +3,7 @@ import { RacesClient } from "@/components/races/RacesClient";
 import { getVisibleRaces } from "@/app/actions/races";
 
 export const metadata: Metadata = {
-  title: "Rezultati — Aero Ring Tech",
+  title: "Letovi — Aero Ring Tech",
 };
 
 export const dynamic = "force-dynamic";

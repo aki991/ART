@@ -71,18 +71,18 @@ export function RacesClient({ initialRaces }: RacesClientProps) {
 function EmptyState({ filter }: { filter: Filter }) {
   const message =
     filter === "mine"
-      ? 'Pokrenite trku iz "Trka uživo" da bi se pojavili rezultati.'
+      ? 'Pokrenite let iz "Let uživo" da bi se pojavili rezultati.'
       : filter === "club"
-        ? "Nijedna klupska trka još nije objavljena."
+        ? "Nijedan klupski let još nije objavljen."
         : filter === "public"
-          ? "Nema javnih trka."
-          : "Nema vidljivih trka.";
+          ? "Nema javnih letova."
+          : "Nema vidljivih letova.";
 
   return (
     <div className="bg-bg-surface border border-accent/15 rounded-xl p-12 text-center">
       <Trophy className="w-16 h-16 text-text-disabled mx-auto mb-4" aria-hidden="true" />
       <h2 className="text-2xl font-bold text-text-primary mb-2 font-rajdhani">
-        Još nema rezultata
+        Još nema letova
       </h2>
       <p className="text-text-tertiary">{message}</p>
     </div>

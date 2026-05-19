@@ -5,10 +5,10 @@ import { usePathname } from "next/navigation";
 
 const PAGE_TITLES: Array<[string, string]> = [
   ["/dashboard", "Početna"],
-  ["/scanning", "Trka uživo"],
+  ["/scanning", "Let uživo"],
   ["/programming", "Programiranje prstenova"],
   ["/pigeons", "Golubovi"],
-  ["/races", "Rezultati"],
+  ["/races", "Letovi"],
   ["/settings", "Postavke"],
   ["/super-admin", "Super Admin"],
 ];

@@ -43,7 +43,7 @@ const VISIBILITY_OPTIONS: Array<{
     value: "private",
     label: "Privatno",
     Icon: Lock,
-    description: "Samo vi vidite ovu trku.",
+    description: "Samo vi vidite ovaj let.",
   },
   {
     value: "club",
@@ -55,7 +55,7 @@ const VISIBILITY_OPTIONS: Array<{
     value: "public",
     label: "Javno",
     Icon: Globe,
-    description: "Svi korisnici aplikacije mogu da vide ovu trku.",
+    description: "Svi korisnici aplikacije mogu da vide ovaj let.",
   },
 ];
 
@@ -173,7 +173,7 @@ export function SimulationControls() {
       });
 
       if (!res.success) {
-        toast.error("Trka nije pokrenuta", { description: res.error });
+        toast.error("Let nije pokrenut", { description: res.error });
         setStarting(false);
         return;
       }
@@ -205,7 +205,7 @@ export function SimulationControls() {
         startedAtMs: Date.now(),
       });
 
-      toast.success("Trka pokrenuta");
+      toast.success("Let pokrenut");
     } finally {
       setStarting(false);
     }
@@ -238,7 +238,7 @@ export function SimulationControls() {
       finishRaceSession();
       clearProgrammerSession();
 
-      toast.success("Trka završena");
+      toast.success("Let završen");
       // 3. Navigate to results, then invalidate Router Cache so a later return
       //    to /scanning re-fetches fresh server data (no ghost render).
       router.push(`/races/${res.data.raceId}`);
@@ -263,7 +263,7 @@ export function SimulationControls() {
           <>
             <div>
               <label className="block text-xs uppercase tracking-widest text-text-tertiary font-medium mb-1.5">
-                Vidljivost trke
+                Vidljivost leta
               </label>
               <div
                 className={cn(
@@ -341,16 +341,16 @@ export function SimulationControls() {
               ) : (
                 <Play size={20} aria-hidden="true" />
               )}
-              {starting ? "Pokretanje..." : "Start trke"}
+              {starting ? "Pokretanje..." : "Start leta"}
             </button>
 
             {!canStart && !starting && (
               <p className="text-xs text-text-disabled text-center">
                 {!selectedCompetition
-                  ? "Izaberi vrstu takmičenja da pokreneš trku"
+                  ? "Izaberi vrstu takmičenja da pokreneš let"
                   : selectedCompetition.requiresMinimum && !hasEnoughPigeons
                     ? `Za "${selectedCompetition.label}" potrebno je najmanje ${MIN_PIGEONS_FOR_COMPETITION} golubova (programirano ${pigeonCount})`
-                    : "Programiraj bar 1 prsten da bi pokrenuo trku"}
+                    : "Programiraj bar 1 prsten da bi pokrenuo let"}
               </p>
             )}
           </>
@@ -366,7 +366,7 @@ export function SimulationControls() {
             ) : (
               <Square size={20} aria-hidden="true" />
             )}
-            {ending ? "Završavanje..." : "Završi trku"}
+            {ending ? "Završavanje..." : "Završi let"}
           </button>
         )}
 

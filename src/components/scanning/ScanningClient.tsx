@@ -134,7 +134,7 @@ export function ScanningClient({ initialActiveRace }: ScanningClientProps) {
         const ownEnd = isLocalEnded();
         finishRaceSession();
         if (!ownEnd) {
-          toast.info("Trka je završena u drugom prozoru");
+          toast.info("Let je završen u drugom prozoru");
         }
         router.refresh();
       }

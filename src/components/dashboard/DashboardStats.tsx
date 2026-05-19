@@ -18,13 +18,13 @@ export function DashboardStats({ stats }: DashboardStatsProps) {
       <StatCard
         icon={Trophy}
         value={stats.totalRaces}
-        label="Trka"
+        label="Letova"
         accentColor="cyan"
       />
       <StatCard
         icon={CheckCircle2}
         value={stats.validRaces}
-        label="Validnih trka"
+        label="Validnih letova"
         accentColor="cyan"
       />
       <StatCard

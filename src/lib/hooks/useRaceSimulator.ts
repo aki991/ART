@@ -112,7 +112,7 @@ export function useRaceSimulator() {
       if (!res.success) {
         // If the race is no longer active (e.g. ended in another tab), stop
         // ticking — there's nothing useful left to record.
-        if (res.error === "Trka više nije aktivna.") {
+        if (res.error === "Let više nije aktivan.") {
           stoppedRef.current = true;
         }
       }

@@ -6,10 +6,10 @@ import { Radio, Target, Bird, Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const TABS = [
-  { href: "/scanning", label: "Trka", icon: Radio },
+  { href: "/scanning", label: "Let", icon: Radio },
   { href: "/programming", label: "Prsten", icon: Target },
   { href: "/pigeons", label: "Golubovi", icon: Bird },
-  { href: "/races", label: "Rezultati", icon: Trophy },
+  { href: "/races", label: "Letovi", icon: Trophy },
 ];
 
 export function MobileBottomTabBar() {

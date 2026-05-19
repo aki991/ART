@@ -23,8 +23,8 @@ interface EventDef {
 const EVENTS: EventDef[] = [
   {
     key: "raceEnd",
-    name: "Kraj trke",
-    description: "Obaveštenje kada se trka uspešno završi.",
+    name: "Kraj leta",
+    description: "Obaveštenje kada se let uspešno završi.",
   },
   {
     key: "lowBattery",
@@ -33,7 +33,7 @@ const EVENTS: EventDef[] = [
   },
   {
     key: "weakSignal",
-    name: "Slab signal tokom trke",
+    name: "Slab signal tokom leta",
     description: "Upozorenje kada signal sa uređaja postane nepouzdan.",
   },
   {

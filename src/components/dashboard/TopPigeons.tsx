@@ -45,7 +45,7 @@ export function TopPigeons({ pigeons }: TopPigeonsProps) {
         <div className="text-center py-8">
           <Award className="w-12 h-12 text-text-disabled mx-auto mb-3" aria-hidden="true" />
           <p className="text-sm text-text-tertiary">
-            Pokreni i završi trku da bi se pojavili rangirani golubovi.
+            Pokreni i završi let da bi se pojavili rangirani golubovi.
           </p>
         </div>
       ) : (
@@ -118,7 +118,7 @@ function PigeonRankCard({
 
       <div className="grid grid-cols-3 gap-2">
         <div>
-          <div className="text-text-tertiary uppercase tracking-wide text-[10px]">Trka</div>
+          <div className="text-text-tertiary uppercase tracking-wide text-[10px]">Letova</div>
           <div className="font-semibold text-text-secondary text-sm">{pigeon.race_count}</div>
         </div>
         <div>

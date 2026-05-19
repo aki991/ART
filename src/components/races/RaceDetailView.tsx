@@ -111,8 +111,8 @@ function RaceHeader({ race }: { race: RaceWithDetails }) {
       {race.status !== "completed" && (
         <p className="mt-4 text-sm text-status-warning">
           {race.status === "in_progress"
-            ? "Trka je još uvek u toku."
-            : "Trka je otkazana."}
+            ? "Let je još uvek u toku."
+            : "Let je otkazan."}
         </p>
       )}
     </div>
@@ -206,7 +206,7 @@ function RaceChartCard({
 
       {chartData.length === 0 ? (
         <div className="text-center py-12 text-text-tertiary">
-          Nema snimljenih merenja za ovu trku.
+          Nema snimljenih merenja za ovaj let.
         </div>
       ) : (
         <RaceAltitudeChart
@@ -277,7 +277,7 @@ function RaceStatisticsTable({
           Izveštaj po golubu
         </h2>
         <p className="text-sm xl:text-sm 2xl:text-base text-text-tertiary">
-          Let je validan ako je golub više od 50% trajanja trke proveo iznad {VIS_THRESHOLD_M}m.
+          Let je validan ako je golub više od 50% trajanja leta proveo iznad {VIS_THRESHOLD_M}m.
         </p>
       </div>
       <div className="overflow-x-auto">

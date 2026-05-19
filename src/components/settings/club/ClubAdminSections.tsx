@@ -439,7 +439,7 @@ export function ClubAdminSections({
           <p className="text-sm text-text-tertiary mt-0.5 max-lg:text-xs">
             {blockLeave
               ? "Prvo promovišite drugog člana u admina pre nego što napustite društvo."
-              : "Vaše trke i golubovi ostaju, ali nećete više pripadati društvu."}
+              : "Vaši letovi i golubovi ostaju, ali nećete više pripadati društvu."}
           </p>
         </div>
         <Button

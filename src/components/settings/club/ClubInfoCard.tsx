@@ -120,7 +120,7 @@ export function ClubInfoCard({
           <p className="text-sm text-text-tertiary mt-0.5 max-lg:text-xs">
             {blockLeave
               ? "Prvo promovišite drugog člana u admina pre nego što napustite društvo."
-              : "Vaše trke i golubovi ostaju, ali nećete više pripadati društvu."}
+              : "Vaši letovi i golubovi ostaju, ali nećete više pripadati društvu."}
           </p>
         </div>
         <Button
@@ -146,7 +146,7 @@ export function ClubInfoCard({
         title="Napusti društvo"
         message={
           <>
-            Da li ste sigurni da želite da napustite društvo? Vaše trke i golubovi
+            Da li ste sigurni da želite da napustite društvo? Vaši letovi i golubovi
             ostaju, ali nećete više pripadati društvu{" "}
             <span className="text-text-primary font-medium">{club.name}</span>.
           </>

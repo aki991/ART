@@ -153,13 +153,13 @@ export function PigeonHistoryModal({
           </div>
 
           <div className="mb-4">
-            <h3 className="text-lg font-semibold text-text-primary">Istorija trka</h3>
+            <h3 className="text-lg font-semibold text-text-primary">Istorija letova</h3>
             <p className="text-sm text-text-tertiary">
               {loading
                 ? "Učitavanje istorije..."
                 : history.length === 0
-                  ? "Ovaj golub još nije učestvovao u trkama."
-                  : `Učestvovao u ${history.length} ${history.length === 1 ? "trci" : "trka"}.`}
+                  ? "Ovaj golub još nije učestvovao u letovima."
+                  : `Učestvovao u ${history.length} ${history.length === 1 ? "letu" : "letova"}.`}
             </p>
           </div>
 
@@ -171,10 +171,10 @@ export function PigeonHistoryModal({
             <div className="text-center py-12 bg-bg-surface border border-dashed border-border rounded-xl">
               <Trophy className="w-16 h-16 text-text-disabled mx-auto mb-4" aria-hidden="true" />
               <p className="text-text-secondary mb-1">
-                Ovaj golub još nije učestvovao u trkama.
+                Ovaj golub još nije učestvovao u letovima.
               </p>
               <p className="text-sm text-text-tertiary">
-                Programiraj prsten ovom golubu i pokreni trku.
+                Programiraj prsten ovom golubu i pokreni let.
               </p>
             </div>
           ) : (

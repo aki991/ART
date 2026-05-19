@@ -19,10 +19,10 @@ import type { NavItem } from "./SidebarNavGroup";
 
 const MAIN_NAV: NavItem[] = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Početna" },
-  { href: "/scanning", icon: Radio, label: "Trka uživo" },
+  { href: "/scanning", icon: Radio, label: "Let uživo" },
   { href: "/programming", icon: Target, label: "Programiranje prstenova" },
   { href: "/pigeons", icon: Bird, label: "Golubovi" },
-  { href: "/races", icon: Trophy, label: "Rezultati" },
+  { href: "/races", icon: Trophy, label: "Letovi" },
 ];
 
 const SETTINGS_NAV: NavItem = {

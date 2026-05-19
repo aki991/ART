@@ -11,10 +11,10 @@ export const CHANGELOG: ChangelogEntry[] = [
     date: "14.05.2026.",
     changes: [
       "Inicijalno izdanje aplikacije Aero Ring Tech",
-      "Praćenje trka uživo sa real-time grafikonom visine",
+      "Praćenje letova uživo sa real-time grafikonom visine",
       "Programiranje prstenova sa sinhronizovanim statusima detektovanih i programiranih prstenova",
       "Upravljanje listom golubova sa pretragom po broju",
-      "Pregled rezultata svih trka sa detaljnim izveštajima",
+      "Pregled rezultata svih letova sa detaljnim izveštajima",
       "Stranica Postavke sa upravljanjem profilom, društvom i golubarnikom",
     ],
   },
