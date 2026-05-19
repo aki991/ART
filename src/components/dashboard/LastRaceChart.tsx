@@ -58,7 +58,12 @@ export function LastRaceChart({ race }: LastRaceChartProps) {
     if (!race) return computeYAxisConfig(800);
     let maxAlt = race.goal_altitude;
     for (const p of pigeonsWithColor) {
-      if ((p.max_altitude ?? 0) > maxAlt) maxAlt = p.max_altitude ?? maxAlt;
+      if ((p.max_altitude ?? 0) > maxAlt) maxAlt = p.max_altitude!;
+      // Aggregate p.max_altitude može biti NULL za aktivne trke — uvek skeniramo
+      // i sirove readings da se Y-osa proširi i dok let traje.
+      for (const r of p.readings) {
+        if (r.altitude > maxAlt) maxAlt = r.altitude;
+      }
     }
     return computeYAxisConfig(maxAlt);
   }, [pigeonsWithColor, race]);

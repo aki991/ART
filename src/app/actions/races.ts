@@ -511,6 +511,79 @@ export async function getVisibleRaces(
   return { success: true, data: list };
 }
 
+export interface LiveRace {
+  id: string;
+  name: string;
+  owner_id: string;
+  owner_name: string;
+  club_id: string | null;
+  club_name: string | null;
+  visibility: "private" | "club" | "public";
+  started_at: string;
+  goal_altitude: number;
+  pigeon_count: number;
+}
+
+type LiveRaceRow = {
+  id: string;
+  name: string;
+  owner_id: string;
+  club_id: string | null;
+  visibility: "private" | "club" | "public";
+  started_at: string;
+  goal_altitude: number;
+  owner_profile: {
+    first_name: string | null;
+    last_name: string | null;
+    username: string | null;
+  } | null;
+  club: { name: string } | null;
+  race_pigeons: { id: string }[] | null;
+};
+
+export async function getLiveRaces(): Promise<ActionResponse<LiveRace[]>> {
+  noStore();
+  const { supabase, user } = await requireUser();
+  if (!user) return { success: false, error: "Niste prijavljeni." };
+
+  // Aktivni letovi = ended_at IS NULL (status = 'in_progress').
+  // RLS politike pokrivaju vidljivost: privatno = vlasnik, club = članovi,
+  // public = svi. Klijent ne mora ručno da filtrira.
+  const { data, error } = await supabase
+    .from("races")
+    .select(
+      `id, name, owner_id, club_id, visibility, started_at, goal_altitude,
+       owner_profile:profiles!races_owner_id_fkey(first_name, last_name, username),
+       club:clubs(name),
+       race_pigeons(id)`
+    )
+    .is("ended_at", null)
+    .order("started_at", { ascending: false });
+
+  if (error) return { success: false, error: error.message };
+
+  const list: LiveRace[] = ((data ?? []) as unknown as LiveRaceRow[]).map((row) => {
+    const profile = row.owner_profile;
+    const fullName = profile
+      ? `${profile.first_name ?? ""} ${profile.last_name ?? ""}`.trim()
+      : "";
+    return {
+      id: row.id,
+      name: row.name,
+      owner_id: row.owner_id,
+      owner_name: fullName || profile?.username || "Nepoznat",
+      club_id: row.club_id,
+      club_name: row.club?.name ?? null,
+      visibility: row.visibility,
+      started_at: row.started_at,
+      goal_altitude: row.goal_altitude,
+      pigeon_count: row.race_pigeons?.length ?? 0,
+    };
+  });
+
+  return { success: true, data: list };
+}
+
 export async function getRaceById(
   id: string
 ): Promise<ActionResponse<RaceWithDetails | null>> {

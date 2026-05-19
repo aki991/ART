@@ -1,5 +1,5 @@
-const MIN_Y_AXIS_MAX = 1000;
 const Y_AXIS_STEP = 200;
+const Y_AXIS_PADDING_RATIO = 1.1; // 10% prostor iznad max vrednosti
 
 export function buildXTicks(xMaxMinutes: number): number[] {
   const step =
@@ -19,14 +19,14 @@ export interface YAxisConfig {
   ticks: number[];
 }
 
+// Dinamička Y-osa: gornji bound = max vrednost + 10% padding, zaokruženo na
+// sledeći deljiv broj sa Y_AXIS_STEP (200m) za lepe tick labele.
+// Primeri: max=500 -> 600, max=1200 -> 1400, max=2069 -> 2400.
+// Nema fiksne donje granice; pozivajući kod treba da prosledi
+// max(actual_data, goal_altitude) tako da i 800m VIS linija ostane unutar.
 export function computeYAxisConfig(maxAltitude: number): YAxisConfig {
-  let upperBound: number;
-
-  if (maxAltitude <= MIN_Y_AXIS_MAX) {
-    upperBound = MIN_Y_AXIS_MAX;
-  } else {
-    upperBound = Math.ceil((maxAltitude + 1) / Y_AXIS_STEP) * Y_AXIS_STEP;
-  }
+  const target = Math.max(maxAltitude * Y_AXIS_PADDING_RATIO, Y_AXIS_STEP);
+  const upperBound = Math.ceil(target / Y_AXIS_STEP) * Y_AXIS_STEP;
 
   const ticks: number[] = [];
   for (let i = 0; i <= upperBound; i += Y_AXIS_STEP) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { Calendar, Trophy, MapPin, Clock, Check, X, Lock, Users, Globe } from "lucide-react";
 import { computeYAxisConfig, buildXTicks } from "@/lib/utils/y-axis";
@@ -72,6 +72,9 @@ export function RaceDetailView({ race }: RaceDetailViewProps) {
 }
 
 function RaceHeader({ race }: { race: RaceWithDetails }) {
+  const isLive = race.ended_at === null && race.status === "in_progress";
+  const liveDuration = useLiveDuration(isLive ? race.started_at : null);
+
   const dateStr = new Date(race.started_at).toLocaleDateString("sr-RS", {
     day: "2-digit",
     month: "2-digit",
@@ -87,12 +90,29 @@ function RaceHeader({ race }: { race: RaceWithDetails }) {
   const clubLabel = race.club ? race.club.name : "—";
   const { Icon: VisIcon, label: visLabel } = VISIBILITY_META[race.visibility];
 
+  const durationValue = isLive
+    ? liveDuration
+    : durationSec > 0
+      ? formatDuration(durationSec)
+      : "—";
+
   return (
     <div className="bg-bg-surface border border-accent/15 rounded-xl p-4 xl:p-5 2xl:p-6">
       <div className="flex items-start justify-between mb-3 xl:mb-3.5 2xl:mb-4 gap-3 xl:gap-3.5 2xl:gap-4 min-w-0">
-        <h1 className="text-2xl xl:text-2xl 2xl:text-3xl font-bold text-text-primary font-rajdhani truncate min-w-0">
-          {race.name}
-        </h1>
+        <div className="flex items-center gap-3 min-w-0">
+          <h1 className="text-2xl xl:text-2xl 2xl:text-3xl font-bold text-text-primary font-rajdhani truncate min-w-0">
+            {race.name}
+          </h1>
+          {isLive && (
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-status-error/10 border border-status-error/30 text-status-error text-xs xl:text-sm font-semibold whitespace-nowrap flex-shrink-0">
+              <span
+                className="w-2 h-2 rounded-full bg-status-error animate-pulse"
+                aria-hidden="true"
+              />
+              U TOKU
+            </span>
+          )}
+        </div>
         <span className="inline-flex items-center gap-1.5 px-2 xl:px-2.5 2xl:px-3 py-1 xl:py-1 2xl:py-1.5 rounded-md bg-bg-input border border-border text-xs xl:text-xs 2xl:text-sm text-text-secondary whitespace-nowrap flex-shrink-0">
           <VisIcon className="w-4 h-4" aria-hidden="true" />
           {visLabel}
@@ -104,19 +124,42 @@ function RaceHeader({ race }: { race: RaceWithDetails }) {
         <InfoItem
           icon={<Clock className="w-4 h-4" />}
           label="Trajanje"
-          value={durationSec > 0 ? formatDuration(durationSec) : "—"}
+          value={durationValue}
         />
         <InfoItem icon={<Calendar className="w-4 h-4" />} label="Datum" value={dateStr} />
       </div>
       {race.status !== "completed" && (
         <p className="mt-4 text-sm text-status-warning">
           {race.status === "in_progress"
-            ? "Let je još uvek u toku."
+            ? "Let je još uvek u toku. Osvežite stranicu da vidite nova merenja."
             : "Let je otkazan."}
         </p>
       )}
     </div>
   );
+}
+
+function useLiveDuration(startIso: string | null): string {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!startIso) return;
+    const interval = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(interval);
+  }, [startIso]);
+  if (!startIso) return "—";
+  const startMs = new Date(startIso).getTime();
+  const elapsedSec = Math.max(0, Math.floor((now - startMs) / 1000));
+  return formatLiveDuration(elapsedSec);
+}
+
+function formatLiveDuration(totalSeconds: number): string {
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  const s = totalSeconds % 60;
+  if (h > 0) {
+    return `${h}h ${String(m).padStart(2, "0")}m ${String(s).padStart(2, "0")}s`;
+  }
+  return `${m}m ${String(s).padStart(2, "0")}s`;
 }
 
 function InfoItem({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
@@ -180,7 +223,12 @@ function RaceChartCard({
   const yAxisConfig = useMemo(() => {
     let maxAlt = race.goal_altitude;
     for (const p of pigeonsWithColor) {
-      if ((p.max_altitude ?? 0) > maxAlt) maxAlt = p.max_altitude ?? maxAlt;
+      if ((p.max_altitude ?? 0) > maxAlt) maxAlt = p.max_altitude!;
+      // Aggregate p.max_altitude može biti NULL za aktivne trke — uvek skeniramo
+      // i sirove readings da se Y-osa proširi i dok let traje.
+      for (const r of p.readings) {
+        if (r.altitude > maxAlt) maxAlt = r.altitude;
+      }
     }
     return computeYAxisConfig(maxAlt);
   }, [pigeonsWithColor, race.goal_altitude]);
