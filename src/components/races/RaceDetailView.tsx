@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Calendar, Trophy, MapPin, Clock, Check, X, Lock, Users, Globe } from "lucide-react";
 import { computeYAxisConfig, buildXTicks } from "@/lib/utils/y-axis";
@@ -8,7 +9,8 @@ import { RaceAltitudeChart } from "@/components/shared/RaceAltitudeChart";
 import { PIGEON_COLOR_PALETTE } from "@/lib/utils/pigeon-palette";
 import { PigeonHistoryModal } from "@/components/pigeons/PigeonHistoryModal";
 import { getPigeonById } from "@/app/actions/pigeons";
-import type { RaceWithDetails } from "@/lib/types/race";
+import { createClient } from "@/lib/supabase/client";
+import type { RaceWithDetails, AltitudeReading } from "@/lib/types/race";
 import type { Pigeon } from "@/lib/types/pigeon";
 
 interface RaceDetailViewProps {
@@ -22,19 +24,84 @@ const VISIBILITY_META = {
 } as const;
 
 export function RaceDetailView({ race }: RaceDetailViewProps) {
+  const router = useRouter();
   const [openPigeon, setOpenPigeon] = useState<Pigeon | null>(null);
   const [loadingPigeonId, setLoadingPigeonId] = useState<string | null>(null);
+  const [liveRace, setLiveRace] = useState(race);
+
+  // Sinhroniziši lokalno stanje kad SSR pošalje svežu trku (npr. posle
+  // router.refresh() pri završetku trke iz drugog browsera).
+  useEffect(() => {
+    setLiveRace(race);
+  }, [race]);
+
+  const isLive =
+    liveRace.ended_at === null && liveRace.status === "in_progress";
+
+  // Realtime: kad je trka aktivna, slušamo nove altitude_readings i UPDATE
+  // na trci (završetak). RLS osigurava da klijent prima samo events koje
+  // sme da vidi; dodatno filtriramo po race_pigeon_id-ovima ove trke jer
+  // altitude_readings nema direktan race_id stub.
+  useEffect(() => {
+    if (!isLive) return;
+
+    const supabase = createClient();
+    const racePigeonIds = new Set(liveRace.race_pigeons.map((rp) => rp.id));
+
+    const readingsChannel = supabase
+      .channel(`race-${liveRace.id}-readings`)
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "altitude_readings" },
+        (payload) => {
+          const reading = payload.new as AltitudeReading;
+          if (!racePigeonIds.has(reading.race_pigeon_id)) return;
+          setLiveRace((prev) => ({
+            ...prev,
+            race_pigeons: prev.race_pigeons.map((rp) => {
+              if (rp.id !== reading.race_pigeon_id) return rp;
+              // Postgres može da pošalje INSERT 2× pri reconnection-u.
+              if (rp.readings.some((r) => r.id === reading.id)) return rp;
+              return { ...rp, readings: [...rp.readings, reading] };
+            }),
+          }));
+        }
+      )
+      .subscribe();
+
+    const raceChannel = supabase
+      .channel(`race-${liveRace.id}-status`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "races",
+          filter: `id=eq.${liveRace.id}`,
+        },
+        () => {
+          // Trka završena/otkazana → fetch sveže server podatke (final stats).
+          router.refresh();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      void supabase.removeChannel(readingsChannel);
+      void supabase.removeChannel(raceChannel);
+    };
+  }, [isLive, liveRace.id, liveRace.race_pigeons, router]);
 
   const pigeonsWithColor = useMemo(
     () =>
-      race.race_pigeons.map((rp, idx) => ({
+      liveRace.race_pigeons.map((rp, idx) => ({
         ...rp,
         // rp.color je server-side dodeljen pri startRace; fallback za
         // stare trke (pre migracije 007) gde je color = NULL.
         chartColor:
           rp.color ?? PIGEON_COLOR_PALETTE[idx % PIGEON_COLOR_PALETTE.length],
       })),
-    [race.race_pigeons]
+    [liveRace.race_pigeons]
   );
 
   async function handlePigeonClick(pigeonId: string) {
@@ -54,11 +121,11 @@ export function RaceDetailView({ race }: RaceDetailViewProps) {
 
   return (
     <div className="px-4 xl:px-5 2xl:px-6 py-4 xl:py-5 2xl:py-6 space-y-4 xl:space-y-5 2xl:space-y-6">
-      <RaceHeader race={race} />
-      <RaceChartCard race={race} pigeonsWithColor={pigeonsWithColor} />
+      <RaceHeader race={liveRace} />
+      <RaceChartCard race={liveRace} pigeonsWithColor={pigeonsWithColor} />
       <RaceStatisticsTable
         pigeonsWithColor={pigeonsWithColor}
-        goalAltitude={race.goal_altitude}
+        goalAltitude={liveRace.goal_altitude}
         onPigeonClick={handlePigeonClick}
         loadingPigeonId={loadingPigeonId}
       />
@@ -128,12 +195,17 @@ function RaceHeader({ race }: { race: RaceWithDetails }) {
         />
         <InfoItem icon={<Calendar className="w-4 h-4" />} label="Datum" value={dateStr} />
       </div>
-      {race.status !== "completed" && (
-        <p className="mt-4 text-sm text-status-warning">
-          {race.status === "in_progress"
-            ? "Let je još uvek u toku. Osvežite stranicu da vidite nova merenja."
-            : "Let je otkazan."}
+      {isLive && (
+        <p className="mt-4 inline-flex items-center gap-2 text-sm text-text-tertiary">
+          <span
+            className="w-2 h-2 rounded-full bg-status-success animate-pulse"
+            aria-hidden="true"
+          />
+          Real-time praćenje aktivno
         </p>
+      )}
+      {race.status === "cancelled" && (
+        <p className="mt-4 text-sm text-status-warning">Let je otkazan.</p>
       )}
     </div>
   );

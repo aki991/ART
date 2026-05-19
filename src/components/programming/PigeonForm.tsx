@@ -41,6 +41,7 @@ export function PigeonForm() {
   const bandBreederRef = useRef<HTMLInputElement>(null);
   const bandPigeonRef = useRef<HTMLInputElement>(null);
   const bandYearRef = useRef<HTMLInputElement>(null);
+  const searchInitializedRef = useRef(false);
 
   const isProgramming = useProgrammerStore((s) => s.isProgramming);
   const programRing = useProgrammerStore((s) => s.programRing);
@@ -100,9 +101,16 @@ export function PigeonForm() {
   }, [isDropdownOpen, pigeonsLoaded]);
 
   // Server-side search with debounce when user types.
+  // Preskačemo prvo pokretanje koje je trigerovano time što je inicijalni
+  // load postavio pigeonsLoaded=true — inače bi se odmah ispalio drugi fetch
+  // i ispao bi drugi loading spinner odmah posle prvog.
   useEffect(() => {
     if (!pigeonsLoaded) return;
     if (selectedPigeon) return;
+    if (!searchInitializedRef.current) {
+      searchInitializedRef.current = true;
+      return;
+    }
 
     const term = inputValue.trim();
     let cancelled = false;
@@ -476,7 +484,7 @@ export function PigeonForm() {
                 }}
                 onPaste={handleBandPaste}
                 placeholder="SRB"
-                className={cn(bandInputClass, "w-10 2xl:w-14 min-w-0")}
+                className={cn(bandInputClass, "w-12 2xl:w-16 min-w-0")}
               />
               <span className="text-text-disabled select-none text-xs xl:text-sm 2xl:text-base">-</span>
               <input

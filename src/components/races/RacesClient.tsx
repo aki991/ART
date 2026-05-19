@@ -5,6 +5,7 @@ import { Trophy, Loader2, Lock, Users, Globe } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { getVisibleRaces, getLiveRaces, type LiveRace } from "@/app/actions/races";
+import { createClient } from "@/lib/supabase/client";
 import type { RaceListItem, RaceVisibility } from "@/lib/types/race";
 
 type Filter = "live" | "mine" | "club" | "public" | "all";
@@ -34,21 +35,38 @@ export function RacesClient({ initialRaces }: RacesClientProps) {
   const [liveRaces, setLiveRaces] = useState<LiveRace[]>([]);
   const [liveLoaded, setLiveLoaded] = useState(false);
 
-  // Globalno polling za "Uživo" — radi i kad je korisnik na drugim tabovima
-  // kako bi badge count u tab dugmetu uvek bio svež.
+  // Realtime subscription na 'races' tabelu — instant update kad neki golubar
+  // pokrene/završi let (RLS automatski filtrira po vidljivosti). Refetch celu
+  // listu pri bilo kakvoj promeni — jednostavnije nego pratiti pojedinačne
+  // INSERT/UPDATE/DELETE eventove. Badge count se osvežava globalno (nezavisno
+  // od trenutno aktivnog taba).
   useEffect(() => {
     let cancelled = false;
-    async function fetchLive() {
+    const supabase = createClient();
+
+    async function refetchLive() {
       const res = await getLiveRaces();
       if (cancelled) return;
       if (res.success) setLiveRaces(res.data);
       setLiveLoaded(true);
     }
-    void fetchLive();
-    const interval = setInterval(() => void fetchLive(), LIVE_POLL_INTERVAL_MS);
+
+    void refetchLive();
+
+    const channel = supabase
+      .channel("live-races-changes")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "races" },
+        () => {
+          void refetchLive();
+        }
+      )
+      .subscribe();
+
     return () => {
       cancelled = true;
-      clearInterval(interval);
+      void supabase.removeChannel(channel);
     };
   }, []);
 
@@ -110,8 +128,6 @@ export function RacesClient({ initialRaces }: RacesClientProps) {
     </div>
   );
 }
-
-const LIVE_POLL_INTERVAL_MS = 5000;
 
 function LiveRacesTab({
   liveRaces,
