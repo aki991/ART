@@ -31,6 +31,7 @@ interface SettingsState {
   saveLoft: (loft: LoftData) => void;
   saveNotifications: (notifications: NotificationPrefs) => void;
   saveAppearance: (appearance: AppearancePrefs) => void;
+  reset: () => void;
 }
 
 type PersistedSettings = Pick<
@@ -48,6 +49,13 @@ export const useSettingsStore = create<SettingsState>()(
       saveLoft: (loft) => set({ loft }),
       saveNotifications: (notifications) => set({ notifications }),
       saveAppearance: (appearance) => set({ appearance }),
+
+      reset: () =>
+        set({
+          loft: DEFAULT_LOFT,
+          notifications: DEFAULT_NOTIFICATIONS,
+          appearance: DEFAULT_APPEARANCE,
+        }),
     }),
     {
       name: "art-settings",

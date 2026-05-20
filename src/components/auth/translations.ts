@@ -27,6 +27,7 @@ export type TranslationKey =
   | "errorPasswordMin"
   | "errorPasswordMatch"
   | "errorUsernameTaken"
+  | "errorUsernameInvalid"
   | "errorInvalidLogin"
   | "errorGeneric"
   | "forgotModalTitle"
@@ -61,6 +62,8 @@ export const translations: Record<Lang, Record<TranslationKey, string>> = {
     errorPasswordMin: "Lozinka mora imati najmanje 8 karaktera.",
     errorPasswordMatch: "Lozinke se ne poklapaju.",
     errorUsernameTaken: "Korisničko ime je već zauzeto.",
+    errorUsernameInvalid:
+      "Korisničko ime: dozvoljena su samo slova a–z (bez š, č, ć, ž, đ), brojevi i _, najmanje 3 znaka.",
     errorInvalidLogin: "Pogrešno korisničko ime/email ili lozinka.",
     errorGeneric: "Došlo je do greške. Pokušajte ponovo.",
     forgotModalTitle: "Zaboravljena lozinka",
@@ -94,6 +97,8 @@ export const translations: Record<Lang, Record<TranslationKey, string>> = {
     errorPasswordMin: "Password must be at least 8 characters.",
     errorPasswordMatch: "Passwords do not match.",
     errorUsernameTaken: "Username is already taken.",
+    errorUsernameInvalid:
+      "Username may contain only letters a–z, numbers and _, and must be at least 3 characters.",
     errorInvalidLogin: "Invalid username/email or password.",
     errorGeneric: "Something went wrong. Please try again.",
     forgotModalTitle: "Forgot password",
@@ -127,6 +132,8 @@ export const translations: Record<Lang, Record<TranslationKey, string>> = {
     errorPasswordMin: "Das Passwort muss mindestens 8 Zeichen lang sein.",
     errorPasswordMatch: "Passwörter stimmen nicht überein.",
     errorUsernameTaken: "Benutzername ist bereits vergeben.",
+    errorUsernameInvalid:
+      "Der Benutzername darf nur Buchstaben a–z, Zahlen und _ enthalten und muss mindestens 3 Zeichen lang sein.",
     errorInvalidLogin: "Falscher Benutzername/E-Mail oder Passwort.",
     errorGeneric: "Etwas ist schief gelaufen. Bitte erneut versuchen.",
     forgotModalTitle: "Passwort vergessen",

@@ -16,7 +16,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import { useCurrentUser } from "@/components/providers/CurrentUserProvider";
-import { signOutAction } from "@/app/auth/actions";
+import { performSignOut } from "@/lib/auth/sign-out";
 
 interface MobileHamburgerDrawerProps {
   isOpen: boolean;
@@ -72,7 +72,7 @@ export function MobileHamburgerDrawer({
     if (signingOut) return;
     setSigningOut(true);
     startTransition(async () => {
-      await signOutAction();
+      await performSignOut();
       onClose();
       router.replace("/");
       router.refresh();

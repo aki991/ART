@@ -5,6 +5,7 @@ interface SidebarStore {
   expanded: boolean;
   toggle: () => void;
   setExpanded: (expanded: boolean) => void;
+  reset: () => void;
 }
 
 export const useSidebarStore = create<SidebarStore>()(
@@ -13,6 +14,7 @@ export const useSidebarStore = create<SidebarStore>()(
       expanded: true,
       toggle: () => set((s) => ({ expanded: !s.expanded })),
       setExpanded: (expanded) => set({ expanded }),
+      reset: () => set({ expanded: true }),
     }),
     { name: "art-sidebar" }
   )

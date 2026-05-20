@@ -43,7 +43,7 @@ export default function RegisterForm({ onSwitch, t }: RegisterFormProps) {
       return t.errorRequired;
     }
     if (!USERNAME_RE.test(data.username.trim()) || data.username.trim().length < 3) {
-      return t.errorUsernameTaken; // reuses the "username invalid" surface
+      return t.errorUsernameInvalid;
     }
     if (!EMAIL_RE.test(data.email.trim())) {
       return t.errorEmailFormat;

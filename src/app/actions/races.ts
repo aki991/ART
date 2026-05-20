@@ -3,6 +3,7 @@
 import { revalidatePath, unstable_noStore as noStore } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { PIGEON_COLOR_PALETTE } from "@/lib/utils/pigeon-palette";
+import { computeFlightStats } from "@/lib/utils/flight-stats";
 import type { ActionResponse } from "./club-types";
 import type {
   AltitudeBatchEntry,
@@ -247,7 +248,10 @@ export async function endRace(
     if (max > raceMax) raceMax = max;
     raceSum += sum;
     raceCount += count;
-    if (reached) isValid = true;
+    // Trka je validna ako je BAR jedan golub > 50% merenja proveo iznad VIS
+    // praga (800m) — isti kriterijum kao izveštaj na /races/[id]. (Ranije je
+    // ovde stajalo `reached` = max >= 800, što je drugačija, blaža provera.)
+    if (computeFlightStats(rp.readings).pctAbove > 50) isValid = true;
 
     updates.push({
       id: rp.id,

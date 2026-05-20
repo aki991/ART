@@ -29,6 +29,7 @@ interface ProgrammerState {
   clearSession: () => void;
   selectRing: (ringId: string, slotIndex: number) => void;
   clearSelectedRing: () => void;
+  reset: () => void;
 }
 
 const delay = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
@@ -104,6 +105,14 @@ export const useProgrammerStore = create<ProgrammerState>()(
 
       clearSelectedRing: () =>
         set({ selectedRingId: null, selectedSlotIndex: null }),
+
+      reset: () =>
+        set({
+          sessionPrograms: [],
+          isProgramming: false,
+          selectedRingId: null,
+          selectedSlotIndex: null,
+        }),
     }),
     {
       name: STORAGE_KEY,

@@ -11,6 +11,7 @@ import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { useCurrentUser } from "@/components/providers/CurrentUserProvider";
 import { createClient } from "@/lib/supabase/client";
 import { deleteAccountAction } from "@/app/auth/actions";
+import { clearAllStores } from "@/lib/store/clear-all";
 import { readImageFile } from "@/lib/settings/image-upload";
 import type { ProfileData } from "@/lib/settings/types";
 import { ChangePasswordModal } from "../modals/ChangePasswordModal";
@@ -84,6 +85,7 @@ export function ProfileTab({ value, onChange }: ProfileTabProps) {
     }
     setDeleteOpen(false);
     toast.success("Nalog obrisan");
+    clearAllStores();
     router.replace("/");
     router.refresh();
   }

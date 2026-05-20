@@ -19,6 +19,7 @@ interface EmulatorState {
   ejectRing: (slotIndex: number) => void;
   getInsertedRings: () => EmulatorSlot[];
   setSlotColor: (slotIndex: number, color: string) => void;
+  reset: () => void;
 }
 
 function initSlots(): EmulatorSlot[] {
@@ -68,6 +69,8 @@ export const useEmulatorStore = create<EmulatorState>()(
             slot.index === slotIndex ? { ...slot, ringColor: color } : slot
           ),
         })),
+
+      reset: () => set({ slots: initSlots() }),
     }),
     {
       name: "art-emulator-slots",

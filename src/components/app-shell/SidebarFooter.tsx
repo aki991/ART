@@ -6,7 +6,7 @@ import { LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useConnectionStore } from "@/lib/store/connection-store";
 import { useCurrentUser } from "@/components/providers/CurrentUserProvider";
-import { signOutAction } from "@/app/auth/actions";
+import { performSignOut } from "@/lib/auth/sign-out";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 interface SidebarFooterProps {
@@ -47,7 +47,7 @@ export function SidebarFooter({ expanded }: SidebarFooterProps) {
     if (signingOut) return;
     setSigningOut(true);
     startTransition(async () => {
-      await signOutAction();
+      await performSignOut();
       router.replace("/");
       router.refresh();
     });
