@@ -29,6 +29,9 @@ export function TopBar({ breadcrumbSegments }: TopBarProps) {
   const isDashboard = pathname === "/dashboard";
   const isScanning = pathname === "/scanning";
   const isRaceDetail = /^\/races\/.+/.test(pathname);
+  const isPigeonDetail = /^\/pigeons\/.+/.test(pathname);
+  const isDetail = isRaceDetail || isPigeonDetail;
+  const detailBackHref = isPigeonDetail ? "/pigeons" : "/races";
 
   const status = useConnectionStore((s) => s.status);
   const raceActive = useConnectionStore((s) => s.raceActive);
@@ -53,12 +56,12 @@ export function TopBar({ breadcrumbSegments }: TopBarProps) {
           </h1>
           {raceActive && <LiveIndicator />}
         </div>
-      ) : isRaceDetail ? (
+      ) : isDetail ? (
         <button
           type="button"
           onClick={() => {
             if (window.history.length > 1) router.back();
-            else router.push("/races");
+            else router.push(detailBackHref);
           }}
           className="flex items-center gap-3 xl:gap-3.5 2xl:gap-4 text-xl xl:text-xl 2xl:text-2xl text-text-tertiary hover:text-text-primary transition-colors cursor-pointer"
         >

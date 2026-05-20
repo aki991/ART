@@ -86,6 +86,7 @@ interface SettingsClientProps {
   initialClubs: ClubRow[];
   members: ClubMemberRow[];
   joinRequests: JoinRequestRow[];
+  isPublicProfile: boolean;
 }
 
 export function SettingsClient({
@@ -95,6 +96,7 @@ export function SettingsClient({
   initialClubs,
   members,
   joinRequests,
+  isPublicProfile,
 }: SettingsClientProps) {
   const router = useRouter();
   const currentUser = useCurrentUser();
@@ -249,7 +251,11 @@ export function SettingsClient({
         className="pb-4 max-lg:pb-[120px]"
       >
         {activeTab === "profil" && (
-          <ProfileTab value={draftProfile} onChange={setDraftProfile} />
+          <ProfileTab
+            value={draftProfile}
+            onChange={setDraftProfile}
+            isPublicProfile={isPublicProfile}
+          />
         )}
         {activeTab === "klub" && (
           <ClubTab

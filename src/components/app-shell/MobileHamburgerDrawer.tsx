@@ -131,7 +131,11 @@ export function MobileHamburgerDrawer({
           </button>
         </div>
 
-        <div className="flex items-center gap-3 px-4 py-3 border-b border-border flex-shrink-0">
+        <Link
+          href="/profile"
+          onClick={onClose}
+          className="flex items-center gap-3 px-4 py-3 border-b border-border flex-shrink-0 hover:bg-bg-hover transition-colors"
+        >
           {profile?.avatarUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -150,7 +154,7 @@ export function MobileHamburgerDrawer({
             </p>
             <p className="text-text-tertiary text-xs truncate">{subtitle}</p>
           </div>
-        </div>
+        </Link>
 
         <nav className="flex-1 overflow-y-auto py-2" aria-label="Drawer navigacija">
           <Link href="/dashboard" onClick={onClose} className={itemClass}>

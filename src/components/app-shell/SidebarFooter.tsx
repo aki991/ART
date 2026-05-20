@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -63,7 +64,11 @@ export function SidebarFooter({ expanded }: SidebarFooterProps) {
 
   return (
     <div className="border-t border-border px-3 xl:px-3.5 2xl:px-4 h-[72px] flex items-center justify-between gap-2 xl:gap-2.5 2xl:gap-3 flex-shrink-0">
-      <div className="flex items-center gap-3 min-w-0">
+      <Link
+        href="/profile"
+        aria-label="Otvori moj profil"
+        className="flex items-center gap-3 min-w-0 rounded-md p-1 -m-1 hover:bg-bg-hover transition-colors"
+      >
         <div className="relative flex-shrink-0">
           {profile?.avatarUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -94,7 +99,7 @@ export function SidebarFooter({ expanded }: SidebarFooterProps) {
             <p className="text-text-tertiary text-xs truncate">{subtitle}</p>
           </div>
         )}
-      </div>
+      </Link>
 
       {expanded && (
         <div className="flex items-center gap-1 flex-shrink-0">

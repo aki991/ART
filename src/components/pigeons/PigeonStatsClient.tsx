@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Bird, TrendingUp, Trophy, Clock, Target } from "lucide-react";
+import { Bird, TrendingUp, Trophy, Clock, Target } from "lucide-react";
 import {
   LineChart,
   Line,
@@ -48,15 +48,6 @@ export function PigeonStatsClient({ data }: Props) {
     <div className="px-4 lg:px-8 py-4 lg:py-6 max-w-7xl mx-auto">
       {/* HEADER */}
       <div className="mb-6">
-        <button
-          type="button"
-          onClick={() => router.back()}
-          className="inline-flex items-center gap-2 text-text-tertiary hover:text-text-primary mb-4 transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5" aria-hidden="true" />
-          Nazad
-        </button>
-
         <h1 className="text-2xl lg:text-3xl font-bold text-text-primary font-rajdhani">
           {pigeon.full_ring_number}
         </h1>

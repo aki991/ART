@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Camera, KeyRound, Trash2, TriangleAlert } from "lucide-react";
+import { Camera, KeyRound, Trash2, TriangleAlert, Globe, Lock } from "lucide-react";
 import { Avatar } from "@/components/ui/Avatar";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -12,6 +12,7 @@ import { useCurrentUser } from "@/components/providers/CurrentUserProvider";
 import { createClient } from "@/lib/supabase/client";
 import { deleteAccountAction } from "@/app/auth/actions";
 import { clearAllStores } from "@/lib/store/clear-all";
+import { toggleProfilePrivacy } from "@/app/actions/profile";
 import { readImageFile } from "@/lib/settings/image-upload";
 import type { ProfileData } from "@/lib/settings/types";
 import { ChangePasswordModal } from "../modals/ChangePasswordModal";
@@ -21,9 +22,10 @@ type UsernameStatus = "idle" | "checking" | "available" | "taken" | "invalid";
 interface ProfileTabProps {
   value: ProfileData;
   onChange: (next: ProfileData) => void;
+  isPublicProfile: boolean;
 }
 
-export function ProfileTab({ value, onChange }: ProfileTabProps) {
+export function ProfileTab({ value, onChange, isPublicProfile }: ProfileTabProps) {
   const router = useRouter();
   const currentUser = useCurrentUser();
   const savedUsername = currentUser.profile?.username ?? "";
@@ -33,6 +35,8 @@ export function ProfileTab({ value, onChange }: ProfileTabProps) {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [usernameStatus, setUsernameStatus] = useState<UsernameStatus>("idle");
+  const [isPublic, setIsPublic] = useState(isPublicProfile);
+  const [togglingPrivacy, setTogglingPrivacy] = useState(false);
 
   // Debounced (500ms) uniqueness check for the username — hits Supabase.
   useEffect(() => {
@@ -88,6 +92,21 @@ export function ProfileTab({ value, onChange }: ProfileTabProps) {
     clearAllStores();
     router.replace("/");
     router.refresh();
+  }
+
+  async function handleTogglePrivacy() {
+    const next = !isPublic;
+    setTogglingPrivacy(true);
+    const res = await toggleProfilePrivacy(next);
+    setTogglingPrivacy(false);
+    if (!res.success) {
+      toast.error("Promena privatnosti nije uspela", {
+        description: res.error,
+      });
+      return;
+    }
+    setIsPublic(next);
+    toast.success(next ? "Profil je sada javan" : "Profil je sada privatan");
   }
 
   const usernameError =
@@ -201,6 +220,52 @@ export function ProfileTab({ value, onChange }: ProfileTabProps) {
           placeholder="+381 60 123 4567"
           hint="Opciono."
         />
+      </div>
+
+      {/* Privatnost profila */}
+      <div className="card-redesign p-6">
+        <h3 className="text-base font-semibold text-text-primary">
+          Privatnost profila
+        </h3>
+        <p className="text-sm text-text-disabled mt-0.5 mb-4 max-lg:text-xs">
+          Kontrolišite ko može da vidi vašu javnu profil stranicu.
+        </p>
+        <div className="flex items-center justify-between gap-4">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              {isPublic ? (
+                <Globe className="w-4 h-4 text-accent" aria-hidden="true" />
+              ) : (
+                <Lock className="w-4 h-4 text-text-tertiary" aria-hidden="true" />
+              )}
+              <span className="text-sm font-medium text-text-primary">
+                {isPublic ? "Javan profil" : "Privatan profil"}
+              </span>
+            </div>
+            <p className="text-xs text-text-tertiary">
+              {isPublic
+                ? "Bilo ko sa linkom može da vidi vaš profil bez prijave."
+                : "Samo vi vidite svoj profil; javni link vraća „nije pronađen“."}
+            </p>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={isPublic}
+            aria-label="Privatnost profila"
+            onClick={handleTogglePrivacy}
+            disabled={togglingPrivacy}
+            className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
+              isPublic ? "bg-accent" : "bg-bg-hover border border-border"
+            }`}
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                isPublic ? "translate-x-6" : "translate-x-1"
+              }`}
+            />
+          </button>
+        </div>
       </div>
 
       {/* Password */}

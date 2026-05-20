@@ -9,6 +9,7 @@ import {
   getMyPendingJoinRequest,
   searchClubs,
 } from "@/app/actions/clubs";
+import { getMyProfilePrivacy } from "@/app/actions/profile";
 
 export const metadata: Metadata = {
   title: "Postavke — Aero Ring Tech",
@@ -32,6 +33,8 @@ export default async function SettingsPage() {
   const joinRequests =
     club?.role === "admin" ? await getClubJoinRequests(club.club.id) : null;
 
+  const isPublicProfile = await getMyProfilePrivacy();
+
   return (
     <PageContainer>
       <SettingsClient
@@ -41,6 +44,7 @@ export default async function SettingsPage() {
         initialClubs={initialClubsList?.success ? initialClubsList.data : []}
         members={members?.success ? members.data : []}
         joinRequests={joinRequests?.success ? joinRequests.data : []}
+        isPublicProfile={isPublicProfile}
       />
     </PageContainer>
   );
