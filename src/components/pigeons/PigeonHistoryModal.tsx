@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { X, Trophy, Pencil, Trash2, Check, Loader2 } from "lucide-react";
+import { X, Trophy, Pencil, Trash2, Check, Loader2, BarChart3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getPigeonRaceHistory } from "@/app/actions/races";
 import type { Pigeon } from "@/lib/types/pigeon";
@@ -151,6 +152,15 @@ export function PigeonHistoryModal({
               </div>
             </div>
           </div>
+
+          <Link
+            href={`/pigeons/${pigeon.id}`}
+            onClick={onClose}
+            className="flex items-center justify-center gap-2 w-full mb-8 px-4 py-2.5 rounded-md text-base font-semibold bg-accent text-text-on-accent hover:bg-accent-hover transition-colors"
+          >
+            <BarChart3 className="w-4 h-4" aria-hidden="true" />
+            Vidi pune statistike i trend
+          </Link>
 
           <div className="mb-4">
             <h3 className="text-lg font-semibold text-text-primary">Istorija letova</h3>
