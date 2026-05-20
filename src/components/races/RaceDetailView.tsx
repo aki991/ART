@@ -10,7 +10,14 @@ import { PIGEON_COLOR_PALETTE } from "@/lib/utils/pigeon-palette";
 import { PigeonHistoryModal } from "@/components/pigeons/PigeonHistoryModal";
 import { getPigeonById } from "@/app/actions/pigeons";
 import { createClient } from "@/lib/supabase/client";
+import { ExportPdfButton } from "@/components/races/ExportPdfButton";
+import {
+  VIS_THRESHOLD_M,
+  computeFlightStats,
+  formatTimeShort,
+} from "@/lib/utils/flight-stats";
 import type { RaceWithDetails, AltitudeReading } from "@/lib/types/race";
+import type { RacePdfData } from "@/components/races/RacePdfDocument";
 import type { Pigeon } from "@/lib/types/pigeon";
 
 interface RaceDetailViewProps {
@@ -104,6 +111,60 @@ export function RaceDetailView({ race }: RaceDetailViewProps) {
     [liveRace.race_pigeons]
   );
 
+  const pdfData = useMemo<Omit<RacePdfData, "chartImageDataUrl">>(() => {
+    const ownerName = liveRace.owner_profile
+      ? `${liveRace.owner_profile.first_name} ${liveRace.owner_profile.last_name}`.trim() ||
+        liveRace.owner_profile.username
+      : "—";
+
+    const pigeons = pigeonsWithColor.map((rp) => {
+      const stats = computeFlightStats(rp.readings);
+      return {
+        ring_number: rp.pigeon_full_ring_number,
+        color_name: rp.pigeon_color,
+        dot_color: rp.chartColor,
+        total_time: formatTimeShort(stats.totalSec),
+        above_time:
+          stats.totalSec > 0
+            ? `${formatTimeShort(stats.aboveSec)} (${stats.pctAbove.toFixed(0)}%)`
+            : "—",
+        max_altitude: rp.max_altitude,
+        reached_vis: (rp.max_altitude ?? 0) >= VIS_THRESHOLD_M,
+        valid_flight: stats.pctAbove > 50,
+      };
+    });
+
+    const totals = pigeonsWithColor.map(
+      (p) => computeFlightStats(p.readings).totalSec
+    );
+    const sumSec = totals.reduce((a, b) => a + b, 0);
+    const avgSec = totals.length > 0 ? Math.round(sumSec / totals.length) : 0;
+
+    return {
+      race: {
+        name: liveRace.name,
+        started_at: liveRace.started_at,
+        duration_seconds: liveRace.duration_seconds,
+        max_altitude: liveRace.max_altitude,
+        avg_altitude: liveRace.avg_altitude,
+        visibility: liveRace.visibility,
+        status: liveRace.status,
+      },
+      golubar: { name: ownerName },
+      drustvo: liveRace.club
+        ? { name: liveRace.club.name, logo_url: liveRace.club.logo_url }
+        : null,
+      pigeons,
+      aggregate:
+        pigeonsWithColor.length > 0
+          ? {
+              sum_time: formatTimeShort(sumSec),
+              avg_time: formatTimeShort(avgSec),
+            }
+          : null,
+    };
+  }, [liveRace, pigeonsWithColor]);
+
   async function handlePigeonClick(pigeonId: string) {
     setLoadingPigeonId(pigeonId);
     const res = await getPigeonById(pigeonId);
@@ -121,7 +182,17 @@ export function RaceDetailView({ race }: RaceDetailViewProps) {
 
   return (
     <div className="px-4 xl:px-5 2xl:px-6 py-4 xl:py-5 2xl:py-6 space-y-4 xl:space-y-5 2xl:space-y-6">
-      <RaceHeader race={liveRace} />
+      <RaceHeader
+        race={liveRace}
+        action={
+          liveRace.status === "completed" ? (
+            <ExportPdfButton
+              data={pdfData}
+              chartElementId="altitude-chart-container"
+            />
+          ) : null
+        }
+      />
       <RaceChartCard race={liveRace} pigeonsWithColor={pigeonsWithColor} />
       <RaceStatisticsTable
         pigeonsWithColor={pigeonsWithColor}
@@ -138,7 +209,13 @@ export function RaceDetailView({ race }: RaceDetailViewProps) {
   );
 }
 
-function RaceHeader({ race }: { race: RaceWithDetails }) {
+function RaceHeader({
+  race,
+  action,
+}: {
+  race: RaceWithDetails;
+  action?: ReactNode;
+}) {
   const isLive = race.ended_at === null && race.status === "in_progress";
   const liveDuration = useLiveDuration(isLive ? race.started_at : null);
 
@@ -180,10 +257,13 @@ function RaceHeader({ race }: { race: RaceWithDetails }) {
             </span>
           )}
         </div>
-        <span className="inline-flex items-center gap-1.5 px-2 xl:px-2.5 2xl:px-3 py-1 xl:py-1 2xl:py-1.5 rounded-md bg-bg-input border border-border text-xs xl:text-xs 2xl:text-sm text-text-secondary whitespace-nowrap flex-shrink-0">
-          <VisIcon className="w-4 h-4" aria-hidden="true" />
-          {visLabel}
-        </span>
+        <div className="flex items-center gap-2 xl:gap-2.5 flex-shrink-0">
+          <span className="inline-flex items-center gap-1.5 px-2 xl:px-2.5 2xl:px-3 py-1 xl:py-1 2xl:py-1.5 rounded-md bg-bg-input border border-border text-xs xl:text-xs 2xl:text-sm text-text-secondary whitespace-nowrap">
+            <VisIcon className="w-4 h-4" aria-hidden="true" />
+            {visLabel}
+          </span>
+          {action}
+        </div>
       </div>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 xl:gap-3.5 2xl:gap-4">
         <InfoItem icon={<Trophy className="w-4 h-4" />} label="Golubar" value={ownerName} />
@@ -324,49 +404,24 @@ function RaceChartCard({
         <p className="text-sm xl:text-sm 2xl:text-base text-text-tertiary">Replay celog leta</p>
       </div>
 
-      {chartData.length === 0 ? (
-        <div className="text-center py-12 text-text-tertiary">
-          Nema snimljenih merenja za ovaj let.
-        </div>
-      ) : (
-        <RaceAltitudeChart
-          chartData={chartData}
-          pigeons={chartPigeons}
-          xMaxMinutes={xMaxMinutes}
-          xTicks={xTicks}
-          yAxisConfig={yAxisConfig}
-          height={500}
-        />
-      )}
+      <div id="altitude-chart-container">
+        {chartData.length === 0 ? (
+          <div className="text-center py-12 text-text-tertiary">
+            Nema snimljenih merenja za ovaj let.
+          </div>
+        ) : (
+          <RaceAltitudeChart
+            chartData={chartData}
+            pigeons={chartPigeons}
+            xMaxMinutes={xMaxMinutes}
+            xTicks={xTicks}
+            yAxisConfig={yAxisConfig}
+            height={500}
+          />
+        )}
+      </div>
     </div>
   );
-}
-
-const VIS_THRESHOLD_M = 800;
-const READING_INTERVAL_S = 5;
-
-function computeFlightStats(
-  readings: { altitude: number; elapsed_seconds: number }[]
-) {
-  if (readings.length === 0) {
-    return { totalSec: 0, aboveSec: 0, pctAbove: 0 };
-  }
-  const totalSec = readings.length * READING_INTERVAL_S;
-  const aboveSec =
-    readings.filter((r) => r.altitude >= VIS_THRESHOLD_M).length *
-    READING_INTERVAL_S;
-  const pctAbove = totalSec > 0 ? (aboveSec / totalSec) * 100 : 0;
-  return { totalSec, aboveSec, pctAbove };
-}
-
-function formatTimeShort(totalSeconds: number): string {
-  if (totalSeconds <= 0) return "—";
-  const h = Math.floor(totalSeconds / 3600);
-  const m = Math.floor((totalSeconds % 3600) / 60);
-  const s = totalSeconds % 60;
-  if (h > 0) return `${h}h ${m}m`;
-  if (m > 0) return `${m}m ${s}s`;
-  return `${s}s`;
 }
 
 function RaceStatisticsTable({

@@ -63,6 +63,7 @@ export interface RaceWithDetails extends Race {
     id: string;
     name: string;
     city: string;
+    logo_url: string | null;
   } | null;
   race_pigeons: (RacePigeon & {
     pigeon: { is_archived: boolean } | null;

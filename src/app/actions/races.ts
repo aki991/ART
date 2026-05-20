@@ -594,7 +594,7 @@ export async function getRaceById(
   const { data, error } = await supabase
     .from("races")
     .select(
-      `${RACE_COLUMNS}, owner_profile:profiles!races_owner_id_fkey(username, first_name, last_name), club:clubs(id, name, city), race_pigeons(${RACE_PIGEON_COLUMNS}, pigeon:pigeons(is_archived), readings:altitude_readings(${READING_COLUMNS}))`
+      `${RACE_COLUMNS}, owner_profile:profiles!races_owner_id_fkey(username, first_name, last_name), club:clubs(id, name, city, logo_url), race_pigeons(${RACE_PIGEON_COLUMNS}, pigeon:pigeons(is_archived), readings:altitude_readings(${READING_COLUMNS}))`
     )
     .eq("id", id)
     .maybeSingle();
