@@ -7,12 +7,15 @@ import { PigeonLegend } from "./PigeonLegend";
 import { SimulationControls } from "./SimulationControls";
 import { useRaceReadingsSync } from "@/lib/hooks/useRaceReadingsSync";
 import { useRaceSimulator } from "@/lib/hooks/useRaceSimulator";
+import { useSerialTelemetry } from "@/lib/hooks/useSerialTelemetry";
 
 export function LiveFlightDashboard() {
   // Every tab polls the DB for the canonical readings (single source of truth).
   useRaceReadingsSync();
   // Only the tab that started (or claimed) the race generates readings.
   useRaceSimulator();
+  // Realni izvor (Web Serial) — aktivan samo kad je method === "usb-c".
+  useSerialTelemetry();
 
   return (
     <div className="flex flex-col gap-4 lg:grid lg:grid-cols-10 lg:gap-4 xl:lg:gap-5 2xl:gap-6 2xl:h-full">

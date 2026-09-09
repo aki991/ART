@@ -1,3 +1,4 @@
+import { serialTransport } from "@/lib/transport/serial-transport";
 import { create } from "zustand";
 import { useLiveRaceStore } from "@/lib/store/live-race-store";
 import { clearActivePigeons } from "@/lib/telemetry/flight-model";
@@ -117,6 +118,36 @@ export const useConnectionStore = create<ConnectionState>((set, get) => ({
 
   connectWithMethod: async (method) => {
     set({ status: "connecting", method });
+
+    if (method === "usb-c") {
+      // PRAVI hardver: Web Serial ka DK VCOM portu.
+      // requestPort() je unutar user-gesture lanca (klik → handleActivate →
+      // connectWithMethod bez prethodnog await-a) — NE dodavati await pre ovoga.
+      try {
+        await serialTransport.connect();
+        set({
+          status: "connected",
+          connectedAt: new Date(),
+          raceActive: false,
+          deviceInfo: {
+            deviceId: "DK-BAZA (VCOM)",
+            firmwareVersion: "1.0",
+            batteryPct: 0, // useSerialTelemetry ažurira iz #TLM bat_mv
+          },
+        });
+      } catch (e) {
+        set({
+          status: "error",
+          method: null,
+          errorMessage:
+            e instanceof Error ? e.message : "Povezivanje neuspešno.",
+        });
+        throw e; // ConnectionMethodCard catch → toast.error
+      }
+      return;
+    }
+
+    // Bluetooth ostaje demo/mock režim (simulator).
     await new Promise<void>((resolve) => setTimeout(resolve, 800));
     set({
       status: "connected",
@@ -137,6 +168,7 @@ export const useConnectionStore = create<ConnectionState>((set, get) => ({
       releaseSimulatorRole(raceId);
       await cancelRaceAction(raceId);
     }
+    await serialTransport.disconnect();
     useLiveRaceStore.getState().clear();
     clearActivePigeons();
     set({

@@ -55,8 +55,10 @@ export function useRaceSimulator() {
   const raceStartedAtMs = useConnectionStore((s) => s.raceStartedAtMs);
   const activeRacePigeons = useConnectionStore((s) => s.activeRacePigeons);
   const stoppedRef = useRef(false);
+  const method = useConnectionStore((s) => s.method);
 
   useEffect(() => {
+    if (method === "usb-c") return; // pravi hardver puni podatke, ne simulator
     if (!raceActive || !raceId || !raceStartedAtMs) return;
     if (activeRacePigeons.length === 0) return;
     if (!isThisBrowserSimulator(raceId)) return;
@@ -125,5 +127,5 @@ export function useRaceSimulator() {
       stoppedRef.current = true;
       clearInterval(interval);
     };
-  }, [raceActive, raceId, raceStartedAtMs, activeRacePigeons]);
+  }, [method, raceActive, raceId, raceStartedAtMs, activeRacePigeons]);
 }

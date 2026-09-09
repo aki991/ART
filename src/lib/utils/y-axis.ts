@@ -1,5 +1,5 @@
-const Y_AXIS_STEP = 200;
-const Y_AXIS_PADDING_RATIO = 1.1; // 10% prostor iznad max vrednosti
+const Y_AXIS_MIN_UPPER_BOUND = 10; // šum od ±1-2m ne smije razvući skalu
+const Y_AXIS_PADDING_RATIO = 1.15; // 15% prostora iznad max vrednosti
 
 export function buildXTicks(xMaxMinutes: number): number[] {
   const step =
@@ -19,17 +19,32 @@ export interface YAxisConfig {
   ticks: number[];
 }
 
-// Dinamička Y-osa: gornji bound = max vrednost + 10% padding, zaokruženo na
-// sledeći deljiv broj sa Y_AXIS_STEP (200m) za lepe tick labele.
-// Primeri: max=500 -> 600, max=1200 -> 1400, max=2069 -> 2400.
-// Nema fiksne donje granice; pozivajući kod treba da prosledi
-// max(actual_data, goal_altitude) tako da i 800m VIS linija ostane unutar.
+// Korak Y-ose po pragovima visine (na target = max + padding):
+// do 10m -> 2m (sitni šum sa hardvera ostaje čitljiv), do 50m -> 10m,
+// do 200m -> 50m, do 1000m -> 100m, iznad toga -> 500m.
+export function yAxisStep(target: number): number {
+  if (target <= 10) return 2;
+  if (target <= 50) return 10;
+  if (target <= 200) return 50;
+  if (target <= 1000) return 100;
+  return 500;
+}
+
+// Dinamička Y-osa: gornji bound = max vrednost + 15% padding, zaokruženo na
+// prvi umnožak koraka iz yAxisStep, uz minimum od 10m.
+// Primjeri: max=2 -> 10 (korak 2), max=40 -> 50 (korak 10),
+// max=150 -> 200 (korak 50), max=800 -> 1000 (korak 100), max=2069 -> 2500 (korak 500).
+// Nema fiksne donje granice; pozivajući kod koji želi da mu i goal_altitude
+// linija ostane u kadru treba da prosledi max(actual_data, goal_altitude).
 export function computeYAxisConfig(maxAltitude: number): YAxisConfig {
-  const target = Math.max(maxAltitude * Y_AXIS_PADDING_RATIO, Y_AXIS_STEP);
-  const upperBound = Math.ceil(target / Y_AXIS_STEP) * Y_AXIS_STEP;
+  const target = Number.isFinite(maxAltitude)
+    ? Math.max(maxAltitude * Y_AXIS_PADDING_RATIO, Y_AXIS_MIN_UPPER_BOUND)
+    : Y_AXIS_MIN_UPPER_BOUND;
+  const step = yAxisStep(target);
+  const upperBound = Math.ceil(target / step) * step;
 
   const ticks: number[] = [];
-  for (let i = 0; i <= upperBound; i += Y_AXIS_STEP) {
+  for (let i = 0; i <= upperBound; i += step) {
     ticks.push(i);
   }
 
