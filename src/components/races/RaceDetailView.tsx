@@ -373,7 +373,9 @@ function RaceChartCard({
   const xTicks = useMemo(() => buildXTicks(xMaxMinutes), [xMaxMinutes]);
 
   const yAxisConfig = useMemo(() => {
-    let maxAlt = race.goal_altitude;
+    // Skala prati SAMO stvarne podatke (bez goal_altitude poda), da praćenje
+    // tuđe trke uživo raste isto kao i sopstveni let na /scanning.
+    let maxAlt = 0;
     for (const p of pigeonsWithColor) {
       if ((p.max_altitude ?? 0) > maxAlt) maxAlt = p.max_altitude!;
       // Aggregate p.max_altitude može biti NULL za aktivne trke — uvek skeniramo
@@ -383,7 +385,7 @@ function RaceChartCard({
       }
     }
     return computeYAxisConfig(maxAlt);
-  }, [pigeonsWithColor, race.goal_altitude]);
+  }, [pigeonsWithColor]);
 
   const chartPigeons = useMemo(
     () =>
