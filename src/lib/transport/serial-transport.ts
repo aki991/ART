@@ -4,7 +4,7 @@
  * Web Serial transport ka DK baznoj stanici (glavna_baza firmware).
  * Čita linije sa J-Link VCOM porta (115200 8N1):
  *
- *   #TLM,<ring4hex>,<alt_m>,<ts_ms>,<rssi_dbm>,<bat_mv>
+ *   #TLM,<ring4hex>,<alt_m>,<ts_ms>,<rssi_dbm>,<bat_mv>[,<pressure_pa>]
  *   #EVT,CONNECTED,<ring4hex> | #EVT,DISCONNECTED | #EVT,BOOT
  *
  * Singleton — deli ga connection-store (connect/disconnect gesture) i
@@ -18,6 +18,7 @@ export interface TlmFrame {
   deviceTsMs: number;    // timestamp_ms sa prstena (uptime/epoch)
   rssiDbm: number;
   batteryMv: number;
+  pressurePa: number;    // sirov pritisak u Pa; 0 ako ga uređaj ne šalje
   receivedAt: number;    // Date.now() u trenutku prijema
 }
 
@@ -160,6 +161,9 @@ class SerialTransport {
     const deviceTsMs = Number(parts[3]);
     const rssiDbm = Number(parts[4]);
     const batteryMv = Number(parts[5]);
+    // Sedmo polje (sirov pritisak) postoji samo na novijem firmveru — stari
+    // salje 6 polja i tada ostaje 0, pa telemetrija pada na alt_m fallback.
+    const pressurePa = parts.length >= 7 ? Number(parts[6]) : 0;
 
     if (!RING_ID_RE.test(ringId)) return;
     if (!Number.isFinite(altitudeMeters)) return;
@@ -170,6 +174,7 @@ class SerialTransport {
       deviceTsMs: Number.isFinite(deviceTsMs) ? deviceTsMs : 0,
       rssiDbm: Number.isFinite(rssiDbm) ? rssiDbm : 0,
       batteryMv: Number.isFinite(batteryMv) ? batteryMv : 0,
+      pressurePa: Number.isFinite(pressurePa) && pressurePa > 0 ? pressurePa : 0,
       receivedAt: Date.now(),
     };
 
